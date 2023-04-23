@@ -1,0 +1,152 @@
+.App {
+  text-align: center;
+}
+
+.app {
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
+  background-image: url("img/img1.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+  width: auto;
+  display: flex;
+  font-family: Georgia, serif;
+  font-size: 16px;
+}
+
+input[type="text"], input[type="password"] {
+  height: 30px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+input[type="submit"] {
+  cursor: pointer;
+  background: #31448e;
+  border-color: #31448e;
+  color: #fff;
+  padding: 10px;
+  width: 200px;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+input[type="submit"]:hover {
+  background: #5192a5;
+  border-color: #5192a5;
+}
+
+.go-back-button {
+  align-items: center;
+  justify-content: center;
+  background-color: #31448e;
+  color: white;
+  font-size: 20px;
+  border-color: #31448e;
+  /*margin: 5%;*/
+  padding: 10px;
+  width: 200px;
+  border-radius: 5px;
+}
+
+.go-back-button:hover {
+  background-color: #5192a5;
+  border-color: #5192a5;
+}
+
+.input-container-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 30px 10px;
+  text-align: left;
+  color: white;
+  font-size: 25px;
+}
+
+.button-container-row {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.button-container-col {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+h2 {
+  font-family: "Comic Sans MS", serif;
+  color: darkblue;
+  padding-top: 2%;
+  font-size: 40px;
+  text-shadow: 0 0 10px white, 0 1px 0 rgba(0,0,0, .25);
+}
+
+.disease-choice-button{
+  align-items: center;
+  justify-content: center;
+  background-color: #31448e;
+  color: white;
+  font-size: 25px;
+  border-color: #31448e;
+  padding: 15px;
+  width: 400px;
+  border-radius: 5px;
+}
+
+.disease-choice-button-selected{
+  align-items: center;
+  justify-content: center;
+  background-color: #5192a5;
+  color: white;
+  font-size: 25px;
+  border-color: #5192a5;
+  padding: 15px;
+  width: 400px;
+  border-radius: 5px;
+  box-shadow: 0 0 20px white, 0 0px 0 rgba(0,0,0,.25);
+}
+
+.disease-choice-button:hover {
+  background-color: #5192a5;
+  border-color: #5192a5;
+}
+
+.table-position {
+  background-color: white;
+  width: 90%;
+}
+
+/*table {*/
+/*  width: 1000px;*/
+/*  font-size: 12px;*/
+/*  font-weight: bold;*/
+/*}*/
+
+/*header of the table*/
+th {
+  border: 2px solid darkblue;
+  padding: 10px;
+  color: white;
+  background-color: darkblue;
+}
+
+/*row of the table*/
+td {
+  text-align: center;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 5px;
+  /*border: 1px solid black;*/
+}
+

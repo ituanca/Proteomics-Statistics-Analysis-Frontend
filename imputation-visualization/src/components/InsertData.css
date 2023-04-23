@@ -1,0 +1,7 @@
+.input-container-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 30px 10px;
+    text-align: left;
+}

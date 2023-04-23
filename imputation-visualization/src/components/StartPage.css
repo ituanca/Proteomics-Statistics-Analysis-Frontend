@@ -1,0 +1,31 @@
+.title {
+    font-family: "Comic Sans MS", serif;
+    color: darkblue;
+    padding-top: 10%;
+    padding-bottom: 5%;
+    font-size: 4.5em;
+    text-shadow: 0 0 10px white, 0 1px 0 rgba(0,0,0, .25);
+}
+
+.start-button {
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    width: 300px;
+    border-radius: 5px;
+    background-color: #31448e;
+    color: white;
+    font-size: 30px;
+    border-color: #5192a5;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+.start-button:hover {
+    background-color: #5192a5;
+}
+
+.container-title-button {
+    display: flex;
+    flex-direction: column;
+}
