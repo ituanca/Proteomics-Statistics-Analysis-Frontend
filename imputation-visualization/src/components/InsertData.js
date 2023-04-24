@@ -48,6 +48,11 @@ function InsertData(){
                    };
                }), rows: incompleteDfNewAD})
        }
+        if(progeriaSelected){
+            localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
+        }else if(adSelected){
+            localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
+        }
     }, [incompleteDfNewProgeria, incompleteDfNewAD, progeriaSelected, adSelected])
 
     const fetchIncompleteDfNewProgeria = () => {
@@ -73,6 +78,8 @@ function InsertData(){
     const handleSubmit = (event) => {
         event.preventDefault();
     };
+
+    localStorage.setItem("selectedDataset", JSON.stringify(data));
 
     const buttonClasNameProgeria = progeriaSelected
         ?  "disease-choice-button-selected"
@@ -110,7 +117,12 @@ function InsertData(){
                         </Link>
                     </div>
                     <div className="input-container-col">
-                        <input type="submit" value="Next"/>
+                        <Link to="/InputForStatistics">
+                            <input type="submit" value="Next"/>
+                        </Link>
+                        {/*<Link to="/InputForStatistics">*/}
+                        {/*    <button className="go-back-button">Next</button>*/}
+                        {/*</Link>*/}
                     </div>
                 </div>
             </div>
