@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
-import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
-import InputForStatisticsAD from './InputForStatisticsAD';
-import "./InputForStatistics.css"
 
-function InputForStatistics(){
+export default function InputForStatisticsProgeria({ data }){
 
     const [data, setData] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
     const [selectedDisease, setSelectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
@@ -12,19 +9,17 @@ function InputForStatistics(){
     console.log(data);
     console.log(selectedDisease)
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
+
     const renderForm = (
-        <div>
-            <h2>{selectedDisease} dataset</h2>
+        <form onSubmit = {handleSubmit}>
             <div className="button-container-col">
-                <div className="table-position">
-                    <MDBTable scrollY maxHeight="300px">
-                        <MDBTableHead columns={data.columns}/>
-                        <MDBTableBody rows={data.rows} />
-                    </MDBTable>
+                <h2>Generate statistics on the incomplete dataset</h2>
+                <div>
+                    <label>Username </label>
                 </div>
-
-                <InputForStatisticsAD data={data} />
-
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/InsertData">
@@ -36,7 +31,7 @@ function InputForStatistics(){
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     );
 
     return (
@@ -48,5 +43,3 @@ function InputForStatistics(){
         </div>
     );
 }
-
-export default InputForStatistics;

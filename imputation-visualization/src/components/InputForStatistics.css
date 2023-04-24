@@ -1,0 +1,17 @@
+.statistics_options{
+    text-align: start;
+    justify-content: start;
+    width: 400px;
+    display: inline-block;
+    background-color: lightblue;
+    padding: 20px;
+    border-radius: 10px;
+}
+.input-for-statistics-ad-select{
+    width: 100%;
+}
+
+.label-statistics{
+    color: white;
+    text-shadow: 0 0 8px black, 0 1px 0 rgba(0,0,0, .25);
+}
