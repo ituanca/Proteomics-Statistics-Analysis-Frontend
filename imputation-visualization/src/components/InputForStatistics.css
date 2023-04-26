@@ -15,3 +15,11 @@
     color: white;
     text-shadow: 0 0 8px black, 0 1px 0 rgba(0,0,0, .25);
 }
+
+img {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}

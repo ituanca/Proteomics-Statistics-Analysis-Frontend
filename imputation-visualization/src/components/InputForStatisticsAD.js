@@ -20,6 +20,7 @@ export default function InputForStatisticsAD({ data }){
     const newIds = [...new Set(["-- Select an option --", ...Ids])];
     const proteinNames = [...new Set(data.rows.map((item) => item["Protein.names"]))];
     const newProteinNames = [...new Set(["-- Select an option --", ...proteinNames])];
+    const [imageUrl, setImageUrl] = useState("");
 
     const optionsForProteinsComparison = [
         {
@@ -106,7 +107,8 @@ export default function InputForStatisticsAD({ data }){
     useEffect(() => {
         setSelectedOptions({...selectedOptions, [optionsForProteinsComparison[0].name]: optionsForProteinsComparison[0].values[0],
             [optionsForProteinsComparison[11].name]: optionsForProteinsComparison[11].values[0],
-            [optionsForProteinsComparison[12].name]: optionsForProteinsComparison[12].values[0]});
+            [optionsForProteinsComparison[12].name]: optionsForProteinsComparison[12].values[0]
+        });
     }, [])
 
 
@@ -142,52 +144,18 @@ export default function InputForStatisticsAD({ data }){
         handleSelectionsCorrelation(option, value, "protein_id_5", "protein_name_5");
     };
 
-    function handleSelectedOptions() {
-        // console.log(selectedOptions.toString())
-        console.log(selectedOptions)
-        const gender = selectedOptions.gender
-        const metric = selectedOptions.metric
-        const protein_id_1 = selectedOptions.protein_id_1
-        const protein_name_1 = selectedOptions.protein_name_1
-        const protein_id_2 = selectedOptions.protein_id_2
-        const protein_name_2 = selectedOptions.protein_name_2
-        const protein_id_3 = selectedOptions.protein_id_3
-        const protein_name_3 = selectedOptions.protein_name_3
-        const protein_id_4 = selectedOptions.protein_id_4
-        const protein_name_4 = selectedOptions.protein_name_4
-        const protein_id_5 = selectedOptions.protein_id_5
-        const protein_name_5 = selectedOptions.protein_name_5
-    }
 
-    const testVariable = "test"
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        handleSelectedOptions();
+        console.log(selectedOptions)
         axios
-            .post("http://localhost:8000/requestAdChart",{
-                    gender: selectedOptions.gender,
-                    metric: selectedOptions.metric,
-                    type_of_plot: selectedOptions.type_of_plot,
-                    protein_id_1: selectedOptions.protein_id_1,
-                    protein_id_2: selectedOptions.protein_id_2,
-                    protein_id_3: selectedOptions.protein_id_3,
-                    protein_id_4: selectedOptions.protein_id_4,
-                    protein_id_5: selectedOptions.protein_id_5
+            .post("http://localhost:8000/requestAdChart", JSON.stringify(selectedOptions), {
+                responseType: "arraybuffer"
             })
             .then((response) => {
                 console.info(response);
-                // if (response.data === "name_error") {
-                //     setErrorMessages({name: "name", message: errors.name});
-                // } else if(response.data === "exercise_exists"){
-                //     setErrorMessages({name: "exists_name", message: errors.exists_name});
-                // } else if(response.data === "typeOfExercise_error"){
-                //     setErrorMessages({name: "typeOfExercise", message: errors.typeOfExercise});
-                // } else if (response.data === "calories_error"){
-                //     setErrorMessages({name: "caloriesBurnedPerMinute", message: errors.caloriesBurnedPerMinute});
-                // } else {
-                //     setIsSubmitted(true);
-                // }
+                setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
             })
             .catch((error) => {
                 console.error("There was an error!", error.response.data.message)
@@ -195,37 +163,43 @@ export default function InputForStatisticsAD({ data }){
     };
 
     const renderForm = (
+
+
         <form onSubmit = {handleSubmit}>
+
             <div className="button-container-col">
                 <h2>Generate statistics on the incomplete dataset</h2>
-                <div className="statistics_options">
-                    <h3>Compare up to 5 proteins according to a metric</h3>
-                    {optionsForProteinsComparison.map((option) => (
-                        <div key={option.name}>
-                            <label className="label-statistics">{option.label}</label>
-                            {option.type === "select" ? (
-                                <select className="input-for-statistics-ad-select"
-                                    value={selectedOptions[option.name]}
-                                    onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                >
-                                    {option.values.map((value) => (
-                                        <option key={value} value={value}>
-                                            {value}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <input
-                                    type="text"
-                                    value={selectedOptions[option.name]}
-                                    onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                />
-                            )}
+                <div className="button-container-row">
+                    <div className="statistics_options">
+                        <h3>Compare up to 5 proteins according to a metric</h3>
+                        {optionsForProteinsComparison.map((option) => (
+                            <div key={option.name}>
+                                <label className="label-statistics">{option.label}</label>
+                                {option.type === "select" ? (
+                                    <select className="input-for-statistics-ad-select"
+                                        value={selectedOptions[option.name]}
+                                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                                    >
+                                        {option.values.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <input
+                                        type="text"
+                                        value={selectedOptions[option.name]}
+                                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                                    />
+                                )}
+                            </div>
+                            ))}
+                        <div className="input-container-col">
+                            <input type="submit" value="Generate plot"/>
                         </div>
-                        ))}
-                    <div className="input-container-col">
-                        <input type="submit" value="Generate plot"/>
                     </div>
+                    {imageUrl !== "" ? <img src={imageUrl} alt="My Plot" /> : null}
                 </div>
             </div>
         </form>

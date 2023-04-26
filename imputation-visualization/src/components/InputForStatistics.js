@@ -3,6 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import InputForStatisticsAD from './InputForStatisticsAD';
 import "./InputForStatistics.css"
+import InputForStatisticsProgeria from "./InputForStatisticsProgeria";
 
 function InputForStatistics(){
 
@@ -23,7 +24,11 @@ function InputForStatistics(){
                     </MDBTable>
                 </div>
 
-                <InputForStatisticsAD data={data} />
+                {selectedDisease === "Alzheimer's disease" ?
+                    <InputForStatisticsAD data={data} />
+                :
+                    <InputForStatisticsProgeria data={data} />
+                }
 
                 <div className="button-container-row">
                     <div className="input-container-col">

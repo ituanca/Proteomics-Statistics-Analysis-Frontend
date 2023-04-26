@@ -1,8 +1,5 @@
-.App {
-  text-align: center;
-}
-
 .app {
+  padding-top: 1%;
   text-align: center;
   justify-content: center;
   /*flex-direction: column;*/
