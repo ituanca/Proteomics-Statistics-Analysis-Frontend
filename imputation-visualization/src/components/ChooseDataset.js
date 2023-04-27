@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
-import "./InsertData.css"
+import "./ChooseDataset.css"
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 
-function InsertData(){
+function ChooseDataset(){
 
     const [incompleteDfNewProgeria, setIncompleteDfNewProgeria] = useState([]);
     const [incompleteDfNewAD, setIncompleteDfNewAD] = useState([])
@@ -117,7 +117,7 @@ function InsertData(){
                         </Link>
                     </div>
                     <div className="input-container-col">
-                        <Link to="/InputForStatistics">
+                        <Link to="/Statistics">
                             <input type="submit" value="Next"/>
                         </Link>
                         {/*<Link to="/InputForStatistics">*/}
@@ -139,4 +139,4 @@ function InsertData(){
     );
 }
 
-export default InsertData;
+export default ChooseDataset;

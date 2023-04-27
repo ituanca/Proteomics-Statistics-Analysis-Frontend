@@ -8,7 +8,7 @@ function StartPage(){
             <label className="title"><strong>Online Energy Utility Platform</strong></label>
             <nav>
                 <div>
-                    <Link to="/InsertData">
+                    <Link to="/ChooseDataset">
                         <button className="start-button">Start</button>
                     </Link>
                 </div>

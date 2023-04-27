@@ -5,8 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import StartPage from "./components/StartPage";
-import InsertData from "./components/InsertData";
-import InputForStatistics from "./components/InputForStatistics";
+import ChooseDataset from "./components/ChooseDataset";
+import Statistics from "./components/Statistics";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,8 +14,8 @@ root.render(
         <Routes>
             <Route path="/" element={<App />} />
             <Route path="/StartPage" element={<StartPage />} />
-            <Route path="/InsertData" element={<InsertData />} />
-            <Route path="/InputForStatistics" element={<InputForStatistics />} />
+            <Route path="/ChooseDataset" element={<ChooseDataset />} />
+            <Route path="/Statistics" element={<Statistics />} />
         </Routes>
     </BrowserRouter>
 );

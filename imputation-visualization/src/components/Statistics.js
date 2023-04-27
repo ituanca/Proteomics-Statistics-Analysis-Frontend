@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
-import InputForStatisticsAD from './InputForStatisticsAD';
-import "./InputForStatistics.css"
-import InputForStatisticsProgeria from "./InputForStatisticsProgeria";
+import StatisticsAD from './StatisticsAD';
+import "./Statistics.css"
+import StatisticsProgeria from "./StatisticsProgeria";
 
-function InputForStatistics(){
+function Statistics(){
 
     const [data, setData] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
     const [selectedDisease, setSelectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
@@ -25,14 +25,14 @@ function InputForStatistics(){
                 </div>
 
                 {selectedDisease === "Alzheimer's disease" ?
-                    <InputForStatisticsAD data={data} />
+                    <StatisticsAD data={data} />
                 :
-                    <InputForStatisticsProgeria data={data} />
+                    <StatisticsProgeria data={data} />
                 }
 
                 <div className="button-container-row">
                     <div className="input-container-col">
-                        <Link to="/InsertData">
+                        <Link to="/ChooseDataset">
                             <button className="go-back-button">Go back</button>
                         </Link>
                     </div>
@@ -54,4 +54,4 @@ function InputForStatistics(){
     );
 }
 
-export default InputForStatistics;
+export default Statistics;
