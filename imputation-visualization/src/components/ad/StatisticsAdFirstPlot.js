@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange, renderErrorMessage} from "./Utils";
+import {handleOptionChange, renderErrorMessage} from "../Utils";
 
 
 export default function StatisticsAdFirstPlot({ data, options }){

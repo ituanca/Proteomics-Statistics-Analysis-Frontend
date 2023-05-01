@@ -97,7 +97,7 @@ export default function StatisticsAD({ data }){
     const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
     const newSamples = [...new Set(["-- Select an option --", ...samples])];
 
-    console.log(newSamples)
+    console.log(samples)
 
     const optionsForNrOfMissingValuesComparison = [
         {
@@ -110,7 +110,7 @@ export default function StatisticsAD({ data }){
             name: "samples",
             label: "Samples to be compared",
             type: "multi-select",
-            values: newSamples
+            values: samples
         },
         {
             name: "type_of_plot",

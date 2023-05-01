@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@coreui/react-pro": "^4.10.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -11,6 +12,7 @@
     "cors": "^2.8.5",
     "mdbreact": "^5.2.0",
     "moment": "^2.29.4",
+    "multiselect-react-dropdown": "^2.0.25",
     "primereact": "^9.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

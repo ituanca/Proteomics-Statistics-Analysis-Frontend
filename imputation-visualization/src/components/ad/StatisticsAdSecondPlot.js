@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange, handleSelectionsCorrelation, renderErrorMessage} from "./Utils";
-import { MultiSelect } from 'primereact/multiselect';
-
+import {handleOptionChange, handleSelectionsCorrelation, renderErrorMessage} from "../Utils";
+import {Multiselect} from "multiselect-react-dropdown";
+import './StatisticsAdSecondPlot.css';
 
 export default function StatisticsAdSecondPlot({ data, options }){
 
@@ -12,42 +12,40 @@ export default function StatisticsAdSecondPlot({ data, options }){
         samples: [],
         type_of_plot: ""
     });
-
-    const [selectedSamples, setSelectedSamples] = useState();
-
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
-        setSelectedOptions({...selectedOptions, [options[0].name]: options[0].values[0],
+        setSelectedOptions({...selectedOptions,
+            [options[0].name]: options[0].values[0],
             [options[2].name]: options[2].values[0]
         });
-    }, [])
+    }, [options])
+
+    console.log(selectedOptions)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(selectedOptions)
 
         axios
-                .post("http://localhost:8000/requestAdSecondChart", JSON.stringify(selectedOptions), {
-                    responseType: "arraybuffer"
-                })
-                .then((response) => {
-                    console.info(response);
-                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
-
+            .post("http://localhost:8000/requestAdSecondChart", JSON.stringify(selectedOptions), {
+                responseType: "arraybuffer"
+            })
+            .then((response) => {
+                console.info(response);
+                setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
+            })
+            .catch((error) => {
+                console.error("There was an error!", error.response.data.message)
+            });
     };
 
     const handleOptionChange = (option, value) => {
         setSelectedOptions({...selectedOptions, [option]: value});
     };
 
-    const handleMultipleOptionChange = (option, target) => {
-        const selectedValues = Array.from(target.selectedOptions).map((option) => option.value);
-        setSelectedOptions({...selectedOptions, [option]: selectedValues});
+    const onChangeMultiSelect = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, samples: selectedItems})
     };
 
     return (
@@ -70,13 +68,13 @@ export default function StatisticsAdSecondPlot({ data, options }){
                                     ))}
                                 </select>
                             ) : (
-                                <MultiSelect value={selectedOptions[option.name]}
-                                             onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                             options={option.values}
-                                             optionLabel="name"
-                                             placeholder="Select samples"
-                                             maxSelectedLabels={32}
-                                             className="w-full md:w-20rem" />
+                                <Multiselect
+                                    showArrow
+                                    options={option.values}
+                                    isObject={false}
+                                    onSelect={onChangeMultiSelect}
+                                    onRemove={onChangeMultiSelect}
+                                />
                             )}
                         </div>
                     ))}

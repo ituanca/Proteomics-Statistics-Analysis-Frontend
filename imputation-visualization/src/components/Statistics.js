@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
-import StatisticsAD from './StatisticsAD';
+import StatisticsAD from './ad/StatisticsAD';
 import "./Statistics.css"
-import StatisticsProgeria from "./StatisticsProgeria";
+import StatisticsProgeria from "./progeria/StatisticsProgeria";
 
 function Statistics(){
 
