@@ -3,6 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import axios from "axios";
 import StatisticsAdFirstPlot from "./StatisticsAdFirstPlot";
 import StatisticsAdSecondPlot from "./StatisticsAdSecondPlot";
+import StatisticsAdThirdPlot from "./StatisticsAdThirdPlot";
 
 
 export default function StatisticsAD({ data }){
@@ -95,43 +96,41 @@ export default function StatisticsAD({ data }){
     ];
 
     const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
-    const newSamples = [...new Set(["-- Select an option --", ...samples])];
+    const newSamples = [...new Set(["Select all", ...samples])];
 
     console.log(samples)
 
-    const optionsForNrOfMissingValuesComparison = [
-        {
-            name: "gender",
-            label: "Gender",
-            type: "select",
-            values: ["All", "Male", "Female"],
-        },
-        {
-            name: "samples",
-            label: "Samples to be compared",
-            type: "multi-select",
-            values: samples
-        },
-        {
-            name: "type_of_plot",
-            label: "Type of chart",
-            type: "select",
-            values: ["bar chart", "pie chart"]
-        },
-        // add more options as needed
-    ];
+    const filterForTypeOfPlot = {
+        name: "type_of_plot",
+        label: "Type of chart",
+        type: "select",
+        values: ["bar chart", "pie chart"]
+    };
+
+    const filterForGender = {
+        name: "gender",
+        label: "Gender",
+        type: "select",
+        values: ["All", "Male", "Female"],
+    }
+
+    const filterForSamplesChoice = {
+        name: "samples",
+        label: "Samples to be compared",
+        type: "multi-select",
+        values: newSamples
+    };
 
     const renderForm = (
+        <div className="button-container-col">
+            <h2>Generate statistics on the incomplete dataset</h2>
+            <StatisticsAdFirstPlot data={data} options={optionsForProteinsComparison}/>
 
-            <div className="button-container-col">
+            <h2>Analyze the missing values</h2>
+            <StatisticsAdSecondPlot data={data} samplesFilter={filterForSamplesChoice}/>
+            <StatisticsAdThirdPlot data={data} genderFilter={filterForGender} typeOfPlotFilter={filterForTypeOfPlot}/>
 
-                <h2>Generate statistics on the incomplete dataset</h2>
-                <StatisticsAdFirstPlot data={data} options={optionsForProteinsComparison}/>
-
-                <h2>Analyze the missing values</h2>
-                <StatisticsAdSecondPlot data={data} options={optionsForNrOfMissingValuesComparison}/>
-
-            </div>
+        </div>
     );
 
     return (

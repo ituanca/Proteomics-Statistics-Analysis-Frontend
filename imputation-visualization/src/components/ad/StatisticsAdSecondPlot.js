@@ -1,34 +1,21 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange, handleSelectionsCorrelation, renderErrorMessage} from "../Utils";
 import {Multiselect} from "multiselect-react-dropdown";
 import './StatisticsAdSecondPlot.css';
 
-export default function StatisticsAdSecondPlot({ data, options }){
+export default function StatisticsAdSecondPlot({ data, samplesFilter }){
 
-    const [errorMessages, setErrorMessages] = useState({});
-    const [selectedOptions, setSelectedOptions] = useState({
-        gender: "",
-        samples: [],
-        type_of_plot: ""
+    const [selectedSamples, setSelectedSamples] = useState({
+        samples: []
     });
     const [imageUrl, setImageUrl] = useState("");
 
-    useEffect(() => {
-        setSelectedOptions({...selectedOptions,
-            [options[0].name]: options[0].values[0],
-            [options[2].name]: options[2].values[0]
-        });
-    }, [options])
-
-    console.log(selectedOptions)
-
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(selectedOptions)
+        console.log(selectedSamples)
 
         axios
-            .post("http://localhost:8000/requestAdSecondChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/requestAdSecondChart", JSON.stringify(selectedSamples), {
                 responseType: "arraybuffer"
             })
             .then((response) => {
@@ -40,45 +27,26 @@ export default function StatisticsAdSecondPlot({ data, options }){
             });
     };
 
-    const handleOptionChange = (option, value) => {
-        setSelectedOptions({...selectedOptions, [option]: value});
-    };
-
     const onChangeMultiSelect = (selectedItems) => {
-        setSelectedOptions({...selectedOptions, samples: selectedItems})
+        setSelectedSamples({...selectedSamples, samples: selectedItems})
     };
+    console.log(selectedSamples)
 
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics_options">
-                    <h3>View the number of missing values for each sample</h3>
-                    {options.map((option) => (
-                        <div key={option.name} className="label-field-group-with-space">
-                            <label className="label-statistics">{option.label}</label>
-                            {option.type === "select" ? (
-                                <select className="input-for-statistics-ad-select"
-                                        value={selectedOptions[option.name]}
-                                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                >
-                                    {option.values.map((value) => (
-                                        <option key={value} value={value}>
-                                            {value}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <Multiselect
-                                    showArrow
-                                    options={option.values}
-                                    isObject={false}
-                                    onSelect={onChangeMultiSelect}
-                                    onRemove={onChangeMultiSelect}
-                                />
-                            )}
-                        </div>
-                    ))}
-                    {renderErrorMessage("proteins", errorMessages)}
+                    <h4>View the number of missing values for the selected samples</h4>
+                    <div className="label-field-group-with-space">
+                        <label className="label-statistics">{samplesFilter.label}</label>
+                        <Multiselect
+                            showArrow
+                            options={samplesFilter.values}
+                            isObject={false}
+                            onSelect={onChangeMultiSelect}
+                            onRemove={onChangeMultiSelect}
+                        />
+                    </div>
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>
