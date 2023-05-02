@@ -4,6 +4,7 @@ import axios from "axios";
 import StatisticsAdFirstPlot from "./StatisticsAdFirstPlot";
 import StatisticsAdSecondPlot from "./StatisticsAdSecondPlot";
 import StatisticsAdThirdPlot from "./StatisticsAdThirdPlot";
+import StatisticsAdFourthPlot from "./StatisticsAdFourthPlot";
 
 
 export default function StatisticsAD({ data }){
@@ -100,25 +101,11 @@ export default function StatisticsAD({ data }){
 
     console.log(samples)
 
-    const filterForTypeOfPlot = {
-        name: "type_of_plot",
-        label: "Type of chart",
-        type: "select",
-        values: ["bar chart", "pie chart"]
-    };
-
-    const filterForGender = {
-        name: "gender",
-        label: "Gender",
-        type: "select",
-        values: ["All", "Male", "Female"],
-    }
-
     const filterForSamplesChoice = {
         name: "samples",
         label: "Samples to be compared",
         type: "multi-select",
-        values: newSamples
+        values: samples
     };
 
     const renderForm = (
@@ -127,9 +114,9 @@ export default function StatisticsAD({ data }){
             <StatisticsAdFirstPlot data={data} options={optionsForProteinsComparison}/>
 
             <h2>Analyze the missing values</h2>
-            <StatisticsAdSecondPlot data={data} samplesFilter={filterForSamplesChoice}/>
-            <StatisticsAdThirdPlot data={data} genderFilter={filterForGender} typeOfPlotFilter={filterForTypeOfPlot}/>
-
+            <StatisticsAdSecondPlot samplesFilter={filterForSamplesChoice}/>
+            <StatisticsAdThirdPlot />
+            <StatisticsAdFourthPlot/>
         </div>
     );
 

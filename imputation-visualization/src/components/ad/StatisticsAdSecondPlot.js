@@ -3,7 +3,7 @@ import axios from "axios";
 import {Multiselect} from "multiselect-react-dropdown";
 import './StatisticsAdSecondPlot.css';
 
-export default function StatisticsAdSecondPlot({ data, samplesFilter }){
+export default function StatisticsAdSecondPlot({ samplesFilter }){
 
     const [selectedSamples, setSelectedSamples] = useState({
         samples: []
