@@ -24,8 +24,6 @@ export default function StatisticsAdFourthPlot(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(selectedOptions)
-
         axios
             .post("http://localhost:8000/requestAdFourthChart", JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"

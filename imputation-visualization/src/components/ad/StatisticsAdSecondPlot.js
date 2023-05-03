@@ -12,8 +12,6 @@ export default function StatisticsAdSecondPlot({ samplesFilter }){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(selectedSamples)
-
         axios
             .post("http://localhost:8000/requestAdSecondChart", JSON.stringify(selectedSamples), {
                 responseType: "arraybuffer"

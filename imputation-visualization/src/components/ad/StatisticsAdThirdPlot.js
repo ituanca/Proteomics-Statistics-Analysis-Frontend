@@ -25,8 +25,6 @@ export default function StatisticsAdThirdPlot(){
         });
     }, [])
 
-    console.log(selectedOptions)
-
     const handleSubmit = (event) => {
         event.preventDefault();
         axios

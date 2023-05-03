@@ -1,24 +1,30 @@
+.container-row {
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    background-color: lightblue;
+    padding: 20px 30px;
+    border-radius: 10px;
+}
 .statistics_options{
     text-align: center;
     justify-content: center;
     width: 500px;
     /*display: inline-block;*/
-    background-color: lightblue;
-    padding: 20px 30px;
-    border-radius: 10px;
+
 }
 .input-for-statistics-ad-select{
     width: 60%;
     right: 20px;
     position: absolute;
 }
-
 .label-statistics{
     color: white;
     text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);
     text-align: start;
 }
-
 img {
     align-items: center;
     justify-content: center;
@@ -26,14 +32,12 @@ img {
     /*flex-direction: row;*/
     margin: 20px;
 }
-
 .label-field-group{
     position: relative;
     display: flex;
     flex-direction: row;
     padding-bottom: 3px;
 }
-
 .label-field-group-with-space{
     position: relative;
     display: flex;
@@ -41,11 +45,5 @@ img {
     padding-bottom: 18px;
 }
 
-.container-row {
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    flex-direction: row;
-    margin: 20px;
-}
+
 
