@@ -17,6 +17,7 @@ function ChooseDataset(){
 
     useEffect(() => {
         if(incompleteDfNewProgeria.length > 0 && progeriaSelected) {
+            localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
             setData({...data, columns: Object.keys(incompleteDfNewProgeria[0]).map(key => {
                     return {
                         label: key,
@@ -25,21 +26,8 @@ function ChooseDataset(){
                     };
                 }), rows: incompleteDfNewProgeria})
         }
-       // if(incompleteDfNewProgeria.length > 0) {
-       //     setDataProgeria({...dataProgeria, columns: [
-       //             {label: "Majority.protein.IDs", field: "Majority.protein.IDs", sort: 'asc'},
-       //             {label: "Protein.names", field: "Protein.names", sort: 'asc'},
-       //             {label: "Intensity.Pro1_DIA", field: "Intensity.Pro1_DIA", sort: 'asc'},
-       //             {label: "Intensity.Pro1_Rep_DIA", field: "Intensity.Pro1_Rep_DIA", sort: 'asc'},
-       //             {label: "Intensity.Pro3_DIA", field: "Intensity.Pro3_DIA", sort: 'asc'},
-       //             {label: "Intensity.Pro3_Rep_DIA", field: "Intensity.Pro3_Rep_DIA", sort: 'asc'},
-       //             {label: "Intensity.WT1_DIA", field: "Intensity.WT1_DIA", sort: 'asc'},
-       //             {label: "Intensity.WT1_Rep_DIA", field: "Intensity.WT1_Rep_DIA", sort: 'asc'},
-       //             {label: "Intensity.WT3_DIA", field: "Intensity.WT3_DIA", sort: 'asc'},
-       //             {label: "Intensity.WT3_Rep_DIA", field: "Intensity.WT3_Rep_DIA", sort: 'asc'},
-       //         ], rows: incompleteDfNewProgeria})
-       // }
        if(incompleteDfNewAD.length > 0 && adSelected) {
+           localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
            setData({...data, columns: Object.keys(incompleteDfNewAD[0]).map(key => {
                    return {
                        label: key,
@@ -48,11 +36,6 @@ function ChooseDataset(){
                    };
                }), rows: incompleteDfNewAD})
        }
-        if(progeriaSelected){
-            localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
-        }else if(adSelected){
-            localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
-        }
     }, [incompleteDfNewProgeria, incompleteDfNewAD, progeriaSelected, adSelected])
 
     const fetchIncompleteDfNewProgeria = () => {
@@ -62,7 +45,6 @@ function ChooseDataset(){
             .then((response) => response.json())
             .then((json) => setIncompleteDfNewProgeria(json))
             .catch((error) => console.log(error));
-        console.log(incompleteDfNewProgeria)
     }
 
     const fetchIncompleteDfNewAD = () => {
@@ -72,7 +54,6 @@ function ChooseDataset(){
             .then((response) => response.json())
             .then((json) => setIncompleteDfNewAD(json))
             .catch((error) => console.log(error));
-        console.log(incompleteDfNewAD)
     }
 
     const handleSubmit = (event) => {
@@ -120,9 +101,6 @@ function ChooseDataset(){
                         <Link to="/Statistics">
                             <input type="submit" value="Next"/>
                         </Link>
-                        {/*<Link to="/InputForStatistics">*/}
-                        {/*    <button className="go-back-button">Next</button>*/}
-                        {/*</Link>*/}
                     </div>
                 </div>
             </div>

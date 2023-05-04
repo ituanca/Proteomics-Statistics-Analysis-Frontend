@@ -5,7 +5,7 @@ import './StartPage.css';
 function StartPage(){
     return (
         <div className="container-title-button">
-            <label className="title"><strong>Online Energy Utility Platform</strong></label>
+            <label className="title"><strong>Biostatistics Visualization</strong></label>
             <nav>
                 <div>
                     <Link to="/ChooseDataset">

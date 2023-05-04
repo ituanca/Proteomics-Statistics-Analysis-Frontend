@@ -27,9 +27,10 @@ input[type="submit"] {
   border-color: #31448e;
   color: #fff;
   padding: 10px;
-  width: 200px;
   border-radius: 5px;
   font-size: 20px;
+  width: fit-content;
+  min-width: 200px;
 }
 
 input[type="submit"]:hover {
@@ -40,11 +41,11 @@ input[type="submit"]:hover {
 .go-back-button {
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   background-color: #31448e;
   color: white;
   font-size: 20px;
   border-color: #31448e;
-  /*margin: 5%;*/
   padding: 10px;
   width: 200px;
   border-radius: 5px;
@@ -122,6 +123,7 @@ h2 {
 .table-position {
   background-color: white;
   width: 90%;
+  margin: 15px;
 }
 
 /*table {*/

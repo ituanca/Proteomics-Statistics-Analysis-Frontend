@@ -13,7 +13,6 @@
     justify-content: center;
     width: 500px;
     /*display: inline-block;*/
-
 }
 .input-for-statistics-ad-select{
     width: 60%;
@@ -44,6 +43,32 @@ img {
     flex-direction: row;
     padding-bottom: 18px;
 }
-
-
-
+.container-perform-imputation{
+    padding: 20px 20px;
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    background-color: lightblue;
+    border-radius: 10px;
+}
+.perform-imputation{
+    align-items: center;
+    justify-content: center;
+    max-width: 1500px;
+    text-align: center;
+    width: 500px;
+}
+.input-for-statistics-ad-select-imputation-method{
+    width: 40%;
+    right: 20px;
+    position: absolute;
+}
+.table-container{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+}

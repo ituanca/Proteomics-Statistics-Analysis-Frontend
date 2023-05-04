@@ -10,7 +10,6 @@ function Statistics(){
     const [data, setData] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
     const [selectedDisease, setSelectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
 
-    console.log(data);
     console.log(selectedDisease)
 
     const renderForm = (
@@ -23,13 +22,11 @@ function Statistics(){
                         <MDBTableBody rows={data.rows} />
                     </MDBTable>
                 </div>
-
                 {selectedDisease === "Alzheimer's disease" ?
                     <StatisticsAD data={data} />
                 :
                     <StatisticsProgeria data={data} />
                 }
-
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/ChooseDataset">
