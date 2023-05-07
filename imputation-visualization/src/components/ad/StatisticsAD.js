@@ -7,6 +7,7 @@ import StatisticsAdFourthPlot from "./StatisticsAdFourthPlot";
 import ImputationMethodChoice from "./ImputationMethodChoice";
 import Accordion from './Accordion';
 import "./Accordion.css"
+import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
 
 export default function StatisticsAD({ data }){
 
@@ -49,7 +50,7 @@ export default function StatisticsAD({ data }){
     const accordionDataImputedDataset = [
         {
             title: 'Compare up to 5 proteins according to a metric before and after imputation',
-            content: <StatisticsAdFirstPlot data={data}/>
+            content: <StatisticsAdFifthPlot data={data}/>
         },
     ];
 
