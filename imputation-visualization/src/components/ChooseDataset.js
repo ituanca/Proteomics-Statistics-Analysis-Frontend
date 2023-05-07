@@ -84,12 +84,14 @@ function ChooseDataset(){
                     </div>
                 </div>
                 {((incompleteDfNewProgeria.length > 0 && progeriaSelected) || (incompleteDfNewAD.length > 0 && adSelected)) ?
-                    <div className="table-position">
-                        <MDBTable scrollY maxHeight="400px">
-                            <MDBTableHead columns={data.columns}/>
-                            <MDBTableBody rows={data.rows} />
-                        </MDBTable>
-                    </div>
+                    // <div className="button-container-col">
+                        <div className="table-position">
+                            <MDBTable scrollY maxHeight="400px">
+                                <MDBTableHead columns={data.columns}/>
+                                <MDBTableBody rows={data.rows} />
+                            </MDBTable>
+                        </div>
+                    // </div>
                     : null}
                 <div className="button-container-row">
                     <div className="input-container-col">

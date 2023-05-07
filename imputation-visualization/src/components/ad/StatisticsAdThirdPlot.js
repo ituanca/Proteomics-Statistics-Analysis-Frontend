@@ -47,7 +47,7 @@ export default function StatisticsAdThirdPlot(){
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
-                <div className="statistics_options">
+                <div className="statistics-options">
                     <h4>View the number/percentage of missing values for each sample by gender</h4>
                     {options.map((option) => (
                         <div key={option.name} className="label-field-group-with-space">

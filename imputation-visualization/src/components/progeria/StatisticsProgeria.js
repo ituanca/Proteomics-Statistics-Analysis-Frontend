@@ -170,7 +170,7 @@ export default function StatisticsProgeria({ data }){
         <form onSubmit = {handleSubmit}>
             <div className="button-container-col">
                 <h2>Generate statistics on the incomplete dataset</h2>
-                <div className="statistics_options">
+                <div className="statistics-options">
                     <h3>Compare up to 5 proteins according to a metric</h3>
                     {optionsForProteinsComparison.map((option) => (
                         <div key={option.name}>

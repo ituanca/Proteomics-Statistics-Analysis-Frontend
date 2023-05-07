@@ -112,7 +112,7 @@ export default function StatisticsAdFirstPlot({ data }){
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
-                <div className="statistics_options">
+                <div className="statistics-options">
                     <h3>Compare up to 5 proteins according to a metric</h3>
                     <div className="label-field-group-with-space">
                         <label className="label-statistics">{generalOptions[0].label}</label>

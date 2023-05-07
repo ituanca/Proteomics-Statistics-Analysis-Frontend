@@ -38,18 +38,14 @@ export default function ImputationMethodChoice(){
         if(incompleteFullAD.length > 0) {
             setIncompleteData({...incompleteData, columns: Object.keys(incompleteFullAD[0]).map(key => {
                     return {
-                        label: key,
-                        field: key,
-                        sort: 'asc'
+                        label: key, field: key, sort: 'asc'
                     };
                 }), rows: incompleteFullAD})
         }
         if(imputedAD.length > 0) {
             setImputedData({...imputedData, columns: Object.keys(imputedAD[0]).map(key => {
                     return {
-                        label: key,
-                        field: key,
-                        sort: 'asc'
+                        label: key, field: key, sort: 'asc'
                     };
                 }), rows: imputedAD})
         }
@@ -82,9 +78,9 @@ export default function ImputationMethodChoice(){
     };
 
     return (
-        <div className="button-container-col">
-            <div className="container-perform-imputation">
-                <div className="perform-imputation">
+        <div>
+            <div className="container-row">
+                <div className="statistics-options">
                     <div className="input-container-col">
                         <button onClick={fetchIncompleteFullAD} className="go-back-button">
                             View incomplete normalized dataset
@@ -103,11 +99,11 @@ export default function ImputationMethodChoice(){
                 </div>
             </div>
             <form onSubmit = {handleSubmit}>
-                <div className="container-perform-imputation">
-                    <div className="perform-imputation">
+                <div className="container-row">
+                    <div className="statistics-options">
                         <div className="label-field-group-with-space">
                             <label className="label-statistics">{filterForChoiceOfImputationMethod.label}</label>
-                            <select className="input-for-statistics-ad-select-imputation-method"
+                            <select className="input-for-statistics-ad-select"
                                     value={selectedMethod[filterForChoiceOfImputationMethod.name]}
                                     onChange={(e) => handleOptionChange(filterForChoiceOfImputationMethod.name, e.target.value)}
                             >
