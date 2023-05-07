@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
-import "./ChooseDataset.css"
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 
 function ChooseDataset(){

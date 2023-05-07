@@ -45,7 +45,7 @@ export default function StatisticsAdFourthPlot(){
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
-                    <h4>View the missing values distribution for each gender</h4>
+                    {/*<h4>View the missing values distribution for each gender</h4>*/}
                     <div className="label-field-group-with-space">
                         <label className="label-statistics">{filterForChoiceOfRepresentation.label}</label>
                         <select className="input-for-statistics-ad-select"

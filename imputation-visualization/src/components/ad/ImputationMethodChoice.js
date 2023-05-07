@@ -78,8 +78,8 @@ export default function ImputationMethodChoice(){
     };
 
     return (
-        <div>
-            <div className="container-row">
+        <div className="container-perform-imputation">
+            <div className="container-row-perform-imputation">
                 <div className="statistics-options">
                     <div className="input-container-col">
                         <button onClick={fetchIncompleteFullAD} className="go-back-button">
@@ -99,7 +99,7 @@ export default function ImputationMethodChoice(){
                 </div>
             </div>
             <form onSubmit = {handleSubmit}>
-                <div className="container-row">
+                <div className="container-row-perform-imputation">
                     <div className="statistics-options">
                         <div className="label-field-group-with-space">
                             <label className="label-statistics">{filterForChoiceOfImputationMethod.label}</label>

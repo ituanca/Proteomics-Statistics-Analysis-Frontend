@@ -67,7 +67,7 @@ export default function StatisticsAdSecondPlot({ samplesFilter }){
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
-                    <h4>View the number of missing values for the selected samples</h4>
+                    {/*<h4>View the number of missing values for the selected samples</h4>*/}
                     <div className="label-field-group-with-space">
                         <label className="label-statistics">{samplesFilter.label}</label>
                         <Multiselect

@@ -3,15 +3,17 @@
     justify-content: center;
     display: flex;
     flex-direction: row;
-    margin: 20px;
+    /*margin: 20px;*/
     background-color: lightblue;
-    padding: 20px 30px;
+    /*padding: 30px 30px;*/
     border-radius: 10px;
+    box-shadow: 4px 4px 10px;
 }
 .statistics-options{
     text-align: center;
     justify-content: center;
-    width: 50%;
+    width: 40%;
+    padding-top: 30px;
 }
 .input-for-statistics-ad-select{
     width: 50%;
@@ -22,7 +24,7 @@
     color: white;
     text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);
     text-align: start;
-    max-width: 50%;
+    max-width: 40%;
 }
 img {
     align-items: center;
@@ -48,4 +50,17 @@ img {
     justify-content: center;
     display: flex;
     max-width: 70%;
+}
+.container-perform-imputation{
+    background-color: lightblue;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.container-row-perform-imputation{
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
 }
