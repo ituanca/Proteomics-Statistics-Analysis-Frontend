@@ -64,3 +64,9 @@ img {
     display: flex;
     flex-direction: row;
 }
+h3{
+    background: #5192a5;
+    padding: 20px;
+    color: white;
+    text-shadow: 0 0 5px #070202, 0 0 5px darkblue;
+}

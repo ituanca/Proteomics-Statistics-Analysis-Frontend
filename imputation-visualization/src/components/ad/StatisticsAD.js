@@ -9,8 +9,9 @@ import Accordion from './Accordion';
 import "./Accordion.css"
 import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
 
-export default function StatisticsAD({ data }){
+export default function StatisticsAD(){
 
+    const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
     const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
     const newSamples = [...new Set(["Select all", ...samples])];
 
@@ -23,26 +24,26 @@ export default function StatisticsAD({ data }){
 
     const accordionDataIncompleteDataset = [
         {
-            title: 'Compare up to 5 proteins according to a metric ',
-            content: <StatisticsAdFirstPlot data={data}/>
+            title: 'Compare up to 5 proteins according to a metric',
+            content: <StatisticsAdFirstPlot/>
         },
         {
-            title: 'Compare the number of missing values for the selected samples ',
+            title: 'Compare the number of missing values for the selected samples',
             content: <StatisticsAdSecondPlot samplesFilter={filterForSamplesChoice}/>
         },
         {
-            title: 'Compare the number/percentage of missing values for each sample by gender ',
+            title: 'Compare the number/percentage of missing values for each sample by gender',
             content: <StatisticsAdThirdPlot/>
         },
         {
-            title: 'Compare the missing values distribution for each gender ',
+            title: 'Compare the missing values distribution for each gender',
             content: <StatisticsAdFourthPlot/>
         }
     ];
 
     const accordionDataPerformImputation = [
         {
-            title: 'View the normalized incomplete dataset and perform imputation with the preferred method ',
+            title: 'View the normalized incomplete dataset and perform imputation with the preferred method',
             content: <ImputationMethodChoice/>
         }
     ];
@@ -50,7 +51,7 @@ export default function StatisticsAD({ data }){
     const accordionDataImputedDataset = [
         {
             title: 'Compare up to 5 proteins according to a metric before and after imputation',
-            content: <StatisticsAdFifthPlot data={data}/>
+            content: <StatisticsAdFifthPlot/>
         },
     ];
 
@@ -67,17 +68,23 @@ export default function StatisticsAD({ data }){
         // </div>
 
         <div className="accordion">
-            <h2>Generate statistics on the incomplete dataset</h2>
-            {accordionDataIncompleteDataset.map(({ title, content }) => (
-                <Accordion title={title} content={content} />
+            <h3>Generate statistics on the incomplete dataset</h3>
+            {accordionDataIncompleteDataset.map(({ title, content }, index) => (
+                <div key={index}>  {/*need this key to eliminate the prop warning*/}
+                    <Accordion title={title} content={content}/>
+                </div>
             ))}
-            <h2>Perform imputation</h2>
-            {accordionDataPerformImputation.map(({ title, content }) => (
-                <Accordion title={title} content={content} />
+            <h3>Perform imputation</h3>
+            {accordionDataPerformImputation.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
             ))}
-            <h2>Generate statistics on the dataset after imputation</h2>
-            {accordionDataImputedDataset.map(({ title, content }) => (
-                <Accordion title={title} content={content} />
+            <h3>Generate statistics on the dataset after imputation</h3>
+            {accordionDataImputedDataset.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
             ))}
         </div>
     );

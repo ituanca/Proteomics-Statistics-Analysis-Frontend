@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
 import axios from "axios";
 
-export default function StatisticsProgeria({ data }){
+export default function StatisticsProgeria(){
 
+    const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
     const [selectedOptions, setSelectedOptions] = useState({
         gender: "",
         protein_id_1: "", protein_name_1: "",
