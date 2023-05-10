@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
+import ImportCSV from "./ImportCSV";
+import {read, utils} from "xlsx";
 
 function ChooseDataset(){
 
@@ -77,11 +79,12 @@ function ChooseDataset(){
                     <div className="input-container-col">
                         <button onClick={fetchIncompleteDfNewProgeria} className={buttonClasNameProgeria}>Progeria dataset</button>
                     </div>
-
                     <div className="input-container-col">
                         <button onClick={fetchIncompleteDfNewAD} className={buttonClassNameAD} >Alzheimer's disease dataset</button>
                     </div>
                 </div>
+                <h2>or import a dataset</h2>
+                <ImportCSV />
                 {((incompleteDfNewProgeria.length > 0 && progeriaSelected) || (incompleteDfNewAD.length > 0 && adSelected)) ?
                     // <div className="button-container-col">
                         <div className="table-position">
