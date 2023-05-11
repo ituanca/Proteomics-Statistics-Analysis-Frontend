@@ -1,14 +1,15 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import React, {useEffect} from "react";
 import {handleOptionChange, renderErrorMessage} from "./Utils";
 import {Multiselect} from "multiselect-react-dropdown";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
+import isEqual from 'lodash/isEqual';
 
-export default function FilterColumnsOfTheDataset({data, trigger, setTrigger}) {
+export default function FilterColumnsOfTheDataset({data}) {
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
-        filters_not_complete: "You have to select an ID and at least one column for first and second class",
+        filters_not_complete: "You have to select an ID and at least one column for each of the first and second class",
     };
     const [tableData, setTableData] = useState( {
         columns: [],
@@ -23,50 +24,34 @@ export default function FilterColumnsOfTheDataset({data, trigger, setTrigger}) {
         class2: [],
         other_columns: []
     });
+    const prevOptions = useRef([]);
 
-    function checkIfStringIsUnselectedForStringOptions (string) {
-        return (selectedOptions.id !== string && (!selectedOptions.class1.includes(string)) &&
-            (!selectedOptions.class2.includes(string)) && (!selectedOptions.other_columns.includes(string)))
-    }
-
-    function checkIfStringIsUnselectedForOptions (string) {
+    function checkIfStringIsUnselected (string) {
         return ((!selectedOptions.class1.includes(string)) &&
             (!selectedOptions.class2.includes(string)) &&
             (!selectedOptions.other_columns.includes(string)))
     }
 
     useEffect(() => {
-        let tempOptions = data.columns.map(column => (checkIfStringIsUnselectedForOptions(column.label) ? {
+        let tempOptions = data.columns.map(column => (checkIfStringIsUnselected(column.label) ? {
             value: column.label, label: column.label
         } : {
             value: "", label: ""
         }));
         setOptions(tempOptions.filter(option => (option.label !== "" && option.value !== "")));
-        // setSelectedOptions({...selectedOptions, id: tempOptions.find(option => option.value !== "" && option.label !== "")})
 
-        let tempStringOptions = data.columns.map(column => checkIfStringIsUnselectedForStringOptions(column.label) ? column.label : "")
+        let tempStringOptions = data.columns.map(column =>
+            (checkIfStringIsUnselected(column.label) && (selectedOptions.id !== column.label)) ? column.label : ""
+        )
         setStringOptions(tempStringOptions.filter(str => str !== ""));
-
     }, [data, selectedOptions])
 
     useEffect(() => {
-        if(options.length > 0 && trigger){
+        if(options.length > 0 && (!isEqual(options, prevOptions.current))){
             setSelectedOptions({...selectedOptions, id: options[0].label});
-            setTrigger(false);
+            prevOptions.current = options;
         }
     }, [options])
-
-    const onChangeMultiSelectFirstClass = (selectedItems) => {
-        setSelectedOptions({...selectedOptions, class1: selectedItems})
-    };
-    const onChangeMultiSelectSecondClass = (selectedItems) => {
-        setSelectedOptions({...selectedOptions, class2: selectedItems})
-    };
-    const onChangeMultiSelectOtherColumns = (selectedItems) => {
-        setSelectedOptions({...selectedOptions, other_columns: selectedItems})
-    };
-
-    localStorage.setItem("selectedDataset", JSON.stringify(tableData));
 
     const validate = () => {
         if(selectedOptions.id === "" || selectedOptions.class1.length < 1 || selectedOptions.class2.length < 1){
@@ -98,6 +83,18 @@ export default function FilterColumnsOfTheDataset({data, trigger, setTrigger}) {
             setTableVisible(true);
         }
     }
+
+    localStorage.setItem("selectedDataset", JSON.stringify(tableData));
+
+    const onChangeMultiSelectFirstClass = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, class1: selectedItems})
+    };
+    const onChangeMultiSelectSecondClass = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, class2: selectedItems})
+    };
+    const onChangeMultiSelectOtherColumns = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, other_columns: selectedItems})
+    };
 
     return (
         <div>

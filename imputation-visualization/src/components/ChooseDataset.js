@@ -6,12 +6,8 @@ import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 
 function ChooseDataset(){
 
-    const [incompleteDfNewProgeria, setIncompleteDfNewProgeria] = useState([]);
-    const [incompleteDfNewAD, setIncompleteDfNewAD] = useState([])
-    const [progeriaSelected, setProgeriaSelected] = useState(false);
-    const [adSelected, setAdSelected] = useState(false);
-    const [chooseDatasetSelected, setChooseDatasetSelected] = useState(false);
-    const [trigger, setTrigger] = useState(false);
+    const [selectedDisease, setSelectedDisease] = useState("");
+    const [smthSelected, setSmthSelected] = useState(false);
     const [data, setData] = useState( {
         columns: [],
         rows: []
@@ -22,60 +18,40 @@ function ChooseDataset(){
     const [selectedSheet, setSelectedSheet] = useState(0);
     const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
     const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
-
-    // const resetState = () => {
-    //     setTableData({columns: [], rows: []});
-    //     setTableVisible(false);
-    //     setSelectedOptions({id: "", class1: [], class2: [], other_columns: []});
-    //     setSelectedValues([]);
-    // }
+    const [dataChanged, setDataChanged] = useState(false);
 
     useEffect(() => {
-        if(incompleteDfNewProgeria.length > 0 && progeriaSelected) {
-            localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
-            setData({...data, columns: Object.keys(incompleteDfNewProgeria[0]).map(key => {
-                    return {
-                        label: key, field: key, sort: 'asc'
-                    };
-                }), rows: incompleteDfNewProgeria})
-        }
-       if(incompleteDfNewAD.length > 0 && adSelected) {
-           localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
-           setData({...data, columns: Object.keys(incompleteDfNewAD[0]).map(key => {
-                   return {
-                       label: key, field: key, sort: 'asc'
-                   };
-               }), rows: incompleteDfNewAD
-           })
-       }
-       if(importedData.length > 0 && chooseDatasetSelected) {
+        if(selectedDisease === "Progeria") localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
+        if(selectedDisease === "Alzheimer's disease") localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
+        if(importedData.length > 0) {
            setData({...data, columns: Object.keys(importedData[0]).map(key => {
                return {
                    label: key, field: key, sort: 'asc'
                };
            }), rows: importedData})
-       }
-    }, [incompleteDfNewProgeria, incompleteDfNewAD, progeriaSelected, adSelected, importedData, chooseDatasetSelected])
+            setDataChanged(true);
+        }
+    }, [selectedDisease, importedData])
 
     const fetchIncompleteDfNewProgeria = () => {
-        setProgeriaSelected(true);
-        setAdSelected(false);
-        setChooseDatasetSelected(false);
-        setTrigger(true);
+        setSelectedDisease("Progeria")
+        setSmthSelected(true);
+        setDataChanged(false);
+        setMultipleSheets(false);
         fetch('http://localhost:8000/getIncompleteDfNewDatasetProgeria')
             .then((response) => response.json())
-            .then((json) => setIncompleteDfNewProgeria(json))
+            .then((json) => setImportedData(json))
             .catch((error) => console.log(error));
     }
 
     const fetchIncompleteDfNewAD = () => {
-        setProgeriaSelected(false);
-        setAdSelected(true);
-        setChooseDatasetSelected(false);
-        setTrigger(true);
+        setSelectedDisease("Alzheimer's disease")
+        setSmthSelected(true);
+        setDataChanged(false);
+        setMultipleSheets(false);
         fetch('http://localhost:8000/getIncompleteDfNewDatasetAD')
             .then((response) => response.json())
-            .then((json) => setIncompleteDfNewAD(json))
+            .then((json) => setImportedData(json))
             .catch((error) => console.log(error));
     }
 
@@ -102,54 +78,49 @@ function ChooseDataset(){
                 const newWb = read(event.target.result)
                 setWb(newWb);
                 const sheets = newWb.SheetNames;
+                setFileName(file.name)
 
+                setConfirmedSheetNr(false)
+                setDataChanged(false);
                 if (sheets.length > 1) {
                     setMultipleSheets(true)
                     setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
-                    setFileName(file.name)
                 }else{
                     // resetState();
                     setMultipleSheets(false)
-                    setConfirmedSheetNr(false)
                     const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]])
                     setImportedData(rows)
-                    setFileName(file.name)
-                    setChooseDatasetSelected(true);
-                    setAdSelected(false);
-                    setProgeriaSelected(false);
-                    setTrigger(true);
+                    setSmthSelected(true);
+                    setSelectedDisease("Other")
                 }
             }
             reader.readAsArrayBuffer(file);
         }
     }
 
+    const handleSheetChange = (value) => {
+        setConfirmedSheetNr(false);
+        setSelectedSheet(value);
+    };
+
     const handleConfirmation = () => {
-        // resetState()
         if(wb !== null){
             const sheets = wb.SheetNames;
             const rows = utils.sheet_to_json(wb.Sheets[sheets[selectedSheet]])
             setImportedData(rows)
 
             setConfirmedSheetNr(true);
-            setChooseDatasetSelected(true);
-            setAdSelected(false);
-            setProgeriaSelected(false);
-            setTrigger(true);
+            setSmthSelected(true);
+            setSelectedDisease("Other")
         }
     }
 
-    const buttonClassNameProgeria = progeriaSelected ?  "disease-choice-button-selected" :  "disease-choice-button" ;
-    const buttonClassNameAD = adSelected ?  "disease-choice-button-selected" :  "disease-choice-button" ;
+    const buttonClassNameProgeria = (selectedDisease === "Progeria") ?  "disease-choice-button-selected" :  "disease-choice-button" ;
+    const buttonClassNameAD = (selectedDisease === "Alzheimer's disease") ?  "disease-choice-button-selected" :  "disease-choice-button" ;
 
     const fileInputRef = useRef(null);
     const handleButtonClick = () => {
         fileInputRef.current.click();
-    };
-
-    const handleSheetChange = (value) => {
-        setConfirmedSheetNr(false);
-        setSelectedSheet(value);
     };
 
     const renderForm = (
@@ -169,7 +140,7 @@ function ChooseDataset(){
                     <button className="general-button" onClick={handleButtonClick}>Choose File</button>
                     <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-                    {fileName && <p className="file-name">Selected file: {fileName}</p>}
+                    {fileName && selectedDisease === "Other" && <p className="file-name">Selected file: {fileName}</p>}
                 </div>
                 {multipleSheets ?
                     <div>
@@ -190,9 +161,9 @@ function ChooseDataset(){
                         <button className="general-button" onClick={handleConfirmation}>Confirm</button>
                     </div>
                     : null}
-                {(!multipleSheets && (chooseDatasetSelected || progeriaSelected || adSelected)) || (multipleSheets && confirmedSheetNr) ?
-                    <FilterColumnsOfTheDataset data = {data} trigger={trigger} setTrigger={setTrigger}/>
-                    : null}
+                {(!multipleSheets && smthSelected && dataChanged) || (multipleSheets && confirmedSheetNr) ?
+                    <FilterColumnsOfTheDataset data = {data}/>
+                : null}
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/">

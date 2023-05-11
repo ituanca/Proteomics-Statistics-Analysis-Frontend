@@ -8,7 +8,7 @@ import StatisticsProgeria from "./progeria/StatisticsProgeria";
 function Statistics(){
 
     const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
-    const [selectedDisease, setSelectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
+    const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
 
     console.log(selectedDisease)
 
