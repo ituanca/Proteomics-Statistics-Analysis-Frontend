@@ -82,7 +82,7 @@ export default function ImputationMethodChoice(){
             <div className="container-row-perform-imputation">
                 <div className="statistics-options">
                     <div className="input-container-col">
-                        <button onClick={fetchIncompleteFullAD} className="go-back-button">
+                        <button onClick={fetchIncompleteFullAD} className="general-button">
                             View incomplete normalized dataset
                         </button>
                     </div>

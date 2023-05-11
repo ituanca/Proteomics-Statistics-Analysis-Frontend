@@ -30,7 +30,7 @@ function Statistics(){
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/ChooseDataset">
-                            <button className="go-back-button">Go back</button>
+                            <button className="general-button">Go back</button>
                         </Link>
                     </div>
                     <div className="input-container-col">

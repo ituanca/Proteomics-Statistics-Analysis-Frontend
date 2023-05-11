@@ -1,0 +1,51 @@
+.disease-choice-button{
+    align-items: center;
+    justify-content: center;
+    background-color: #31448e;
+    color: white;
+    font-size: 25px;
+    border-color: #31448e;
+    padding: 15px;
+    width: 400px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.disease-choice-button-selected{
+    align-items: center;
+    justify-content: center;
+    background-color: #5192a5;
+    color: white;
+    font-size: 25px;
+    border-color: #5192a5;
+    padding: 15px;
+    width: 400px;
+    border-radius: 5px;
+    box-shadow: 0 0 20px white, 0 0px 0 rgba(0,0,0,.25);
+    cursor: pointer;
+}
+.disease-choice-button:hover {
+    background-color: #5192a5;
+    border-color: #5192a5;
+}
+
+.h2-without-space {
+    font-family: "Comic Sans MS", serif;
+    color: darkblue;
+    padding-top: 0.1%;
+    padding-bottom: 1%;
+    font-size: 40px;
+    text-shadow: 0 0 10px white, 0 1px 0 rgba(0,0,0, .25);
+}
+input[type="file"] {
+    border-color: #31448e;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+    width: fit-content;
+    min-width: 200px;
+}
+.file-name{
+    font-size: 20px;
+    color: white;
+}

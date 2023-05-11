@@ -51,7 +51,7 @@ export default function ImportCSV () {
 
     return (
         <div>
-            <button className="go-back-button" onClick={handleButtonClick}>Choose File</button>
+            <button className="general-button" onClick={handleButtonClick}>Choose File</button>
             <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
             {fileName && <p className="file-name">Selected file: {fileName}</p>}
