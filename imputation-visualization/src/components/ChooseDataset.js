@@ -86,7 +86,6 @@ function ChooseDataset(){
                     setMultipleSheets(true)
                     setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
                 }else{
-                    // resetState();
                     setMultipleSheets(false)
                     const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]])
                     setImportedData(rows)
@@ -125,26 +124,31 @@ function ChooseDataset(){
 
     const renderForm = (
         <form onSubmit = {handleSubmit}>
-            <h2>Choose a dataset</h2>
             <div className="button-container-col">
-                <div  className="button-container-row">
-                    <div className="input-container-col">
-                        <button onClick={fetchIncompleteDfNewProgeria} className={buttonClassNameProgeria}>Progeria dataset</button>
+                <div className="choose-dataset-container-row">
+                    <div className="choose-dataset-container-col">
+                        <h2 className="h2-without-space">Choose a dataset</h2>
+                        <div className="input-container-col">
+                            <button onClick={fetchIncompleteDfNewProgeria} className={buttonClassNameProgeria}>Progeria dataset</button>
+                        </div>
+                        <div className="input-container-col">
+                            <button onClick={fetchIncompleteDfNewAD} className={buttonClassNameAD} >Alzheimer's disease dataset</button>
+                        </div>
                     </div>
-                    <div className="input-container-col">
-                        <button onClick={fetchIncompleteDfNewAD} className={buttonClassNameAD} >Alzheimer's disease dataset</button>
+                    <div  className="choose-dataset-container-col">
+                        <h2 className="h2-without-space">or import a dataset</h2>
+                        <div>
+                            <button className="general-button" onClick={handleButtonClick}>Choose File</button>
+                            <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
+                                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                            {fileName && selectedDisease === "Other" && <p className="file-name">Selected file: {fileName}</p>}
+                        </div>
                     </div>
                 </div>
-                <h2 className="h2-without-space">or import a dataset</h2>
-                <div>
-                    <button className="general-button" onClick={handleButtonClick}>Choose File</button>
-                    <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
-                           accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-                    {fileName && selectedDisease === "Other" && <p className="file-name">Selected file: {fileName}</p>}
-                </div>
+
                 {multipleSheets ?
-                    <div>
-                        <div className="label-field-group-with-space">
+                    <div className="table-filters">
+                        <div className="label-field-group-choose-dataset">
                             <label className="label-statistics">Choose a sheet</label>
                             <select className="input-for-statistics-ad-select"
                                     value={selectedSheet}

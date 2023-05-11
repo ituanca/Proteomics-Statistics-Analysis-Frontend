@@ -4,6 +4,7 @@ import {handleOptionChange, renderErrorMessage} from "./Utils";
 import {Multiselect} from "multiselect-react-dropdown";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import isEqual from 'lodash/isEqual';
+import "./ChooseDataset.css"
 
 export default function FilterColumnsOfTheDataset({data}) {
 
@@ -97,8 +98,8 @@ export default function FilterColumnsOfTheDataset({data}) {
     };
 
     return (
-        <div>
-            <div className="label-field-group-with-space">
+        <div className="table-filters">
+            <div className="label-field-group-choose-dataset">
                 <label className="label-statistics">Choose an ID column</label>
                 <select className="input-for-statistics-ad-select"
                         value={selectedOptions.id}
@@ -112,7 +113,7 @@ export default function FilterColumnsOfTheDataset({data}) {
                     ))}
                 </select>
             </div>
-            <div className="label-field-group-with-space">
+            <div className="label-field-group-choose-dataset">
                 <label className="label-statistics">Columns for the first class</label>
                 <Multiselect
                     showArrow
@@ -122,7 +123,7 @@ export default function FilterColumnsOfTheDataset({data}) {
                     onRemove={onChangeMultiSelectFirstClass}
                 />
             </div>
-            <div className="label-field-group-with-space">
+            <div className="label-field-group-choose-dataset">
                 <label className="label-statistics">Columns for the second class</label>
                 <Multiselect
                     showArrow
@@ -132,7 +133,7 @@ export default function FilterColumnsOfTheDataset({data}) {
                     onRemove={onChangeMultiSelectSecondClass}
                 />
             </div>
-            <div className="label-field-group-with-space">
+            <div className="label-field-group-choose-dataset">
                 <label className="label-statistics">Other columns of interest</label>
                 <Multiselect
                     showArrow
