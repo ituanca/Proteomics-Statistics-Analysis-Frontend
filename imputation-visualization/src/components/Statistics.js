@@ -4,13 +4,27 @@ import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import StatisticsAD from './ad/StatisticsAD';
 import "./Statistics.css"
 import StatisticsProgeria from "./progeria/StatisticsProgeria";
+import StatisticsOther from "./other/StatisticsOther";
+import axios from "axios";
 
 function Statistics(){
 
-    const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
+    const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
+    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
-    console.log(selectedDisease)
+    console.log(selectedOptionsForTable)
+
+    useEffect(() => {
+        axios
+            .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptionsForTable))
+            .then((response) => {
+                console.info(response);
+            })
+            .catch((error) => {
+                console.error("There was an error!", error.response.data.message)
+            });
+    }, [])
 
     const renderForm = (
         <div>
@@ -18,15 +32,13 @@ function Statistics(){
             <div className="button-container-col">
                 <div className="table-position">
                     <MDBTable scrollY maxHeight="300px">
-                        <MDBTableHead columns={data.columns}/>
-                        <MDBTableBody rows={data.rows} />
+                        <MDBTableHead columns={tableData.columns}/>
+                        <MDBTableBody rows={tableData.rows} />
                     </MDBTable>
                 </div>
-                {selectedDisease === "Alzheimer's disease" ?
-                    <StatisticsAD />
-                :
-                    <StatisticsProgeria />
-                }
+                {/*{(selectedDisease === "Alzheimer's disease") && <StatisticsAD />}*/}
+                {/*{(selectedDisease === "Progeria") && <StatisticsProgeria />}*/}
+                {(selectedDisease === "Other") && <StatisticsOther />}
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/ChooseDataset">

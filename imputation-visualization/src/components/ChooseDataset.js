@@ -3,6 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import "./ChooseDataset.css"
 import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
+import axios from "axios";
 
 function ChooseDataset(){
 
@@ -21,8 +22,7 @@ function ChooseDataset(){
     const [dataChanged, setDataChanged] = useState(false);
 
     useEffect(() => {
-        if(selectedDisease === "Progeria") localStorage.setItem("selectedDisease", JSON.stringify("Progeria"));
-        if(selectedDisease === "Alzheimer's disease") localStorage.setItem("selectedDisease", JSON.stringify("Alzheimer's disease"));
+        localStorage.setItem("selectedDisease", JSON.stringify(selectedDisease));
         if(importedData.length > 0) {
            setData({...data, columns: Object.keys(importedData[0]).map(key => {
                return {
@@ -33,8 +33,21 @@ function ChooseDataset(){
         }
     }, [selectedDisease, importedData])
 
+    useEffect(() => {
+        if(importedData.length > 0){
+            axios
+                .post("http://localhost:8000/sendImportedData", JSON.stringify(importedData))
+                .then((response) => {
+                    console.info(response);
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
+        }
+    }, [importedData])
+
     const fetchIncompleteDfNewProgeria = () => {
-        setSelectedDisease("Progeria")
+        setSelectedDisease("Progeria");
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
@@ -45,7 +58,7 @@ function ChooseDataset(){
     }
 
     const fetchIncompleteDfNewAD = () => {
-        setSelectedDisease("Alzheimer's disease")
+        setSelectedDisease("Alzheimer's disease");
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
@@ -54,6 +67,8 @@ function ChooseDataset(){
             .then((json) => setImportedData(json))
             .catch((error) => console.log(error));
     }
+
+    console.log(importedData)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -69,7 +84,6 @@ function ChooseDataset(){
 
     const [wb, setWb] = useState({});
     const handleImport = ($event) => {
-        // resetState()
         const files = $event.target.files;
         if (files.length) {
             const file = files[0];

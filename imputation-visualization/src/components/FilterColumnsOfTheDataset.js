@@ -47,9 +47,6 @@ export default function FilterColumnsOfTheDataset({data}) {
         }
     }, [availableOptionsDropdown])
 
-    console.log(data.rows[0])
-    console.log(data.columns)
-
     const validateClasses = () => {
         for(let j = 0; j < selectedOptions.class1.length; j++){
             for(let i = 0; i < data.rows.length; i++){
@@ -102,6 +99,7 @@ export default function FilterColumnsOfTheDataset({data}) {
     }
 
     localStorage.setItem("selectedDataset", JSON.stringify(tableData));
+    localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
 
     const onChangeMultiSelectFirstClass = (selectedItems) => {
         setSelectedOptions({...selectedOptions, class1: selectedItems})

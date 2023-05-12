@@ -5,8 +5,8 @@ import StatisticsAdSecondPlot from "./StatisticsAdSecondPlot";
 import StatisticsAdThirdPlot from "./StatisticsAdThirdPlot";
 import StatisticsAdFourthPlot from "./StatisticsAdFourthPlot";
 import ImputationMethodChoice from "./ImputationMethodChoice";
-import Accordion from './Accordion';
-import "./Accordion.css"
+import Accordion from '../Accordion';
+import "../Accordion.css"
 import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
 
 export default function StatisticsAD(){
