@@ -90,7 +90,8 @@ h2 {
 
 .table-position {
   background-color: white;
-  width: 98%;
+  max-width: 98%;
+  width: fit-content;
   margin: 15px;
 }
 
@@ -114,11 +115,14 @@ td {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   padding: 5px;
+  max-width: 500px;
+  max-height: fit-content;
   /*border: 1px solid black;*/
 }
 
 .error{
   color: red;
   padding-top: 15px;
+  padding-bottom: 15px;
   text-align: center;
 }
