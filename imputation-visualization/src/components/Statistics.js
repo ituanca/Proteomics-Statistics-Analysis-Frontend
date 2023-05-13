@@ -15,6 +15,7 @@ function Statistics(){
 
     console.log(selectedOptionsForTable)
 
+    // send the filters for the dataset to the backend and receive them back as a response
     useEffect(() => {
         axios
             .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptionsForTable))
@@ -38,7 +39,16 @@ function Statistics(){
                 </div>
                 {/*{(selectedDisease === "Alzheimer's disease") && <StatisticsAD />}*/}
                 {/*{(selectedDisease === "Progeria") && <StatisticsProgeria />}*/}
-                {(selectedDisease === "Other") && <StatisticsOther />}
+                {(selectedDisease === "Alzheimer's disease") ? (
+                    <StatisticsAD />
+                ) : (
+                    (selectedDisease === "Progeria") ? (
+                        <StatisticsProgeria />
+                    ) : (
+                        <StatisticsOther />
+                    )
+                )}
+                {/*{(selectedDisease === "Other") && <StatisticsOther />}*/}
                 <div className="button-container-row">
                     <div className="input-container-col">
                         <Link to="/ChooseDataset">

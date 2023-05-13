@@ -38,6 +38,13 @@ input[type="submit"]:hover {
   border-color: #5192a5;
 }
 
+input[type="submit"]:disabled{
+  background: #616668;
+  border-color: #616668;
+  color: #d1cfcf;
+  cursor: not-allowed;
+}
+
 .general-button {
   align-items: center;
   justify-content: center;
@@ -91,8 +98,8 @@ h2 {
 .table-position {
   background-color: white;
   max-width: 98%;
-  width: fit-content;
   margin: 15px;
+  width: fit-content;
 }
 
 /*table {*/
@@ -107,6 +114,7 @@ th {
   padding: 10px;
   color: white;
   background-color: darkblue;
+
 }
 
 /*row of the table*/
@@ -116,7 +124,9 @@ td {
   border-bottom: 1px solid black;
   padding: 5px;
   max-width: 500px;
-  max-height: fit-content;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   /*border: 1px solid black;*/
 }
 

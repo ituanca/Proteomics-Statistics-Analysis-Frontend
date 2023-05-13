@@ -5,12 +5,13 @@ import {Multiselect} from "multiselect-react-dropdown";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import isEqual from 'lodash/isEqual';
 import "./ChooseDataset.css"
+import {Link} from "react-router-dom";
 
 export default function FilterColumnsOfTheDataset({data}) {
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
-        filters_not_complete: "You have to select an ID and at least one column for each of the first and second class",
+        filters_not_complete: "You have to select an ID and at least 2 columns for each of the first and second class",
         not_number: "The columns you select for the 2 classes have to contain numerical values"
     };
     const [tableData, setTableData] = useState( {
@@ -68,7 +69,7 @@ export default function FilterColumnsOfTheDataset({data}) {
     }
 
     const validate = () => {
-        if(selectedOptions.id === "" || selectedOptions.class1.length < 1 || selectedOptions.class2.length < 1){
+        if(selectedOptions.id === "" || selectedOptions.class1.length < 2 || selectedOptions.class2.length < 2){
             setErrorMessages({name: "filters_not_complete", message: errors.filters_not_complete});
         } else {
             setErrorMessages({});
@@ -77,6 +78,13 @@ export default function FilterColumnsOfTheDataset({data}) {
         return false;
     }
 
+    useEffect(() => {
+        if(availableOptionsDropdown.length > 0 && (!isEqual(availableOptionsDropdown, prevOptions.current)) && selectedOptions.id === ""){
+            setSelectedOptions({...selectedOptions, id: availableOptionsDropdown[0].label});
+            prevOptions.current = availableOptionsDropdown;
+        }
+    }, [tableData])
+
     const handleButtonClickViewTable = () => {
         if(validate() && validateClasses()){
             let selectedOptionsList = []
@@ -84,12 +92,20 @@ export default function FilterColumnsOfTheDataset({data}) {
             selectedOptions.class1.map(element => {selectedOptionsList.push(element)})
             selectedOptions.class2.map(element => {selectedOptionsList.push(element)})
             selectedOptions.other_columns.map(element => {selectedOptionsList.push(element)})
+
+            let selectedColumns = data.columns.filter(column => selectedOptionsList.includes(column.label))
+            let selectedColumnsString = selectedColumns.map(column => column.label)
+
             setTableData({
-                columns: data.columns.filter(column => selectedOptionsList.includes(column.label)),
+                columns: selectedColumns,  // coloanele se adauga in ordinea in care sunt trecute in data.columns
                 rows: data.rows.map(row => {
                     const newRow = {};
-                    selectedOptionsList.forEach(column => {
-                        newRow[column] = row[column];
+                    selectedColumnsString.forEach(column => {
+                        if(row[column]=== undefined){
+                            newRow[column] = ""
+                        }else{
+                            newRow[column] = row[column];
+                        }
                     });
                     return newRow;
                 })
@@ -110,13 +126,16 @@ export default function FilterColumnsOfTheDataset({data}) {
     const onChangeMultiSelectOtherColumns = (selectedItems) => {
         setSelectedOptions({...selectedOptions, other_columns: selectedItems})
     };
-
     const handleOptionChange = (option, value, selectedOptions, setSelectedOptions) => {
         setSelectedOptions({...selectedOptions, [option]: value});
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
+
     return (
-        <div>
+        <form onSubmit = {handleSubmit}>
             <div className="table-filters">
                 <div className="label-field-group-choose-dataset">
                     <label className="label-statistics">Choose an ID column</label>
@@ -164,16 +183,23 @@ export default function FilterColumnsOfTheDataset({data}) {
                 </div>
                 {renderErrorMessage("filters_not_complete", errorMessages)}
                 {renderErrorMessage("not_number", errorMessages)}
-                <button className="general-button" onClick={handleButtonClickViewTable}>View table</button>
+                <button className="general-button" onClick={handleButtonClickViewTable}>Update table</button>
             </div>
             {(tableVisible) ?
-            <div className="table-position">
-                <MDBTable scrollY maxHeight="400px">
-                    <MDBTableHead columns={tableData.columns}/>
-                    <MDBTableBody rows={tableData.rows}/>
-                </MDBTable>
-            </div>
+                <div>
+                    <div className="table-position">
+                        <MDBTable scrollY maxHeight="500px">
+                            <MDBTableHead columns={tableData.columns}/>
+                            <MDBTableBody rows={tableData.rows}/>
+                        </MDBTable>
+                    </div>
+                    <div className="input-container-col-less-space">
+                        <Link to="/Statistics">
+                            <input type="submit" value="Next"/>
+                        </Link>
+                    </div>
+                </div>
             : null}
-        </div>
+        </form>
     )
 }

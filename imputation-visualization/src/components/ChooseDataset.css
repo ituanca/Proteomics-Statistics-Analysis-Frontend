@@ -78,3 +78,19 @@ input[type="file"] {
     padding-top: 9px;
     padding-bottom: 9px;
 }
+.label-table-description-container{
+    padding-top: 25px;
+    padding-bottom: 5px;
+}
+.label-table-description{
+    color: white;
+    font-size: 20px;
+    text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);
+    text-align: start;
+}
+.input-container-col-less-space {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

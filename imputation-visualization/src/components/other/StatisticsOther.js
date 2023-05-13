@@ -8,8 +8,8 @@ import axios from "axios";
 
 export default function StatisticsOther(){
 
-    const data = JSON.parse(localStorage.getItem('selectedDataset'))
-    const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
+    const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
+    const samples = [...new Set((tableData.columns.slice(2,(tableData.columns).length)).map((column) => column.label))];
 
     const filterForSamplesChoice = {
         name: "samples",

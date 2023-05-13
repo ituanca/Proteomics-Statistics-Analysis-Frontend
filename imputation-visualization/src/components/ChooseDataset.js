@@ -4,12 +4,18 @@ import "./ChooseDataset.css"
 import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
+import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
+import isEqual from "lodash/isEqual";
 
 function ChooseDataset(){
 
     const [selectedDisease, setSelectedDisease] = useState("");
     const [smthSelected, setSmthSelected] = useState(false);
     const [data, setData] = useState( {
+        columns: [],
+        rows: []
+    })
+    const [tableData, setTableData] = useState( {
         columns: [],
         rows: []
     })
@@ -20,29 +26,64 @@ function ChooseDataset(){
     const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
     const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
     const [dataChanged, setDataChanged] = useState(false);
+    const [preparedImportedData, setPreparedImportedData] = useState([]);
+    const [updatedImportedData, setUpdatedImportedData] = useState(false);
+    const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
 
     useEffect(() => {
         localStorage.setItem("selectedDisease", JSON.stringify(selectedDisease));
-        if(importedData.length > 0) {
-           setData({...data, columns: Object.keys(importedData[0]).map(key => {
-               return {
-                   label: key, field: key, sort: 'asc'
-               };
-           }), rows: importedData})
-            setDataChanged(true);
-        }
-    }, [selectedDisease, importedData])
-
-    useEffect(() => {
-        if(importedData.length > 0){
+        if(preparedImportedData.length > 0) {
+            // after I choose the dataset to import, it is automatically sent to the backend, then it is received back as a response
             axios
-                .post("http://localhost:8000/sendImportedData", JSON.stringify(importedData))
+                .post("http://localhost:8000/sendImportedData", JSON.stringify(preparedImportedData))
                 .then((response) => {
                     console.info(response);
                 })
                 .catch((error) => {
                     console.error("There was an error!", error.response.data.message)
                 });
+
+            setData({...data, columns: Object.keys(preparedImportedData[0]).map(key => {
+                    return {
+                        label: key, field: key, sort: 'asc'
+                    };
+                }), rows: preparedImportedData})
+            setDataChanged(true);
+        }
+    }, [selectedDisease, preparedImportedData])
+
+    // include "" in the fields corresponding to the Excel cells where there is nothing
+    useEffect(() => {
+        let selectedColumnsString = data.columns.map(column => column.label)
+        setTableData({
+            columns: data.columns,
+            rows: data.rows.map(row => {
+                const newRow = {};
+                selectedColumnsString.forEach(column => {
+                    if(row[column]=== undefined){
+                        newRow[column] = ""
+                    }else{
+                        newRow[column] = row[column];
+                    }
+                });
+                return newRow;
+            })
+        })
+    }, [data])
+
+    // include "" in the fields corresponding to the Excel cells where there is nothing
+    useEffect(() => {
+        if(importedData.length > 0){
+            let importedColumns = Object.keys(importedData[0]);
+            setPreparedImportedData(importedData.map((object) => {
+                let missingFields = importedColumns.filter((column) => !(column in object))
+                let updatedObject = {...object};
+                missingFields.forEach((field) => {
+                    updatedObject[field] = "";
+                })
+                return updatedObject;
+            }))
+            setUpdatedImportedData(true);
         }
     }, [importedData])
 
@@ -68,11 +109,7 @@ function ChooseDataset(){
             .catch((error) => console.log(error));
     }
 
-    console.log(importedData)
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-    };
 
     function createArrayOfSheets (max) {
         const numbers = [];
@@ -137,7 +174,7 @@ function ChooseDataset(){
     };
 
     const renderForm = (
-        <form onSubmit = {handleSubmit}>
+        <div>
             <div className="button-container-col">
                 <div className="choose-dataset-container-row">
                     <div className="choose-dataset-container-col">
@@ -169,8 +206,8 @@ function ChooseDataset(){
                                     required
                                     onChange={(e) => handleSheetChange(e.target.value)}
                             >
-                                {arrayOfExistingSheets.map((nr) => (
-                                    <option key={nr.value} value={nr.value}>
+                                {arrayOfExistingSheets.map((nr, index) => (
+                                    <option key={index} value={nr.value}>
                                         {nr}
                                     </option>
                                 ))}
@@ -180,22 +217,30 @@ function ChooseDataset(){
                     </div>
                     : null}
                 {(!multipleSheets && smthSelected && dataChanged) || (multipleSheets && confirmedSheetNr) ?
-                    <FilterColumnsOfTheDataset data = {data}/>
+                    (
+                        <div>
+                            <div className="label-table-description-container">
+                                <label className="label-table-description">The first 100 rows of the dataset:</label>
+                            </div>
+                            <div className="table-position">
+                                <MDBTable scrollY maxHeight="500px">
+                                    <MDBTableHead columns={tableData.columns}/>
+                                    <MDBTableBody rows={tableData.rows.slice(0,100)}/>
+                                </MDBTable>
+                            </div>
+                            <FilterColumnsOfTheDataset data = {data}/>
+                        </div>
+                    )
                 : null}
                 <div className="button-container-row">
-                    <div className="input-container-col">
+                    <div className="input-container-col-less-space">
                         <Link to="/">
                             <button className="general-button">Go back</button>
                         </Link>
                     </div>
-                    <div className="input-container-col">
-                        <Link to="/Statistics">
-                            <input type="submit" value="Next"/>
-                        </Link>
-                    </div>
                 </div>
             </div>
-        </form>
+        </div>
     );
 
     return (
