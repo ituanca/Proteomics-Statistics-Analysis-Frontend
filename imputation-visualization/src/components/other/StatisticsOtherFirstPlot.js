@@ -6,9 +6,6 @@ import axios from "axios";
 
 export default function StatisticsOtherFirstPlot(){
 
-    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
-    const importedData = JSON.parse(localStorage.getItem('importedData'))
-
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
         entries: "select at least 2 entries",
