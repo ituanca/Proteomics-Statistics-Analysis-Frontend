@@ -6,6 +6,7 @@ import "../Accordion.css"
 import StatisticsOtherSecondPlot from "./StatisticsOtherSecondPlot";
 import StatisticsOtherThirdPlot from "./StatisticsOtherThirdPlot";
 import StatisticsOtherFourthPlot from "./StatisticsOtherFourthPlot";
+import ImputationExecution from "./ImputationExecution";
 
 export default function StatisticsOther(){
 
@@ -38,12 +39,12 @@ export default function StatisticsOther(){
         }
     ];
 
-    // const accordionDataPerformImputation = [
-    //     {
-    //         title: 'View the normalized incomplete dataset and perform imputation with the preferred method',
-    //         content: <ImputationMethodChoice/>
-    //     }
-    // ];
+    const accordionDataPerformImputation = [
+        {
+            title: 'View the normalized incomplete dataset and perform imputation with the preferred method',
+            content: <ImputationExecution/>
+        }
+    ];
 
     // const accordionDataImputedDataset = [
     //     {
@@ -60,12 +61,12 @@ export default function StatisticsOther(){
                     <Accordion title={title} content={content}/>
                 </div>
             ))}
-            {/*<h3>Perform imputation</h3>*/}
-            {/*{accordionDataPerformImputation.map(({ title, content }, index) => (*/}
-            {/*    <div key={index}>*/}
-            {/*        <Accordion title={title} content={content} />*/}
-            {/*    </div>*/}
-            {/*))}*/}
+            <h3>Perform imputation</h3>
+            {accordionDataPerformImputation.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
+            ))}
             {/*<h3>Generate statistics on the dataset after imputation</h3>*/}
             {/*{accordionDataImputedDataset.map(({ title, content }, index) => (*/}
             {/*    <div key={index}>*/}
