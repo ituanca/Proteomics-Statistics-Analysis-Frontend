@@ -8,7 +8,7 @@ export const proteinNames = [...new Set(data.rows.map((item) => item["Protein.na
 export const newProteinNames = [...new Set(["-- Select an option --", ...proteinNames])];
 export const generalOptions = [
     {name: "gender", label: "Gender", type: "select", values: ["All", "Male", "Female"],},
-    {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation", "variance"]},
+    {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation"]},
     {name: "type_of_plot", label: "Type of chart", type: "select", values: ["bar chart", "pie chart"]}
 ];
 export const proteinOptions = [

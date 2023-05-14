@@ -3,8 +3,9 @@ import {Link, Outlet} from "react-router-dom";
 import StatisticsOtherFirstPlot from "./StatisticsOtherFirstPlot";
 import Accordion from '../Accordion';
 import "../Accordion.css"
-import {validate} from "./FunctionsForEntrySelectionPlot";
-import axios from "axios";
+import StatisticsOtherSecondPlot from "./StatisticsOtherSecondPlot";
+import StatisticsOtherThirdPlot from "./StatisticsOtherThirdPlot";
+import StatisticsOtherFourthPlot from "./StatisticsOtherFourthPlot";
 
 export default function StatisticsOther(){
 
@@ -23,18 +24,18 @@ export default function StatisticsOther(){
             title: 'Compare up to 5 entries according to a metric',
             content: <StatisticsOtherFirstPlot/>
         },
-        // {
-        //     title: 'Compare the number of missing values for the selected samples',
-        //     content: <StatisticsOtherSecondPlot samplesFilter={filterForSamplesChoice}/>
-        // },
-        // {
-        //     title: 'Compare the number/percentage of missing values for each sample by gender',
-        //     content: <StatisticsAdThirdPlot/>
-        // },
-        // {
-        //     title: 'Compare the missing values distribution for each gender',
-        //     content: <StatisticsAdFourthPlot/>
-        // }
+        {
+            title: 'Compare the number of missing values for the selected samples',
+            content: <StatisticsOtherSecondPlot samplesFilter={filterForSamplesChoice}/>
+        },
+        {
+            title: 'Compare the number/percentage of missing values for each sample by class',
+            content: <StatisticsOtherThirdPlot/>
+        },
+        {
+            title: 'Compare the missing values distribution for each class',
+            content: <StatisticsOtherFourthPlot/>
+        }
     ];
 
     // const accordionDataPerformImputation = [

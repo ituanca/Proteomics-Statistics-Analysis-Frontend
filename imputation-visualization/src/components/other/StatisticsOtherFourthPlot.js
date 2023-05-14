@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import '../Statistics.css';
+import {handleOptionChange} from "../Utils";
 
-export default function StatisticsAdFourthPlot(){
+export default function StatisticsOtherFourthPlot(){
 
     const [selectedOptions, setSelectedOptions] = useState({
         type_of_representation: ""
@@ -25,7 +26,7 @@ export default function StatisticsAdFourthPlot(){
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("http://localhost:8000/requestAdFourthChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/requestOtherFourthChart", JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"
             })
             .then((response) => {
@@ -37,20 +38,15 @@ export default function StatisticsAdFourthPlot(){
             });
     };
 
-    const handleOptionChange = (option, value) => {
-        setSelectedOptions({...selectedOptions, [option]: value});
-    };
-
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
-                    {/*<h4>View the missing values distribution for each gender</h4>*/}
                     <div className="label-field-group-with-space">
                         <label className="label-statistics">{filterForChoiceOfRepresentation.label}</label>
                         <select className="input-for-statistics-ad-select"
                                 value={selectedOptions[filterForChoiceOfRepresentation.name]}
-                                onChange={(e) => handleOptionChange(filterForChoiceOfRepresentation.name, e.target.value)}
+                                onChange={(e) => handleOptionChange(filterForChoiceOfRepresentation.name, e.target.value, selectedOptions, setSelectedOptions)}
                         >
                             {filterForChoiceOfRepresentation.values.map((value) => (
                                 <option key={value} value={value}>

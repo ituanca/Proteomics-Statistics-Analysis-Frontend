@@ -13,8 +13,6 @@ function Statistics(){
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
-    console.log(selectedOptionsForTable)
-
     // send the filters for the dataset to the backend and receive them back as a response
     useEffect(() => {
         axios
@@ -37,8 +35,6 @@ function Statistics(){
                         <MDBTableBody rows={tableData.rows} />
                     </MDBTable>
                 </div>
-                {/*{(selectedDisease === "Alzheimer's disease") && <StatisticsAD />}*/}
-                {/*{(selectedDisease === "Progeria") && <StatisticsProgeria />}*/}
                 {(selectedDisease === "Alzheimer's disease") ? (
                     <StatisticsAD />
                 ) : (

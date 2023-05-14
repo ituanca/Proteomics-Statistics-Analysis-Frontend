@@ -114,7 +114,6 @@ th {
   padding: 10px;
   color: white;
   background-color: darkblue;
-
 }
 
 /*row of the table*/
@@ -135,4 +134,13 @@ td {
   padding-top: 15px;
   padding-bottom: 15px;
   text-align: center;
+}
+
+.page-container {
+  align-items: center;
+  justify-content: center;
+  /*if I let the 'display: flex' uncommented, the forms apear at the center with smaller width*/
+  /*display: flex;*/
+  flex-direction: column;
+  padding-bottom: 5%;
 }

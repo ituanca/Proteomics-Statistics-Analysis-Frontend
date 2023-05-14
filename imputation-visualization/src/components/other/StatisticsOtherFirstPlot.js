@@ -30,13 +30,15 @@ export default function StatisticsOtherFirstPlot(){
         });
     }, [])
 
+    console.log(selectedOptions)
+
     const nonEmptyFieldsCount = Object.values(selectedOptions).filter(value => value !== "").length;
-    const enoughProteinsSelected = (nonEmptyFieldsCount >= 7)
+    const enoughEntriesSelected = (nonEmptyFieldsCount >= 5)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(selectedOptions)
-        if(validate(enoughProteinsSelected, setErrorMessages, errors)){
+        if(validate(enoughEntriesSelected, setErrorMessages, errors)){
             axios
                 .post("http://localhost:8000/requestGeneralFirstChart", JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
@@ -73,7 +75,7 @@ export default function StatisticsOtherFirstPlot(){
                     )}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
-                    {renderErrorMessage("proteins", errorMessages)}
+                    {renderErrorMessage("entries", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>

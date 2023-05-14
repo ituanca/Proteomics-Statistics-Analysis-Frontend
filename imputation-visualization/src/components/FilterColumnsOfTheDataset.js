@@ -36,17 +36,23 @@ export default function FilterColumnsOfTheDataset({data}) {
     }
 
     useEffect(() => {
+        localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
         setAvailableOptionsDropdown(data.columns.filter(column => checkIfStringIsUnselectedInMultiselect(column.label)))
         let tempAvailableOptionsString = data.columns.filter(column => checkIfStringIsUnselectedInMultiselect(column.label) && (!isEqual(selectedOptions.id, column.label)))
         setAvailableOptionsMultiselect(tempAvailableOptionsString.map(option => option.label))
     }, [data, selectedOptions])
 
+    // initialize the ID field with the first value
     useEffect(() => {
         if(availableOptionsDropdown.length > 0 && (!isEqual(availableOptionsDropdown, prevOptions.current)) && selectedOptions.id === ""){
             setSelectedOptions({...selectedOptions, id: availableOptionsDropdown[0].label});
             prevOptions.current = availableOptionsDropdown;
         }
     }, [availableOptionsDropdown])
+
+    useEffect(() => {
+        localStorage.setItem("selectedDataset", JSON.stringify(tableData));
+    }, [tableData])
 
     const validateClasses = () => {
         for(let j = 0; j < selectedOptions.class1.length; j++){
@@ -78,12 +84,6 @@ export default function FilterColumnsOfTheDataset({data}) {
         return false;
     }
 
-    useEffect(() => {
-        if(availableOptionsDropdown.length > 0 && (!isEqual(availableOptionsDropdown, prevOptions.current)) && selectedOptions.id === ""){
-            setSelectedOptions({...selectedOptions, id: availableOptionsDropdown[0].label});
-            prevOptions.current = availableOptionsDropdown;
-        }
-    }, [tableData])
 
     const handleButtonClickViewTable = () => {
         if(validate() && validateClasses()){
@@ -111,11 +111,9 @@ export default function FilterColumnsOfTheDataset({data}) {
                 })
             })
             setTableVisible(true);
+            localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
         }
     }
-
-    localStorage.setItem("selectedDataset", JSON.stringify(tableData));
-    localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
 
     const onChangeMultiSelectFirstClass = (selectedItems) => {
         setSelectedOptions({...selectedOptions, class1: selectedItems})

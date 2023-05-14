@@ -25,6 +25,3 @@ export const labelAndDropdownGroupWithSpace = (option, selectedOptions, setSelec
     </div>
 );
 
-export const handleSingleOptionChange = (value, setSelectedOption) => {
-    setSelectedOption(value);
-};

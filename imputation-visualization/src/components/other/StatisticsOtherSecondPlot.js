@@ -1,19 +1,24 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import '../Statistics.css';
+import {Multiselect} from "multiselect-react-dropdown";
+import {renderErrorMessage} from "../Utils";
 
-export default function StatisticsAdFourthPlot(){
+export default function StatisticsOtherSecondPlot({ samplesFilter }){
 
+    const [errorMessages, setErrorMessages] = useState({});
     const [selectedOptions, setSelectedOptions] = useState({
+        samples: [],
         type_of_representation: ""
     });
     const [imageUrl, setImageUrl] = useState("");
-
+    const errors = {
+        entries: "select at least 1 entry",
+    };
     const filterForChoiceOfRepresentation = {
         name: "type_of_representation",
-        label: "Type of representation",
+        label: "View as",
         type: "select",
-        values: ["distribution of missing values", "percentage of missing values"]
+        values: ["number", "percentage"]
     };
 
     useEffect(() => {
@@ -22,19 +27,35 @@ export default function StatisticsAdFourthPlot(){
         });
     }, [])
 
+    const validate = () => {
+        if(selectedOptions.samples.length < 1){
+            setErrorMessages({name: "entries", message: errors.entries});
+        } else {
+            setErrorMessages({});
+            return true;
+        }
+        return false;
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios
-            .post("http://localhost:8000/requestAdFourthChart", JSON.stringify(selectedOptions), {
-                responseType: "arraybuffer"
-            })
-            .then((response) => {
-                console.info(response);
-                setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
+        if(validate()){
+            axios
+                .post("http://localhost:8000/requestGeneralSecondChart", JSON.stringify(selectedOptions), {
+                    responseType: "arraybuffer"
+                })
+                .then((response) => {
+                    console.info(response);
+                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
+        }
+    };
+
+    const onChangeMultiSelect = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, samples: selectedItems})
     };
 
     const handleOptionChange = (option, value) => {
@@ -45,7 +66,16 @@ export default function StatisticsAdFourthPlot(){
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
-                    {/*<h4>View the missing values distribution for each gender</h4>*/}
+                    <div className="label-field-group-with-space">
+                        <label className="label-statistics">{samplesFilter.label}</label>
+                        <Multiselect
+                            showArrow
+                            options={samplesFilter.values}
+                            isObject={false}
+                            onSelect={onChangeMultiSelect}
+                            onRemove={onChangeMultiSelect}
+                        />
+                    </div>
                     <div className="label-field-group-with-space">
                         <label className="label-statistics">{filterForChoiceOfRepresentation.label}</label>
                         <select className="input-for-statistics-ad-select"
@@ -59,6 +89,7 @@ export default function StatisticsAdFourthPlot(){
                             ))}
                         </select>
                     </div>
+                    {renderErrorMessage("entries", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>

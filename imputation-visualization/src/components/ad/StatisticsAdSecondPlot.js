@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Multiselect} from "multiselect-react-dropdown";
-import './StatisticsAdSecondPlot.css';
+import '../Statistics.css';
 import {renderErrorMessage} from "../Utils";
 
 export default function StatisticsAdSecondPlot({ samplesFilter }){

@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 
-const data = JSON.parse(localStorage.getItem('selectedDataset'))
-const filteredData = JSON.parse(localStorage.getItem('selectedOptions'))
+let data = JSON.parse(localStorage.getItem('selectedDataset'))
+let filteredData = JSON.parse(localStorage.getItem('selectedOptions'))
 
-export const Ids = [...new Set(data.rows.map((item) => item[filteredData.id]))];
-export const newIds = [...new Set(["-- Select an option --", ...Ids])];
+let Ids = [...new Set(data.rows.map((item) => item[filteredData.id]))];
+let newIds = [...new Set(["-- Select an option --", ...Ids])];
+
 export const generalOptions = [
     {name: "class", label: "Class", type: "select", values: ["All", "Class1", "Class2"],},
     {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation"]},

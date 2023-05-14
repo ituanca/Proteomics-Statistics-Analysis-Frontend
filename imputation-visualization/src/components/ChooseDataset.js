@@ -5,7 +5,7 @@ import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import isEqual from "lodash/isEqual";
+const useHistoryState = window["use-history-state"];
 
 function ChooseDataset(){
 
@@ -27,8 +27,25 @@ function ChooseDataset(){
     const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
     const [dataChanged, setDataChanged] = useState(false);
     const [preparedImportedData, setPreparedImportedData] = useState([]);
-    const [updatedImportedData, setUpdatedImportedData] = useState(false);
-    const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+    // include "" in the fields corresponding to the Excel cells where there is nothing
+    useEffect(() => {
+        let selectedColumnsString = data.columns.map(column => column.label)
+        setTableData({
+            columns: data.columns,
+            rows: data.rows.map(row => {
+                const newRow = {};
+                selectedColumnsString.forEach(column => {
+                    if(row[column]=== undefined){
+                        newRow[column] = ""
+                    }else{
+                        newRow[column] = row[column];
+                    }
+                });
+                return newRow;
+            })
+        })
+    }, [data])
 
     useEffect(() => {
         localStorage.setItem("selectedDisease", JSON.stringify(selectedDisease));
@@ -54,25 +71,6 @@ function ChooseDataset(){
 
     // include "" in the fields corresponding to the Excel cells where there is nothing
     useEffect(() => {
-        let selectedColumnsString = data.columns.map(column => column.label)
-        setTableData({
-            columns: data.columns,
-            rows: data.rows.map(row => {
-                const newRow = {};
-                selectedColumnsString.forEach(column => {
-                    if(row[column]=== undefined){
-                        newRow[column] = ""
-                    }else{
-                        newRow[column] = row[column];
-                    }
-                });
-                return newRow;
-            })
-        })
-    }, [data])
-
-    // include "" in the fields corresponding to the Excel cells where there is nothing
-    useEffect(() => {
         if(importedData.length > 0){
             let importedColumns = Object.keys(importedData[0]);
             setPreparedImportedData(importedData.map((object) => {
@@ -83,7 +81,6 @@ function ChooseDataset(){
                 })
                 return updatedObject;
             }))
-            setUpdatedImportedData(true);
         }
     }, [importedData])
 
@@ -108,8 +105,6 @@ function ChooseDataset(){
             .then((json) => setImportedData(json))
             .catch((error) => console.log(error));
     }
-
-
 
     function createArrayOfSheets (max) {
         const numbers = [];
@@ -173,9 +168,14 @@ function ChooseDataset(){
         fileInputRef.current.click();
     };
 
+    const [condToDisplayFiltersSection, setCondToDisplayFiltersSection] = useState(false)
+    useEffect(() => {
+        // localStorage.setItem("condToDisplayFiltersSection", JSON.stringify(condToDisplayFiltersSection));
+        setCondToDisplayFiltersSection((!multipleSheets && smthSelected && dataChanged) || (multipleSheets && confirmedSheetNr))
+    }, [multipleSheets, smthSelected, dataChanged, confirmedSheetNr])
+
     const renderForm = (
-        <div>
-            <div className="button-container-col">
+            <div className="page-container">
                 <div className="choose-dataset-container-row">
                     <div className="choose-dataset-container-col">
                         <h2 className="h2-without-space">Choose a dataset</h2>
@@ -216,7 +216,7 @@ function ChooseDataset(){
                         <button className="general-button" onClick={handleConfirmation}>Confirm</button>
                     </div>
                     : null}
-                {(!multipleSheets && smthSelected && dataChanged) || (multipleSheets && confirmedSheetNr) ?
+                {(condToDisplayFiltersSection) ?
                     (
                         <div>
                             <div className="label-table-description-container">
@@ -240,7 +240,6 @@ function ChooseDataset(){
                     </div>
                 </div>
             </div>
-        </div>
     );
 
     return (

@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import '../Statistics.css';
+import {handleOptionChange} from "../Utils";
 
-export default function StatisticsAdThirdPlot(){
+export default function StatisticsOtherThirdPlot(){
 
     const [selectedOptions, setSelectedOptions] = useState({
-        gender: "",
+        class: "",
         type_of_plot: "",
         representation: ""
     });
     const [imageUrl, setImageUrl] = useState("");
 
     const options = [
-        {name: "gender", label: "Gender", type: "select", values: ["All", "Male", "Female"]},
+        {name: "class", label: "Class", type: "select", values: ["All", "Class1", "Class2"]},
         {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
         {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
     ];
@@ -28,7 +28,7 @@ export default function StatisticsAdThirdPlot(){
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("http://localhost:8000/requestAdThirdChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/requestOtherThirdChart", JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"
             })
             .then((response) => {
@@ -40,21 +40,16 @@ export default function StatisticsAdThirdPlot(){
             });
     };
 
-    const handleOptionChange = (option, value) => {
-        setSelectedOptions({...selectedOptions, [option]: value});
-    };
-
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
-                    {/*<h4>View the number/percentage of missing values for each sample by gender</h4>*/}
                     {options.map((option) => (
                         <div key={option.name} className="label-field-group-with-space">
                             <label className="label-statistics">{option.label}</label>
                             <select className="input-for-statistics-ad-select"
                                     value={selectedOptions[option.name]}
-                                    onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                                    onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions)}
                             >
                                 {option.values.map((value) => (
                                     <option key={value} value={value}>

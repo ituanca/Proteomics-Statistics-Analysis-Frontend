@@ -70,3 +70,27 @@ h3{
     color: white;
     text-shadow: 0 0 5px #070202, 0 0 5px darkblue;
 }
+/* Overriding Multiselect*/
+.multiSelectContainer {
+    background: transparent;
+}
+
+.searchBox {
+    border: black;
+    font-size: 14px;
+    min-height: 50px;
+}
+.chip {
+    background: steelblue;
+    height: 25px;
+}
+/* Overriding element hover */
+.optionContainer li:hover,
+.optionContainer .highlight {
+    background: #31448e;
+    color: #fff;
+}
+.option {
+    font-size: 14px;
+}
+/* Ends overriding */
