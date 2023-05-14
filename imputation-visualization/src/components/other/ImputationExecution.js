@@ -70,10 +70,9 @@ export default function ImputationExecution(){
             .catch((error) => console.log(error));
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const performImputationGeneralNormalized = () => {
         axios
-            .post("http://localhost:8000/performImputationGeneral", JSON.stringify(selectedMethod))
+            .post("http://localhost:8000/performImputationGeneralNormalized", JSON.stringify(selectedMethod))
             .then((response) => {
                 console.info(response);
                 setImputedGeneral(response.data)
@@ -81,7 +80,18 @@ export default function ImputationExecution(){
             .catch((error) => {
                 console.error("There was an error!", error.response.data.message)
             });
-    };
+    }
+    const performImputationGeneralOriginal = () => {
+        axios
+            .post("http://localhost:8000/performImputationGeneralOriginal", JSON.stringify(selectedMethod))
+            .then((response) => {
+                console.info(response);
+                setImputedGeneral(response.data)
+            })
+            .catch((error) => {
+                console.error("There was an error!", error.response.data.message)
+            });
+    }
 
     return (
         <div className="container-perform-imputation">
@@ -107,38 +117,43 @@ export default function ImputationExecution(){
                         : null}
                 </div>
             </div>
-            <form onSubmit = {handleSubmit}>
-                <div className="container-row-perform-imputation">
-                    <div className="statistics-options">
-                        <div className="label-field-group-with-space">
-                            <label className="label-statistics">{filterForChoiceOfImputationMethod.label}</label>
-                            <select className="input-for-statistics-ad-select"
-                                    value={selectedMethod[filterForChoiceOfImputationMethod.name]}
-                                    onChange={(e) => handleOptionChange(filterForChoiceOfImputationMethod.name, e.target.value, selectedMethod, setSelectedMethod)}
-                            >
-                                {filterForChoiceOfImputationMethod.values.map((value) => (
-                                    <option key={value} value={value}>
-                                        {value}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="input-container-col">
-                            <input type="submit" value="View the complete dataset"/>
-                        </div>
+
+            <div className="container-row-perform-imputation">
+                <div className="statistics-options">
+                    <div className="label-field-group-with-space">
+                        <label className="label-statistics">{filterForChoiceOfImputationMethod.label}</label>
+                        <select className="input-for-statistics-ad-select"
+                                value={selectedMethod[filterForChoiceOfImputationMethod.name]}
+                                onChange={(e) => handleOptionChange(filterForChoiceOfImputationMethod.name, e.target.value, selectedMethod, setSelectedMethod)}
+                        >
+                            {filterForChoiceOfImputationMethod.values.map((value) => (
+                                <option key={value} value={value}>
+                                    {value}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <div className="table-container">
-                        {(imputedGeneral.length > 0) ?
-                            <div className="table-position">
-                                <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead columns={imputedData.columns}/>
-                                    <MDBTableBody rows={imputedData.rows} />
-                                </MDBTable>
-                            </div>
-                            : null}
+                    <div className="input-container-col">
+                        <button onClick={performImputationGeneralOriginal} className="general-button">
+                            View the original imputed dataset
+                        </button>
+                        <button onClick={performImputationGeneralNormalized} className="general-button">
+                            View the normalized imputed dataset
+                        </button>
                     </div>
                 </div>
-            </form>
+                <div className="table-container">
+                    {(imputedGeneral.length > 0) ?
+                        <div className="table-position">
+                            <MDBTable scrollY maxHeight="400px">
+                                <MDBTableHead columns={imputedData.columns}/>
+                                <MDBTableBody rows={imputedData.rows} />
+                            </MDBTable>
+                        </div>
+                        : null}
+                </div>
+            </div>
+
         </div>
     );
 }
