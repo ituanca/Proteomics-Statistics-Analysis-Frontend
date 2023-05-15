@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
-import {handleOptionChange, generalOptions, getTypeOfGroup, validate} from "./FunctionsForEntrySelectionPlot";
+import {handleOptionChange, getTypeOfGroup, validate} from "./FunctionsForEntrySelectionPlot";
 
-export default function StatisticsOtherFifthPlot(){
+export default function StatisticsOtherFifthPlot({generalOptions, path}){
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
@@ -63,7 +63,7 @@ export default function StatisticsOtherFifthPlot(){
         console.log(selectedOptions)
         if(validate(enoughProteinsSelected, setErrorMessages, errors)){
             axios
-                .post("http://localhost:8000/requestGeneralFifthChart", JSON.stringify(selectedOptions), {
+                .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
                 })
                 .then((response) => {
@@ -101,7 +101,7 @@ export default function StatisticsOtherFifthPlot(){
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationMethod, selectedOptions, setSelectedOptions)}
-                    {renderErrorMessage("proteins", errorMessages)}
+                    {renderErrorMessage("entries", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>

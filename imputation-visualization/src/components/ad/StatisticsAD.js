@@ -8,12 +8,13 @@ import Accordion from '../Accordion';
 import "../Accordion.css"
 import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
 import ImputationExecution from "../ImputationExecution";
+import {optionsForThirdPlotAD} from "./FunctionsForProteinsSelectionPlot";
+import StatisticsOtherFourthPlot from "../other/StatisticsOtherFourthPlot";
 
 export default function StatisticsAD(){
 
-    const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
+    const data = JSON.parse(localStorage.getItem('selectedDataset'))
     const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
-    const newSamples = [...new Set(["Select all", ...samples])];
 
     const filterForSamplesChoice = {
         name: "samples",
@@ -33,11 +34,11 @@ export default function StatisticsAD(){
         },
         {
             title: 'Compare the number/percentage of missing values for each sample by gender',
-            content: <StatisticsAdThirdPlot/>
+            content: <StatisticsAdThirdPlot optionsForThirdPlot={optionsForThirdPlotAD} path="requestAdThirdChart"/>
         },
         {
             title: 'Compare the missing values distribution for each gender',
-            content: <StatisticsAdFourthPlot/>
+            content: <StatisticsOtherFourthPlot path = "requestAdFourthChart"/>
         }
     ];
 

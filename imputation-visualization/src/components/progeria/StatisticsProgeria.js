@@ -1,207 +1,84 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet} from "react-router-dom";
-import axios from "axios";
+import Accordion from '../Accordion';
+import "../Accordion.css"
+import ImputationExecution from "../ImputationExecution";
+import {generalOptionsProgeria} from "../other/FunctionsForEntrySelectionPlot";
+import StatisticsOtherFirstPlot from "../other/StatisticsOtherFirstPlot";
+import StatisticsAdSecondPlot from "../ad/StatisticsAdSecondPlot";
+import StatisticsAdThirdPlot from "../ad/StatisticsAdThirdPlot";
+import {optionsForThirdPlotProgeria} from "../ad/FunctionsForProteinsSelectionPlot";
+import StatisticsOtherFourthPlot from "../other/StatisticsOtherFourthPlot";
+import StatisticsAdFifthPlot from "../ad/StatisticsAdFifthPlot";
+import StatisticsOtherFifthPlot from "../other/StatisticsOtherFifthPlot";
 
 export default function StatisticsProgeria(){
 
-    const [data] = useState(JSON.parse(localStorage.getItem('selectedDataset')))
-    const [selectedOptions, setSelectedOptions] = useState({
-        gender: "",
-        protein_id_1: "", protein_name_1: "",
-        protein_id_2: "", protein_name_2: "",
-        protein_id_3: "", protein_name_3: "",
-        protein_id_4: "", protein_name_4: "",
-        protein_id_5: "", protein_name_5: "",
-        metric: "",
-        type_of_plot: ""
-    });
+    const data = JSON.parse(localStorage.getItem('selectedDataset'))
+    const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
 
-    const Ids = [...new Set(data.rows.map((item) => item["Majority.protein.IDs"]))];
-    const newIds = [...new Set(["-- Select an option --", ...Ids])];
-    const proteinNames = [...new Set(data.rows.map((item) => item["Protein.names"]))];
-    const newProteinNames = [...new Set(["-- Select an option --", ...proteinNames])];
+    const filterForSamplesChoice = {
+        name: "samples",
+        label: "Samples to be compared",
+        type: "multi-select",
+        values: samples
+    };
 
-    const optionsForProteinsComparison = [
+    const accordionDataIncompleteDataset = [
         {
-            name: "gender",
-            label: "Gender",
-            type: "select",
-            values: ["All", "Male", "Female"],
+            title: 'Compare up to 5 proteins according to a metric',
+            content: <StatisticsOtherFirstPlot generalOptions = {generalOptionsProgeria} path = "requestProgeriaFirstChart"/>
         },
         {
-            name: "protein_id_1",
-            label: "Protein ID 1",
-            type: "select",
-            values: newIds
+            title: 'Compare the number of missing values for the selected samples',
+            content: <StatisticsAdSecondPlot samplesFilter={filterForSamplesChoice}/>
         },
         {
-            name: "protein_name_1",
-            label: "Protein Name 1",
-            type: "select",
-            values: newProteinNames
+            title: 'Compare the number/percentage of missing values for each sample by gender',
+            content: <StatisticsAdThirdPlot optionsForThirdPlot={optionsForThirdPlotProgeria} path="requestProgeriaThirdChart"/>
         },
         {
-            name: "protein_id_2",
-            label: "Protein ID 2",
-            type: "select",
-            values: newIds
-        },
-        {
-            name: "protein_name_2",
-            label: "Protein Name 2",
-            type: "select",
-            values: newProteinNames
-        },
-        {
-            name: "protein_id_3",
-            label: "Protein ID 3",
-            type: "select",
-            values: newIds
-        },
-        {
-            name: "protein_name_3",
-            label: "Protein Name 3",
-            type: "select",
-            values: newProteinNames
-        },
-        {
-            name: "protein_id_4",
-            label: "Protein ID 4",
-            type: "select",
-            values: newIds
-        },
-        {
-            name: "protein_name_4",
-            label: "Protein Name 4",
-            type: "select",
-            values: newProteinNames
-        },
-        {
-            name: "protein_id_5",
-            label: "Protein ID 5",
-            type: "select",
-            values: newIds
-        },
-        {
-            name: "protein_name_5",
-            label: "Protein Name 5",
-            type: "select",
-            values: newProteinNames
-        },
-        {
-            name: "metric",
-            label: "Metric for comparison",
-            type: "select",
-            values: ["mean", "median", "standard deviation", "variance"]
-        },
-        {
-            name: "type_of_plot",
-            label: "Type of chart",
-            type: "select",
-            values: ["bar chart", "pie chart"]
-        },
-        // add more options as needed
+            title: 'Compare the missing values distribution for each clas',
+            content: <StatisticsOtherFourthPlot path = "requestProgeriaFourthChart"/>
+        }
     ];
 
-    useEffect(() => {
-        setSelectedOptions({...selectedOptions, [optionsForProteinsComparison[0].name]: optionsForProteinsComparison[0].values[0],
-            [optionsForProteinsComparison[11].name]: optionsForProteinsComparison[11].values[0],
-            [optionsForProteinsComparison[12].name]: optionsForProteinsComparison[12].values[0]
-        });
-    }, [])
-
-
-    function handleSelectionsCorrelation(option, value, crtId, crtName) {
-        if(value !== "-- Select an option --"){
-            if(option === crtId){
-                const nameOption = optionsForProteinsComparison.find((option) => option.name === crtName)
-                const correspondingName = data.rows.find((d) => d["Majority.protein.IDs"] === value)["Protein.names"];
-                setSelectedOptions({ ...selectedOptions, [option]: value, [nameOption.name]: correspondingName });
-            }else if(option === crtName){
-                const idOption = optionsForProteinsComparison.find((option) => option.name === crtId)
-                const correspondingId = data.rows.find((d) => d["Protein.names"] === value)["Majority.protein.IDs"];
-                setSelectedOptions({...selectedOptions, [option]: value, [idOption.name]: correspondingId});
-            }
-        }else{
-            if(option === crtId){
-                const nameOption = optionsForProteinsComparison.find((option) => option.name === crtName)
-                setSelectedOptions({ ...selectedOptions, [option]: "", [nameOption.name]: ""});
-            }else if(option === crtName){
-                const idOption = optionsForProteinsComparison.find((option) => option.name === crtId)
-                setSelectedOptions({...selectedOptions, [option]: "", [idOption.name]: ""});
-            }
+    const accordionDataPerformImputation = [
+        {
+            title: 'View the normalized incomplete dataset and perform imputation with the preferred method',
+            content: <ImputationExecution/>
         }
-    }
+    ];
 
-    const handleOptionChange = (option, value) => {
-        setSelectedOptions({...selectedOptions, [option]: value});
-        // onChange({ ...selectedOptions, [option]: value });
-        handleSelectionsCorrelation(option, value, "protein_id_1", "protein_name_1");
-        handleSelectionsCorrelation(option, value, "protein_id_2", "protein_name_2");
-        handleSelectionsCorrelation(option, value, "protein_id_3", "protein_name_3");
-        handleSelectionsCorrelation(option, value, "protein_id_4", "protein_name_4");
-        handleSelectionsCorrelation(option, value, "protein_id_5", "protein_name_5");
-    };
-
-    const testVariable = "test"
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(selectedOptions)
-        axios
-            .post("http://localhost:8000/requestAdChart", JSON.stringify(selectedOptions),)
-            .then((response) => {
-                console.info(response);
-                // if (response.data === "name_error") {
-                //     setErrorMessages({name: "name", message: errors.name});
-                // } else if(response.data === "exercise_exists"){
-                //     setErrorMessages({name: "exists_name", message: errors.exists_name});
-                // } else if (response.data === "calories_error"){
-                //     setErrorMessages({name: "caloriesBurnedPerMinute", message: errors.caloriesBurnedPerMinute});
-                // } else {
-                //     setIsSubmitted(true);
-                // }
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
-    };
+    const accordionDataImputedDataset = [
+        {
+            title: 'Compare up to 5 proteins according to a metric before and after imputation',
+            content: <StatisticsOtherFifthPlot generalOptions = {generalOptionsProgeria} path = "requestProgeriaFifthChart"/>
+        },
+    ];
 
     const renderForm = (
-        <form onSubmit = {handleSubmit}>
-            <div className="button-container-col">
-                <h2>Generate statistics on the incomplete dataset</h2>
-                <div className="statistics-options">
-                    <h3>Compare up to 5 proteins according to a metric</h3>
-                    {optionsForProteinsComparison.map((option) => (
-                        <div key={option.name}>
-                            <label className="label-statistics">{option.label}</label>
-                            {option.type === "select" ? (
-                                <select className="input-for-statistics-ad-select"
-                                        value={selectedOptions[option.name]}
-                                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                >
-                                    {option.values.map((value) => (
-                                        <option key={value} value={value}>
-                                            {value}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <input
-                                    type="text"
-                                    value={selectedOptions[option.name]}
-                                    onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                                />
-                            )}
-                        </div>
-                    ))}
-                    <div className="input-container-col">
-                        <input type="submit" value="Generate plot"/>
-                    </div>
+
+        <div className="accordion">
+            <h3>Generate statistics on the incomplete dataset</h3>
+            {accordionDataIncompleteDataset.map(({ title, content }, index) => (
+                <div key={index}>  {/*need this key to eliminate the prop warning*/}
+                    <Accordion title={title} content={content}/>
                 </div>
-            </div>
-        </form>
+            ))}
+            <h3>Perform imputation</h3>
+            {accordionDataPerformImputation.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
+            ))}
+            <h3>Generate statistics on the dataset after imputation</h3>
+            {accordionDataImputedDataset.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
+            ))}
+        </div>
     );
 
     return (

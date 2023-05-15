@@ -8,6 +8,7 @@ import StatisticsOtherThirdPlot from "./StatisticsOtherThirdPlot";
 import StatisticsOtherFourthPlot from "./StatisticsOtherFourthPlot";
 import ImputationExecution from "../ImputationExecution";
 import StatisticsOtherFifthPlot from "./StatisticsOtherFifthPlot";
+import {generalOptions} from "./FunctionsForEntrySelectionPlot";
 
 export default function StatisticsOther(){
 
@@ -24,7 +25,7 @@ export default function StatisticsOther(){
     const accordionDataIncompleteDataset = [
         {
             title: 'Compare up to 5 entries according to a metric',
-            content: <StatisticsOtherFirstPlot/>
+            content: <StatisticsOtherFirstPlot generalOptions={generalOptions} path="requestGeneralFirstChart"/>
         },
         {
             title: 'Compare the number of missing values for the selected samples',
@@ -36,7 +37,7 @@ export default function StatisticsOther(){
         },
         {
             title: 'Compare the missing values distribution for each class',
-            content: <StatisticsOtherFourthPlot/>
+            content: <StatisticsOtherFourthPlot path = "requestOtherFourthChart"/>
         }
     ];
 
@@ -50,7 +51,7 @@ export default function StatisticsOther(){
     const accordionDataImputedDataset = [
         {
             title: 'Compare up to 5 entries according to a metric before and after imputation',
-            content: <StatisticsOtherFifthPlot/>
+            content: <StatisticsOtherFifthPlot generalOptions={generalOptions} path="requestGeneralFifthChart"/>
         },
     ];
 

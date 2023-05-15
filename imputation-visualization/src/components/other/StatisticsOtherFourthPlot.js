@@ -3,7 +3,7 @@ import axios from "axios";
 import '../Statistics.css';
 import {handleOptionChange} from "../Utils";
 
-export default function StatisticsOtherFourthPlot(){
+export default function StatisticsOtherFourthPlot({path}){
 
     const [selectedOptions, setSelectedOptions] = useState({
         type_of_representation: ""
@@ -26,7 +26,7 @@ export default function StatisticsOtherFourthPlot(){
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("http://localhost:8000/requestOtherFourthChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"
             })
             .then((response) => {

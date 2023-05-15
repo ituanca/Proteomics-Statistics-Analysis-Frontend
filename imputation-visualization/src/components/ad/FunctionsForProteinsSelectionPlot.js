@@ -1,14 +1,24 @@
 import React from "react";
 
-const data = JSON.parse(localStorage.getItem('selectedDataset'))
-
-export const generalOptions = [
-    {name: "gender", label: "Gender", type: "select", values: ["All", "Male", "Female"],},
+export const generalOptionsAD = [
+    {name: "class", label: "Gender", type: "select", values: ["All", "Male", "Female"],},
     {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation"]},
     {name: "type_of_plot", label: "Type of chart", type: "select", values: ["bar chart", "pie chart"]}
 ];
 
-function handleSelectionsCorrelation(option, value, crtId, crtName, selectedOptions, setSelectedOptions, options) {
+export const optionsForThirdPlotAD = [
+    {name: "class", label: "Gender", type: "select", values: ["All", "Male", "Female"]},
+    {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
+    {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
+];
+
+export const optionsForThirdPlotProgeria = [
+    {name: "class", label: "Class", type: "select", values: ["All",  "With Progeria", "Without Progeria"]},
+    {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
+    {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
+];
+
+function handleSelectionsCorrelation(option, value, crtId, crtName, selectedOptions, setSelectedOptions, options, data) {
     if(value !== "-- Select an option --"){
         if(option === crtId){
             const nameOption = options.find((option) => option.name === crtName)
@@ -30,18 +40,18 @@ function handleSelectionsCorrelation(option, value, crtId, crtName, selectedOpti
     }
 }
 
-export const handleOptionChange = (option, value, selectedOptions, setSelectedOptions, options) => {
+export const handleOptionChange = (option, value, selectedOptions, setSelectedOptions, options, data) => {
     setSelectedOptions({...selectedOptions, [option]: value});
-    handleSelectionsCorrelation(option, value, "protein_id_1", "protein_name_1", selectedOptions, setSelectedOptions, options);
-    handleSelectionsCorrelation(option, value, "protein_id_2", "protein_name_2", selectedOptions, setSelectedOptions, options);
-    handleSelectionsCorrelation(option, value, "protein_id_3", "protein_name_3", selectedOptions, setSelectedOptions, options);
-    handleSelectionsCorrelation(option, value, "protein_id_4", "protein_name_4", selectedOptions, setSelectedOptions, options);
-    handleSelectionsCorrelation(option, value, "protein_id_5", "protein_name_5", selectedOptions, setSelectedOptions, options);
+    handleSelectionsCorrelation(option, value, "entry_id_1", "entry_name_1", selectedOptions, setSelectedOptions, options, data);
+    handleSelectionsCorrelation(option, value, "entry_id_2", "entry_name_2", selectedOptions, setSelectedOptions, options, data);
+    handleSelectionsCorrelation(option, value, "entry_id_3", "entry_name_3", selectedOptions, setSelectedOptions, options, data);
+    handleSelectionsCorrelation(option, value, "entry_id_4", "entry_name_4", selectedOptions, setSelectedOptions, options, data);
+    handleSelectionsCorrelation(option, value, "entry_id_5", "entry_name_5", selectedOptions, setSelectedOptions, options, data);
 };
 
 export const validate = (enoughProteinsSelected, setErrorMessages, errors) => {
     if (!enoughProteinsSelected) {
-        setErrorMessages({name: "proteins", message: errors.proteins});
+        setErrorMessages({name: "entries", message: errors.entries});
     } else {
         setErrorMessages({});
         return true;
@@ -50,8 +60,8 @@ export const validate = (enoughProteinsSelected, setErrorMessages, errors) => {
 }
 
 export const getTypeOfGroup = (option) => {
-    if(option.name === "gender" || option.name === "protein_name_1" || option.name === "protein_name_2" || option.name === "protein_name_3"
-        || option.name === "protein_name_4" || option.name === "protein_name_5" || option.name === "metric"){
+    if(option.name === "gender" || option.name === "entry_name_1" || option.name === "entry_name_2" || option.name === "entry_name_3"
+        || option.name === "entry_name_4" || option.name === "entry_name_5" || option.name === "metric"){
         return "label-field-group-with-space"
     }
     return "label-field-group";

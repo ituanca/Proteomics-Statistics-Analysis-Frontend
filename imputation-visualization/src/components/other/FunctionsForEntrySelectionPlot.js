@@ -6,8 +6,18 @@ export const generalOptions = [
     {name: "type_of_plot", label: "Type of chart", type: "select", values: ["bar chart", "pie chart"]}
 ];
 
+export const generalOptionsProgeria = [
+    {name: "class", label: "Class", type: "select", values: ["All", "With Progeria", "Without Progeria"],},
+    {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation"]},
+    {name: "type_of_plot", label: "Type of chart", type: "select", values: ["bar chart", "pie chart"]}
+];
+
 export const handleOptionChange = (option, value, selectedOptions, setSelectedOptions) => {
-    setSelectedOptions({...selectedOptions, [option]: value});
+    if(value !== "-- Select an option --") {
+        setSelectedOptions({...selectedOptions, [option]: value});
+    }else{
+        setSelectedOptions({...selectedOptions, [option]: ""});
+    }
 };
 
 export const validate = (enoughEntriesSelected, setErrorMessages, errors) => {

@@ -2,33 +2,27 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import '../Statistics.css';
 
-export default function StatisticsAdThirdPlot(){
+export default function StatisticsAdThirdPlot({optionsForThirdPlot, path}){
 
     const [selectedOptions, setSelectedOptions] = useState({
-        gender: "",
+        class: "",
         type_of_plot: "",
         representation: ""
     });
     const [imageUrl, setImageUrl] = useState("");
 
-    const options = [
-        {name: "gender", label: "Gender", type: "select", values: ["All", "Male", "Female"]},
-        {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
-        {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
-    ];
-
     useEffect(() => {
         setSelectedOptions({...selectedOptions,
-            [options[0].name]: options[0].values[0],
-            [options[1].name]: options[1].values[0],
-            [options[2].name]: options[2].values[0]
+            [optionsForThirdPlot[0].name]: optionsForThirdPlot[0].values[0],
+            [optionsForThirdPlot[1].name]: optionsForThirdPlot[1].values[0],
+            [optionsForThirdPlot[2].name]: optionsForThirdPlot[2].values[0]
         });
     }, [])
 
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("http://localhost:8000/requestAdThirdChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"
             })
             .then((response) => {
@@ -49,7 +43,7 @@ export default function StatisticsAdThirdPlot(){
             <div className="container-row">
                 <div className="statistics-options">
                     {/*<h4>View the number/percentage of missing values for each sample by gender</h4>*/}
-                    {options.map((option) => (
+                    {optionsForThirdPlot.map((option) => (
                         <div key={option.name} className="label-field-group-with-space">
                             <label className="label-statistics">{option.label}</label>
                             <select className="input-for-statistics-ad-select"

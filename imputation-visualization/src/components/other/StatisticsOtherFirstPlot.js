@@ -4,7 +4,7 @@ import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-export default function StatisticsOtherFirstPlot(){
+export default function StatisticsOtherFirstPlot({generalOptions, path}){
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
@@ -42,8 +42,6 @@ export default function StatisticsOtherFirstPlot(){
         });
     }, [])
 
-    console.log(selectedOptions)
-
     const nonEmptyFieldsCount = Object.values(selectedOptions).filter(value => value !== "").length;
     const enoughEntriesSelected = (nonEmptyFieldsCount >= 5)
 
@@ -52,7 +50,7 @@ export default function StatisticsOtherFirstPlot(){
         console.log(selectedOptions)
         if(validate(enoughEntriesSelected, setErrorMessages, errors)){
             axios
-                .post("http://localhost:8000/requestGeneralFirstChart", JSON.stringify(selectedOptions), {
+                .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
                 })
                 .then((response) => {

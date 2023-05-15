@@ -13,7 +13,7 @@ export default function StatisticsAdSecondPlot({ samplesFilter }){
     });
     const [imageUrl, setImageUrl] = useState("");
     const errors = {
-        proteins: "select at least 1 protein",
+        entries: "select at least 1 protein",
     };
     const filterForChoiceOfRepresentation = {
         name: "type_of_representation",
@@ -30,7 +30,7 @@ export default function StatisticsAdSecondPlot({ samplesFilter }){
 
     const validate = () => {
         if(selectedOptions.samples.length < 1){
-            setErrorMessages({name: "proteins", message: errors.proteins});
+            setErrorMessages({name: "entries", message: errors.entries});
         } else {
             setErrorMessages({});
             return true;
@@ -91,7 +91,7 @@ export default function StatisticsAdSecondPlot({ samplesFilter }){
                             ))}
                         </select>
                     </div>
-                    {renderErrorMessage("proteins", errorMessages)}
+                    {renderErrorMessage("entries", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>
