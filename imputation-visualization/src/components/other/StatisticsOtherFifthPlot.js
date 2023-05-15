@@ -1,14 +1,13 @@
-import React from "react";
-import {handleOptionChange, generalOptions, getTypeOfGroup, validate} from "./FunctionsForEntrySelectionPlot";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
+import {handleOptionChange, generalOptions, getTypeOfGroup, validate} from "./FunctionsForEntrySelectionPlot";
 
-export default function StatisticsOtherFirstPlot(){
+export default function StatisticsOtherFifthPlot(){
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
-        entries: "select at least 2 entries",
+        entries: "select at least 1 entry",
     };
     // data, filteredData, Ids, newIds and entryOptions have to be declared here, otherwise they don't update unless I refresh the page
     const data = JSON.parse(localStorage.getItem('selectedDataset'))
@@ -30,29 +29,41 @@ export default function StatisticsOtherFirstPlot(){
         entry_id_4: "",
         entry_id_5: "",
         metric: "",
-        type_of_plot: ""
+        type_of_plot: "",
+        imputation_method: ""
     });
     const [imageUrl, setImageUrl] = useState("");
+    const [filterForChoiceOfImputationMethod, setFilterForChoiceOfImputationMethod] = useState({
+        name: "imputation_method",
+        label: "Choose the imputation method",
+        type: "select",
+        values: []
+    });
 
     useEffect(() => {
-        setSelectedOptions({...selectedOptions,
-            [generalOptions[0].name]: generalOptions[0].values[0],
-            [generalOptions[1].name]: generalOptions[1].values[0],
-            [generalOptions[2].name]: generalOptions[2].values[0]
-        });
+        fetch('http://localhost:8000/getImputationMethods')
+            .then((response) => response.json())
+            .then((json) => {
+                setFilterForChoiceOfImputationMethod({...filterForChoiceOfImputationMethod, values: json});
+                setSelectedOptions({...selectedOptions,
+                    [generalOptions[0].name]: generalOptions[0].values[0],
+                    [generalOptions[1].name]: generalOptions[1].values[0],
+                    [generalOptions[2].name]: generalOptions[2].values[0],
+                    [filterForChoiceOfImputationMethod.name]: json[0]
+                });
+            })
+            .catch((error) => console.log(error));
     }, [])
 
-    console.log(selectedOptions)
-
     const nonEmptyFieldsCount = Object.values(selectedOptions).filter(value => value !== "").length;
-    const enoughEntriesSelected = (nonEmptyFieldsCount >= 5)
+    const enoughProteinsSelected = (nonEmptyFieldsCount >= 5)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(selectedOptions)
-        if(validate(enoughEntriesSelected, setErrorMessages, errors)){
+        if(validate(enoughProteinsSelected, setErrorMessages, errors)){
             axios
-                .post("http://localhost:8000/requestGeneralFirstChart", JSON.stringify(selectedOptions), {
+                .post("http://localhost:8000/requestGeneralFifthChart", JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
                 })
                 .then((response) => {
@@ -69,11 +80,13 @@ export default function StatisticsOtherFirstPlot(){
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
+                    {/*<h3>Compare up to 5 proteins according to a metric</h3>*/}
                     {labelAndDropdownGroupWithSpace(generalOptions[0], selectedOptions, setSelectedOptions)}
                     {entryOptions.map((option) =>
                         <div key={option.name} className={getTypeOfGroup(option)}>
                             <label className="label-statistics">{option.label}</label>
                             <select className="input-for-statistics-ad-select"
+                                // disabled={!option.enabled}
                                     value={selectedOptions[option.name]}
                                     onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions)}
                             >
@@ -87,7 +100,8 @@ export default function StatisticsOtherFirstPlot(){
                     )}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
-                    {renderErrorMessage("entries", errorMessages)}
+                    {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationMethod, selectedOptions, setSelectedOptions)}
+                    {renderErrorMessage("proteins", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>

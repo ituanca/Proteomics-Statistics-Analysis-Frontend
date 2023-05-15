@@ -7,6 +7,7 @@ import StatisticsOtherSecondPlot from "./StatisticsOtherSecondPlot";
 import StatisticsOtherThirdPlot from "./StatisticsOtherThirdPlot";
 import StatisticsOtherFourthPlot from "./StatisticsOtherFourthPlot";
 import ImputationExecution from "./ImputationExecution";
+import StatisticsOtherFifthPlot from "./StatisticsOtherFifthPlot";
 
 export default function StatisticsOther(){
 
@@ -46,12 +47,12 @@ export default function StatisticsOther(){
         }
     ];
 
-    // const accordionDataImputedDataset = [
-    //     {
-    //         title: 'Compare up to 5 proteins according to a metric before and after imputation',
-    //         content: <StatisticsAdFifthPlot/>
-    //     },
-    // ];
+    const accordionDataImputedDataset = [
+        {
+            title: 'Compare up to 5 entries according to a metric before and after imputation',
+            content: <StatisticsOtherFifthPlot/>
+        },
+    ];
 
     const renderForm = (
         <div className="accordion">
@@ -67,12 +68,12 @@ export default function StatisticsOther(){
                     <Accordion title={title} content={content} />
                 </div>
             ))}
-            {/*<h3>Generate statistics on the dataset after imputation</h3>*/}
-            {/*{accordionDataImputedDataset.map(({ title, content }, index) => (*/}
-            {/*    <div key={index}>*/}
-            {/*        <Accordion title={title} content={content} />*/}
-            {/*    </div>*/}
-            {/*))}*/}
+            <h3>Generate statistics on the dataset after imputation</h3>
+            {accordionDataImputedDataset.map(({ title, content }, index) => (
+                <div key={index}>
+                    <Accordion title={title} content={content} />
+                </div>
+            ))}
         </div>
     );
 
