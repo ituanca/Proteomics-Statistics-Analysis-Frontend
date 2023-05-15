@@ -7,11 +7,12 @@ import isEqual from 'lodash/isEqual';
 import "./ChooseDataset.css"
 import {Link} from "react-router-dom";
 
-export default function FilterColumnsOfTheDataset({data}) {
+export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
         filters_not_complete: "You have to select an ID and at least 2 columns for each of the first and second class",
+        filters_not_complete_without_id: "You have to select at least 2 columns for each of the first and second class",
         not_number: "The columns you select for the 2 classes have to contain numerical values"
     };
     const [tableData, setTableData] = useState( {
@@ -36,6 +37,12 @@ export default function FilterColumnsOfTheDataset({data}) {
     }
 
     useEffect(() => {
+        if(selectedDisease !== "Other"){
+            setSelectedOptions({...selectedOptions, id: "Majority.protein.IDs"});
+        }
+    }, [])
+
+    useEffect(() => {
         localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
         setAvailableOptionsDropdown(data.columns.filter(column => checkIfStringIsUnselectedInMultiselect(column.label)))
         let tempAvailableOptionsString = data.columns.filter(column => checkIfStringIsUnselectedInMultiselect(column.label) && (!isEqual(selectedOptions.id, column.label)))
@@ -44,9 +51,11 @@ export default function FilterColumnsOfTheDataset({data}) {
 
     // initialize the ID field with the first value
     useEffect(() => {
-        if(availableOptionsDropdown.length > 0 && (!isEqual(availableOptionsDropdown, prevOptions.current)) && selectedOptions.id === ""){
-            setSelectedOptions({...selectedOptions, id: availableOptionsDropdown[0].label});
-            prevOptions.current = availableOptionsDropdown;
+        if(selectedDisease === "Other") {
+            if (availableOptionsDropdown.length > 0 && (!isEqual(availableOptionsDropdown, prevOptions.current)) && selectedOptions.id === "") {
+                setSelectedOptions({...selectedOptions, id: availableOptionsDropdown[0].label});
+                prevOptions.current = availableOptionsDropdown;
+            }
         }
     }, [availableOptionsDropdown])
 
@@ -84,11 +93,24 @@ export default function FilterColumnsOfTheDataset({data}) {
         return false;
     }
 
+    const validateWithoutId = () => {
+        if(selectedOptions.class1.length < 2 || selectedOptions.class2.length < 2){
+            setErrorMessages({name: "filters_not_complete_without_id", message: errors.filters_not_complete_without_id});
+        } else {
+            setErrorMessages({});
+            return true;
+        }
+        return false;
+    }
 
     const handleButtonClickViewTable = () => {
-        if(validate() && validateClasses()){
+        if( ((selectedDisease === "Other" && validate()) ||
+                (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
             let selectedOptionsList = []
             selectedOptionsList.push(selectedOptions.id)
+            if(selectedDisease !== "Other"){
+                selectedOptionsList.push("Protein.names")
+            }
             selectedOptions.class1.map(element => {selectedOptionsList.push(element)})
             selectedOptions.class2.map(element => {selectedOptionsList.push(element)})
             selectedOptions.other_columns.map(element => {selectedOptionsList.push(element)})
@@ -135,20 +157,34 @@ export default function FilterColumnsOfTheDataset({data}) {
     return (
         <form onSubmit = {handleSubmit}>
             <div className="table-filters">
-                <div className="label-field-group-choose-dataset">
-                    <label className="label-statistics">Choose an ID column</label>
-                    <select className="input-for-statistics-ad-select"
-                            value={selectedOptions.id}
-                            required
-                            onChange={(e) => handleOptionChange("id", e.target.value, selectedOptions, setSelectedOptions)}
-                    >
-                        {availableOptionsDropdown.map((option, index) => (
-                            <option key={index} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {selectedDisease === "Other" ?
+                    <div className="label-field-group-choose-dataset">
+                        <label className="label-statistics">Choose an ID column</label>
+                        <select className="input-for-statistics-ad-select"
+                                value={selectedOptions.id}
+                                required
+                                onChange={(e) => handleOptionChange("id", e.target.value, selectedOptions, setSelectedOptions)}
+                        >
+                            {availableOptionsDropdown.map((option, index) => (
+                                <option key={index} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                :
+                    <div>
+                        <div className="label-field-group-choose-dataset">
+                            <label className="label-statistics">ID: </label>
+                            <label className="label-statistics"><strong>{selectedOptions.id}</strong></label>
+                        </div>
+                        <div className="label-field-group-choose-dataset">
+                            <label className="label-statistics">Name: </label>
+                            <label className="label-statistics"><strong>Protein.names</strong></label>
+                        </div>
+                    </div>
+                }
+
                 <div className="label-field-group-choose-dataset">
                     <label className="label-statistics">Columns for the first class</label>
                     <Multiselect
@@ -179,7 +215,7 @@ export default function FilterColumnsOfTheDataset({data}) {
                         onRemove={onChangeMultiSelectOtherColumns}
                     />
                 </div>
-                {renderErrorMessage("filters_not_complete", errorMessages)}
+                {renderErrorMessage(selectedDisease === "Other" ? "filters_not_complete" : "filters_not_complete_without_id", errorMessages)}
                 {renderErrorMessage("not_number", errorMessages)}
                 <button className="general-button" onClick={handleButtonClickViewTable}>Update table</button>
             </div>

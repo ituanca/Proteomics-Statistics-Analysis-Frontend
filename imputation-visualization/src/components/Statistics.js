@@ -15,6 +15,7 @@ function Statistics(){
 
     // send the filters for the dataset to the backend and receive them back as a response
     useEffect(() => {
+        console.log(selectedOptionsForTable)
         axios
             .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptionsForTable))
             .then((response) => {

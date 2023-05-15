@@ -2,26 +2,10 @@ import React from "react";
 
 const data = JSON.parse(localStorage.getItem('selectedDataset'))
 
-export const Ids = [...new Set(data.rows.map((item) => item["Majority.protein.IDs"]))];
-export const newIds = [...new Set(["-- Select an option --", ...Ids])];
-export const proteinNames = [...new Set(data.rows.map((item) => item["Protein.names"]))];
-export const newProteinNames = [...new Set(["-- Select an option --", ...proteinNames])];
 export const generalOptions = [
     {name: "gender", label: "Gender", type: "select", values: ["All", "Male", "Female"],},
     {name: "metric", label: "Metric for comparison", type: "select", values: ["mean", "median", "standard deviation"]},
     {name: "type_of_plot", label: "Type of chart", type: "select", values: ["bar chart", "pie chart"]}
-];
-export const proteinOptions = [
-    {name: "protein_id_1", label: "Protein ID 1", type: "select", values: newIds},
-    {name: "protein_name_1", label: "Protein Name 1", type: "select", values: newProteinNames},
-    {name: "protein_id_2", label: "Protein ID 2", type: "select", values: newIds},
-    {name: "protein_name_2", label: "Protein Name 2", type: "select", values: newProteinNames},
-    {name: "protein_id_3", label: "Protein ID 3", type: "select", values: newIds},
-    {name: "protein_name_3", label: "Protein Name 3", type: "select", values: newProteinNames},
-    {name: "protein_id_4", label: "Protein ID 4", type: "select", values: newIds},
-    {name: "protein_name_4", label: "Protein Name 4", type: "select", values: newProteinNames},
-    {name: "protein_id_5", label: "Protein ID 5", type: "select", values: newIds},
-    {name: "protein_name_5", label: "Protein Name 5", type: "select", values: newProteinNames}
 ];
 
 function handleSelectionsCorrelation(option, value, crtId, crtName, selectedOptions, setSelectedOptions, options) {

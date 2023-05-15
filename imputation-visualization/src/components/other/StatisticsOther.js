@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Link, Outlet} from "react-router-dom";
 import StatisticsOtherFirstPlot from "./StatisticsOtherFirstPlot";
 import Accordion from '../Accordion';
@@ -6,7 +6,7 @@ import "../Accordion.css"
 import StatisticsOtherSecondPlot from "./StatisticsOtherSecondPlot";
 import StatisticsOtherThirdPlot from "./StatisticsOtherThirdPlot";
 import StatisticsOtherFourthPlot from "./StatisticsOtherFourthPlot";
-import ImputationExecution from "./ImputationExecution";
+import ImputationExecution from "../ImputationExecution";
 import StatisticsOtherFifthPlot from "./StatisticsOtherFifthPlot";
 
 export default function StatisticsOther(){

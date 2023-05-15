@@ -5,7 +5,6 @@ import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-const useHistoryState = window["use-history-state"];
 
 function ChooseDataset(){
 
@@ -228,7 +227,7 @@ function ChooseDataset(){
                                     <MDBTableBody rows={tableData.rows.slice(0,100)}/>
                                 </MDBTable>
                             </div>
-                            <FilterColumnsOfTheDataset data = {data}/>
+                            <FilterColumnsOfTheDataset data = {data} selectedDisease={selectedDisease}/>
                         </div>
                     )
                 : null}

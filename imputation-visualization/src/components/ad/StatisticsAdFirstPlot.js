@@ -10,6 +10,24 @@ export default function StatisticsAdFirstPlot(){
     const errors = {
         proteins: "select at least 2 proteins",
     };
+    const data = JSON.parse(localStorage.getItem('selectedDataset'))
+    const filteredData = JSON.parse(localStorage.getItem('selectedOptions'))
+    const Ids = [...new Set(data.rows.map((item) => item[filteredData.id]))];
+    const newIds = [...new Set(["-- Select an option --", ...Ids])];
+    const proteinNames = [...new Set(data.rows.map((item) => item["Protein.names"]))];
+    const newProteinNames = [...new Set(["-- Select an option --", ...proteinNames])];
+    const proteinOptions = [
+        {name: "protein_id_1", label: "Protein ID 1", type: "select", values: newIds},
+        {name: "protein_name_1", label: "Protein Name 1", type: "select", values: newProteinNames},
+        {name: "protein_id_2", label: "Protein ID 2", type: "select", values: newIds},
+        {name: "protein_name_2", label: "Protein Name 2", type: "select", values: newProteinNames},
+        {name: "protein_id_3", label: "Protein ID 3", type: "select", values: newIds},
+        {name: "protein_name_3", label: "Protein Name 3", type: "select", values: newProteinNames},
+        {name: "protein_id_4", label: "Protein ID 4", type: "select", values: newIds},
+        {name: "protein_name_4", label: "Protein Name 4", type: "select", values: newProteinNames},
+        {name: "protein_id_5", label: "Protein ID 5", type: "select", values: newIds},
+        {name: "protein_name_5", label: "Protein Name 5", type: "select", values: newProteinNames}
+    ];
     const [selectedOptions, setSelectedOptions] = useState({
         gender: "",
         protein_id_1: "", protein_name_1: "",
@@ -61,7 +79,6 @@ export default function StatisticsAdFirstPlot(){
                     <div key={option.name} className={getTypeOfGroup(option)}>
                        <label className="label-statistics">{option.label}</label>
                        <select className="input-for-statistics-ad-select"
-                           // disabled={!option.enabled}
                                value={selectedOptions[option.name]}
                                onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions, proteinOptions)}
                        >

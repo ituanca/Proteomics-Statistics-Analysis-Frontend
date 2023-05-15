@@ -4,10 +4,10 @@ import StatisticsAdFirstPlot from "./StatisticsAdFirstPlot";
 import StatisticsAdSecondPlot from "./StatisticsAdSecondPlot";
 import StatisticsAdThirdPlot from "./StatisticsAdThirdPlot";
 import StatisticsAdFourthPlot from "./StatisticsAdFourthPlot";
-import ImputationMethodChoice from "./ImputationMethodChoice";
 import Accordion from '../Accordion';
 import "../Accordion.css"
 import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
+import ImputationExecution from "../ImputationExecution";
 
 export default function StatisticsAD(){
 
@@ -44,7 +44,7 @@ export default function StatisticsAD(){
     const accordionDataPerformImputation = [
         {
             title: 'View the normalized incomplete dataset and perform imputation with the preferred method',
-            content: <ImputationMethodChoice/>
+            content: <ImputationExecution/>
         }
     ];
 
@@ -56,16 +56,6 @@ export default function StatisticsAD(){
     ];
 
     const renderForm = (
-        // <div className="button-container-col">
-        //     <h2>Generate statistics on the incomplete dataset</h2>
-        //     <StatisticsAdFirstPlot data={data}/>
-        //     <StatisticsAdSecondPlot samplesFilter={filterForSamplesChoice}/>
-        //     <StatisticsAdThirdPlot/>
-        //     <StatisticsAdFourthPlot/>
-        //     <h2>Perform imputation</h2>
-        //     <ImputationMethodChoice/>
-        //     <h2>Generate statistics on the dataset after imputation</h2>
-        // </div>
 
         <div className="accordion">
             <h3>Generate statistics on the incomplete dataset</h3>
