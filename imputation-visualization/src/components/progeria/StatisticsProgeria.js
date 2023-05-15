@@ -3,13 +3,11 @@ import {Link, Outlet} from "react-router-dom";
 import Accordion from '../Accordion';
 import "../Accordion.css"
 import ImputationExecution from "../ImputationExecution";
-import {generalOptionsProgeria} from "../other/FunctionsForEntrySelectionPlot";
+import {generalOptionsProgeria, optionsForThirdPlotProgeria} from "../other/FunctionsForEntrySelectionPlot";
 import StatisticsOtherFirstPlot from "../other/StatisticsOtherFirstPlot";
 import StatisticsAdSecondPlot from "../ad/StatisticsAdSecondPlot";
 import StatisticsAdThirdPlot from "../ad/StatisticsAdThirdPlot";
-import {optionsForThirdPlotProgeria} from "../ad/FunctionsForProteinsSelectionPlot";
 import StatisticsOtherFourthPlot from "../other/StatisticsOtherFourthPlot";
-import StatisticsAdFifthPlot from "../ad/StatisticsAdFifthPlot";
 import StatisticsOtherFifthPlot from "../other/StatisticsOtherFifthPlot";
 
 export default function StatisticsProgeria(){

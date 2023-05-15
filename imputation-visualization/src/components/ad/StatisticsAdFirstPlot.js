@@ -1,14 +1,13 @@
 import React from "react";
-import {
-    handleOptionChange,
-    getTypeOfGroup,
-    truncateText,
-    validate,
-    generalOptionsAD
-} from "./FunctionsForProteinsSelectionPlot";
 import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {
+    generalOptionsAD,
+    getTypeOfGroupAD,
+    handleOptionChangeWithCorrelation, truncateText,
+    validate
+} from "../other/FunctionsForEntrySelectionPlot";
 
 export default function StatisticsAdFirstPlot(){
 
@@ -82,11 +81,11 @@ export default function StatisticsAdFirstPlot(){
                 {/*<h3>Compare up to 5 proteins according to a metric</h3>*/}
                 {labelAndDropdownGroupWithSpace(generalOptionsAD[0], selectedOptions, setSelectedOptions, proteinOptions)}
                 {proteinOptions.map((option) =>
-                    <div key={option.name} className={getTypeOfGroup(option)}>
+                    <div key={option.name} className={getTypeOfGroupAD(option)}>
                        <label className="label-statistics">{option.label}</label>
                        <select className="input-for-statistics-ad-select"
                                value={selectedOptions[option.name]}
-                               onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions, proteinOptions, data)}
+                               onChange={(e) => handleOptionChangeWithCorrelation(option.name, e.target.value, selectedOptions, setSelectedOptions, proteinOptions, data)}
                        >
                           {option.values.map((value) => (
                               <option key={value} value={value}>

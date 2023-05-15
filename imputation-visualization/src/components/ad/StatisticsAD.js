@@ -3,13 +3,12 @@ import {Link, Outlet} from "react-router-dom";
 import StatisticsAdFirstPlot from "./StatisticsAdFirstPlot";
 import StatisticsAdSecondPlot from "./StatisticsAdSecondPlot";
 import StatisticsAdThirdPlot from "./StatisticsAdThirdPlot";
-import StatisticsAdFourthPlot from "./StatisticsAdFourthPlot";
 import Accordion from '../Accordion';
 import "../Accordion.css"
 import StatisticsAdFifthPlot from "./StatisticsAdFifthPlot";
 import ImputationExecution from "../ImputationExecution";
-import {optionsForThirdPlotAD} from "./FunctionsForProteinsSelectionPlot";
 import StatisticsOtherFourthPlot from "../other/StatisticsOtherFourthPlot";
+import {optionsForThirdPlotAD} from "../other/FunctionsForEntrySelectionPlot";
 
 export default function StatisticsAD(){
 
