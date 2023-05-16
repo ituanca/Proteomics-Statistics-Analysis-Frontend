@@ -154,12 +154,28 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         event.preventDefault();
     };
 
+    const getClassNameForColumnHeader = (columnHeader) => {
+        if(selectedOptions.class1.includes(columnHeader.label)){
+            return "column-header-class1"
+        }else if(selectedOptions.class2.includes(columnHeader.label)){
+            return "column-header-class2"
+        }else if(selectedOptions.other_columns.includes(columnHeader.label)){
+            return "column-header-other-columns";
+        }else if(selectedOptions.id === columnHeader.label){
+            return "column-header-id";
+        }
+        return "column-header-other-columns";
+    }
+
     return (
         <form onSubmit = {handleSubmit}>
             <div className="table-filters">
+                <div className="label-table-description-container">
+                    <label className="label-table-description">Filter the dataset:</label>
+                </div>
                 {selectedDisease === "Other" ?
                     <div className="label-field-group-choose-dataset">
-                        <label className="label-statistics">Choose an ID column</label>
+                        <label className="label-choose-dataset">Choose an ID column</label>
                         <select className="input-for-statistics-ad-select"
                                 value={selectedOptions.id}
                                 required
@@ -174,19 +190,43 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                     </div>
                 :
                     <div>
-                        <div className="label-field-group-choose-dataset">
-                            <label className="label-statistics">ID: </label>
-                            <label className="label-statistics"><strong>{selectedOptions.id}</strong></label>
+                        <div>
+                            <div className="label-field-group-choose-dataset">
+                                <label className="label-choose-dataset">ID: </label>
+                                <label className="label-choose-dataset"><strong>{selectedOptions.id}</strong></label>
+                            </div>
+                            <div className="label-field-group-choose-dataset">
+                                <label className="label-choose-dataset">Name: </label>
+                                <label className="label-choose-dataset"><strong>Protein.names</strong></label>
+                            </div>
                         </div>
-                        <div className="label-field-group-choose-dataset">
-                            <label className="label-statistics">Name: </label>
-                            <label className="label-statistics"><strong>Protein.names</strong></label>
-                        </div>
+                        {selectedDisease === "Alzheimer's disease" ?
+                            <div>
+                                <div className="label-field-group-choose-dataset">
+                                    <label className="label-choose-dataset">Class 1: </label>
+                                    <label className="label-choose-dataset"><strong>Female</strong></label>
+                                </div>
+                                <div className="label-field-group-choose-dataset">
+                                    <label className="label-choose-dataset">Class 2: </label>
+                                    <label className="label-choose-dataset"><strong>Male</strong></label>
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                <div className="label-field-group-choose-dataset">
+                                    <label className="label-choose-dataset">Class 1: </label>
+                                    <label className="label-choose-dataset"><strong>With Progeria</strong></label>
+                                </div>
+                                <div className="label-field-group-choose-dataset">
+                                    <label className="label-choose-dataset">Class 2: </label>
+                                    <label className="label-choose-dataset"><strong>Without Progeria</strong></label>
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
-
-                <div className="label-field-group-choose-dataset">
-                    <label className="label-statistics">Columns for the first class</label>
+                <div className="label-multiselect-group-choose-dataset">
+                    <label className="label-choose-dataset">Columns for the first class</label>
                     <Multiselect
                         showArrow
                         options={availableOptionsMultiselect}
@@ -195,8 +235,8 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         onRemove={onChangeMultiSelectFirstClass}
                     />
                 </div>
-                <div className="label-field-group-choose-dataset">
-                    <label className="label-statistics">Columns for the second class</label>
+                <div className="label-multiselect-group-choose-dataset">
+                    <label className="label-choose-dataset">Columns for the second class</label>
                     <Multiselect
                         showArrow
                         options={availableOptionsMultiselect}
@@ -205,8 +245,8 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         onRemove={onChangeMultiSelectSecondClass}
                     />
                 </div>
-                <div className="label-field-group-choose-dataset">
-                    <label className="label-statistics">Other columns of interest</label>
+                <div className="label-multiselect-group-choose-dataset">
+                    <label className="label-choose-dataset">Other columns of interest</label>
                     <Multiselect
                         showArrow
                         options={availableOptionsMultiselect}
@@ -221,9 +261,21 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
             </div>
             {(tableVisible) ?
                 <div>
+                    <div className="table-colors-legend">
+                        <div className="legend-container-row"><div className='box id-color'/>ID</div>
+                        <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
+                        <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
+                        <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
+                    </div>
                     <div className="table-position">
                         <MDBTable scrollY maxHeight="500px">
-                            <MDBTableHead columns={tableData.columns}/>
+                            <MDBTableHead>
+                                <tr>
+                                    {tableData.columns.map((columnHeader) => (
+                                        <th className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                    ))}
+                                </tr>
+                            </MDBTableHead>
                             <MDBTableBody rows={tableData.rows}/>
                         </MDBTable>
                     </div>

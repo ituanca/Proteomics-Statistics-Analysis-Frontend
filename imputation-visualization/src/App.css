@@ -137,8 +137,8 @@ td {
 }
 
 .page-container {
-  align-items: center;
-  justify-content: center;
+  /*align-items: center;*/
+  /*justify-content: center;*/
   /*if I let the 'display: flex' uncommented, the forms apear at the center with smaller width*/
   /*display: flex;*/
   flex-direction: column;

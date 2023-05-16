@@ -195,7 +195,6 @@ function ChooseDataset(){
                         </div>
                     </div>
                 </div>
-
                 {multipleSheets ?
                     <div className="table-filters">
                         <div className="label-field-group-choose-dataset">

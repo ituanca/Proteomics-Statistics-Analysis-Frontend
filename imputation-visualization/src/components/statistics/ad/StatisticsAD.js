@@ -80,7 +80,7 @@ export default function StatisticsAD(){
         {
             title: 'Compare up to 5 proteins according to a metric',
             content: <FirstPlot errors={errors1stPlot} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions}
-                                generalOptions={generalOptionsAD} limitForEnoughEntries={7} path="requestAdChart"
+                                generalOptions={generalOptionsAD} limitForEnoughEntries={7} path="requestAdFirstChart"
                                 entryOptions={proteinOptions} condForTypeOfGroup={condForTypeOfGroup}
                                 handleOptionChange={handleOptionChangeWithCorrelation}/>
         },

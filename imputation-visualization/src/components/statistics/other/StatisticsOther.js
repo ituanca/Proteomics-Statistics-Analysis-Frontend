@@ -90,11 +90,11 @@ export default function StatisticsOther(){
         },
         {
             title: 'Compare the number/percentage of missing values for each sample by class',
-            content: <ThirdPlot options={options3rdPlot} path="requestOtherThirdChart"/>
+            content: <ThirdPlot options={options3rdPlot} path="requestGeneralThirdChart"/>
         },
         {
             title: 'Compare the missing values distribution for each class',
-            content: <FourthPlot path = "requestOtherFourthChart"/>
+            content: <FourthPlot path = "requestGeneralFourthChart"/>
         }
     ];
 
