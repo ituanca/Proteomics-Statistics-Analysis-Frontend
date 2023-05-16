@@ -79,21 +79,6 @@ export const handleOptionChangeWithCorrelation = (option, value, selectedOptions
     handleSelectionsCorrelation(option, value, "entry_id_5", "entry_name_5", selectedOptions, setSelectedOptions, options, data);
 };
 
-export const getTypeOfGroup = (option) => {
-    if(option.name === "class" || option.name === "metric"){
-        return "label-field-group-with-space"
-    }
-    return "label-field-group";
-}
-
-export const getTypeOfGroupAD = (option) => {
-    if(option.name === "gender" || option.name === "entry_name_1" || option.name === "entry_name_2" || option.name === "entry_name_3"
-        || option.name === "entry_name_4" || option.name === "entry_name_5" || option.name === "metric"){
-        return "label-field-group-with-space"
-    }
-    return "label-field-group";
-}
-
 export function truncateText(text, maxLength) {
     if (text.length <= maxLength) {
         return text;

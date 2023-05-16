@@ -1,37 +1,15 @@
 import React from "react";
-import {handleOptionChange, generalOptions, getTypeOfGroup, validate} from "./FunctionsForEntrySelectionPlot";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../Utils";
+import {truncateText, validate} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
 
-export default function StatisticsOtherFirstPlot({generalOptions, path}){
+export default function FirstPlot({errors, selectedOptions, setSelectedOptions, generalOptions,
+                                  limitForEnoughEntries, path, entryOptions, condForTypeOfGroup, handleOptionChange}){
 
     const [errorMessages, setErrorMessages] = useState({});
-    const errors = {
-        entries: "select at least 2 entries",
-    };
-    // data, filteredData, Ids, newIds and entryOptions have to be declared here, otherwise they don't update unless I refresh the page
     const data = JSON.parse(localStorage.getItem('selectedDataset'))
-    const filteredData = JSON.parse(localStorage.getItem('selectedOptions'))
-    const Ids = [...new Set(data.rows.map((item) => item[filteredData.id]))];
-    const newIds = [...new Set(["-- Select an option --", ...Ids])];
-    const entryOptions = [
-        {name: "entry_id_1", label: "Entry ID 1", type: "select", values: newIds},
-        {name: "entry_id_2", label: "Entry ID 2", type: "select", values: newIds},
-        {name: "entry_id_3", label: "Entry ID 3", type: "select", values: newIds},
-        {name: "entry_id_4", label: "Entry ID 4", type: "select", values: newIds},
-        {name: "entry_id_5", label: "Entry ID 5", type: "select", values: newIds},
-    ];
-    const [selectedOptions, setSelectedOptions] = useState({
-        class: "",
-        entry_id_1: "",
-        entry_id_2: "",
-        entry_id_3: "",
-        entry_id_4: "",
-        entry_id_5: "",
-        metric: "",
-        type_of_plot: ""
-    });
+
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
@@ -43,12 +21,12 @@ export default function StatisticsOtherFirstPlot({generalOptions, path}){
     }, [])
 
     const nonEmptyFieldsCount = Object.values(selectedOptions).filter(value => value !== "").length;
-    const enoughEntriesSelected = (nonEmptyFieldsCount >= 5)
+    const enoughProteinsSelected = (nonEmptyFieldsCount >= limitForEnoughEntries)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(selectedOptions)
-        if(validate(enoughEntriesSelected, setErrorMessages, errors)){
+        if(validate(enoughProteinsSelected, setErrorMessages, errors)){
             axios
                 .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
@@ -63,21 +41,29 @@ export default function StatisticsOtherFirstPlot({generalOptions, path}){
         }
     };
 
+    const getTypeOfGroup = (option) => {
+        if(condForTypeOfGroup(option)){
+            return "label-field-group-with-space"
+        }
+        return "label-field-group";
+    }
+
     return (
         <form onSubmit = {handleSubmit}>
             <div className="container-row">
                 <div className="statistics-options">
+                    {/*<h3>Compare up to 5 proteins according to a metric</h3>*/}
                     {labelAndDropdownGroupWithSpace(generalOptions[0], selectedOptions, setSelectedOptions)}
                     {entryOptions.map((option) =>
                         <div key={option.name} className={getTypeOfGroup(option)}>
                             <label className="label-statistics">{option.label}</label>
                             <select className="input-for-statistics-ad-select"
                                     value={selectedOptions[option.name]}
-                                    onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions)}
+                                    onChange={(e) => handleOptionChange(option.name, e.target.value, selectedOptions, setSelectedOptions, entryOptions, data)}
                             >
                                 {option.values.map((value) => (
                                     <option key={value} value={value}>
-                                        {value}
+                                        {truncateText(value, 60)}
                                     </option>
                                 ))}
                             </select>

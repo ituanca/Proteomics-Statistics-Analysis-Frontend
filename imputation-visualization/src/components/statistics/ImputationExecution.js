@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import {handleOptionChange} from "./Utils";
+import {handleOptionChange} from "../Utils";
 
 export default function ImputationExecution(){
 

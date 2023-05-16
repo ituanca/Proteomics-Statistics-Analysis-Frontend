@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange} from "../Utils";
+import {handleOptionChange} from "../../Utils";
 
-export default function StatisticsOtherThirdPlot(){
+export default function ThirdPlot({options, path}){
 
     const [selectedOptions, setSelectedOptions] = useState({
         class: "",
@@ -10,12 +10,6 @@ export default function StatisticsOtherThirdPlot(){
         representation: ""
     });
     const [imageUrl, setImageUrl] = useState("");
-
-    const options = [
-        {name: "class", label: "Class", type: "select", values: ["All", "Class1", "Class2"]},
-        {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
-        {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
-    ];
 
     useEffect(() => {
         setSelectedOptions({...selectedOptions,
@@ -28,7 +22,7 @@ export default function StatisticsOtherThirdPlot(){
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("http://localhost:8000/requestOtherThirdChart", JSON.stringify(selectedOptions), {
+            .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                 responseType: "arraybuffer"
             })
             .then((response) => {

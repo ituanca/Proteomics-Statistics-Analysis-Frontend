@@ -4,9 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import StartPage from "./components/StartPage";
-import ChooseDataset from "./components/ChooseDataset";
-import Statistics from "./components/Statistics";
+import StartPage from "./components/startPage/StartPage";
+import ChooseDataset from "./components/uploadDataset/ChooseDataset";
+import Statistics from "./components/statistics/Statistics";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

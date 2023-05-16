@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import '../Statistics.css';
-import {handleOptionChange} from "../Utils";
+import {handleOptionChange} from "../../Utils";
 
-export default function StatisticsOtherFourthPlot({path}){
+export default function FourthPlot({path}){
 
     const [selectedOptions, setSelectedOptions] = useState({
         type_of_representation: ""
