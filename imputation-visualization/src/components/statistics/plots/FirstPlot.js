@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../Utils";
 import {truncateText, validate} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+import {Multiselect} from "multiselect-react-dropdown";
 
 export default function FirstPlot({errors, selectedOptions, setSelectedOptions, generalOptions,
                                   limitForEnoughEntries, path, entryOptions, condForTypeOfGroup, handleOptionChange}){
@@ -41,6 +42,10 @@ export default function FirstPlot({errors, selectedOptions, setSelectedOptions, 
         }
     };
 
+    const onChangeMultiSelect = (selectedItems) => {
+        setSelectedOptions({...selectedOptions, samples: selectedItems})
+    };
+
     const getTypeOfGroup = (option) => {
         if(condForTypeOfGroup(option)){
             return "label-field-group-with-space"
@@ -69,6 +74,13 @@ export default function FirstPlot({errors, selectedOptions, setSelectedOptions, 
                             </select>
                         </div>
                     )}
+                    {/*<Multiselect*/}
+                    {/*    showArrow*/}
+                    {/*    options={entryOptions.values}*/}
+                    {/*    isObject={false}*/}
+                    {/*    onSelect={onChangeMultiSelect}*/}
+                    {/*    onRemove={onChangeMultiSelect}*/}
+                    {/*/>*/}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {renderErrorMessage("entries", errorMessages)}

@@ -12,6 +12,7 @@ import SecondPlot from "../plots/SecondPlot";
 import ThirdPlot from "../plots/ThirdPlot";
 import FourthPlot from "../plots/FourthPlot";
 import FifthPlot from "../plots/FifthPlot";
+import SixthPlot from "../plots/SixthPlot";
 
 export default function StatisticsProgeria(){
 
@@ -53,6 +54,20 @@ export default function StatisticsProgeria(){
         entries: "select at least 1 protein",
     };
 
+    //4th plot
+    const filterForChoiceOfRepresentation = {
+        name: "type_of_representation",
+        label: "Type of representation",
+        type: "select",
+        values: ["distribution of missing values for each sample", "distribution of missing values for each protein"]
+    };
+
+    // 6th plot
+    const optionsForSixthPlot = [
+        {name: "class", label: "Class", type: "select", values: ["All", "With_Progeria", "Without_Progeria"]},
+        {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
+    ];
+
     //5th plot
     const errors5thPlot = {
         entries: "select at least 1 entry",
@@ -86,8 +101,12 @@ export default function StatisticsProgeria(){
             content: <ThirdPlot options={optionsForThirdPlotProgeria} path="requestProgeriaThirdChart"/>
         },
         {
-            title: 'Compare the missing values distribution for each clas',
-            content: <FourthPlot path = "requestProgeriaFourthChart"/>
+            title: 'Compare the missing values distribution for each class',
+            content: <FourthPlot path = "requestProgeriaFourthChart" filterForChoiceOfRepresentation={filterForChoiceOfRepresentation}/>
+        },
+        {
+            title: 'View the percentage of the missing values',
+            content: <SixthPlot path = "requestProgeriaSixthChart" options={optionsForSixthPlot}/>
         }
     ];
 

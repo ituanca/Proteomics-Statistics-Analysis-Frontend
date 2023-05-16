@@ -10,6 +10,7 @@ import SecondPlot from "../plots/SecondPlot";
 import ThirdPlot from "../plots/ThirdPlot";
 import FourthPlot from "../plots/FourthPlot";
 import FifthPlot from "../plots/FifthPlot";
+import SixthPlot from "../plots/SixthPlot";
 
 export default function StatisticsOther(){
 
@@ -60,6 +61,14 @@ export default function StatisticsOther(){
         {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
     ];
 
+    //4th plot
+    const filterForChoiceOfRepresentation = {
+        name: "type_of_representation",
+        label: "Type of representation",
+        type: "select",
+        values: ["distribution of missing values for each sample", "distribution of missing values for each entry"]
+    };
+
     //5th plot
     const errors5thPlot = {
         entries: "select at least 1 entry",
@@ -75,6 +84,12 @@ export default function StatisticsOther(){
         type_of_plot: "",
         imputation_method: ""
     });
+
+    //6th plot
+    const optionsForSixthPlot = [
+        {name: "class", label: "Class", type: "select", values: ["All",  "Class1", "Class2"]},
+        {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
+    ];
 
     const accordionDataIncompleteDataset = [
         {
@@ -94,7 +109,11 @@ export default function StatisticsOther(){
         },
         {
             title: 'Compare the missing values distribution for each class',
-            content: <FourthPlot path = "requestGeneralFourthChart"/>
+            content: <FourthPlot path = "requestGeneralFourthChart" filterForChoiceOfRepresentation={filterForChoiceOfRepresentation}/>
+        },
+        {
+            title: 'View the percentage of the missing values',
+            content: <SixthPlot path = "requestGeneralSixthChart" options={optionsForSixthPlot}/>
         }
     ];
 

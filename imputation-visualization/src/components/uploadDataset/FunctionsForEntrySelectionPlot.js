@@ -25,7 +25,7 @@ export const optionsForThirdPlotAD = [
 ];
 
 export const optionsForThirdPlotProgeria = [
-    {name: "class", label: "Class", type: "select", values: ["All",  "With_Progeria", "Without_Progeria"]},
+    {name: "class", label: "Class", type: "select", values: ["All", "With_Progeria", "Without_Progeria"]},
     {name: "representation", label: "View as", type: "select", values: ["number", "percentage"]},
     {name: "type_of_plot", label: "Type of chart", type: "select", values: ["vertical bar chart", "horizontal bar chart"]}
 ];

@@ -13,6 +13,7 @@ import SecondPlot from "../plots/SecondPlot";
 import ThirdPlot from "../plots/ThirdPlot";
 import FourthPlot from "../plots/FourthPlot";
 import FifthPlot from "../plots/FifthPlot";
+import SixthPlot from "../plots/SixthPlot";
 
 export default function StatisticsAD(){
 
@@ -62,6 +63,13 @@ export default function StatisticsAD(){
     const condForTypeOfGroup = (option) => (option.name === "gender" || option.name === "entry_name_1" || option.name === "entry_name_2" ||
         option.name === "entry_name_3" || option.name === "entry_name_4" || option.name === "entry_name_5" || option.name === "metric")
 
+    const filterForChoiceOfRepresentation = {
+        name: "type_of_representation",
+        label: "Type of representation",
+        type: "select",
+        values: ["distribution of missing values for each sample", "distribution of missing values for each protein"]
+    };
+
     const errors5thPlot = {
         entries: "select at least 1 protein",
     };
@@ -75,6 +83,12 @@ export default function StatisticsAD(){
         metric: "",
         type_of_plot: ""
     });
+
+    // 6th plot
+    const optionsForSixthPlot = [
+        {name: "class", label: "Gender", type: "select", values: ["All", "Male", "Female"]},
+        {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
+    ];
 
     const accordionDataIncompleteDataset = [
         {
@@ -94,7 +108,11 @@ export default function StatisticsAD(){
         },
         {
             title: 'Compare the missing values distribution for each gender',
-            content: <FourthPlot path = "requestAdFourthChart"/>
+            content: <FourthPlot path = "requestAdFourthChart" filterForChoiceOfRepresentation={filterForChoiceOfRepresentation}/>
+        },
+        {
+            title: 'View the percentage of the missing values',
+            content: <SixthPlot path = "requestAdSixthChart" options={optionsForSixthPlot}/>
         }
     ];
 
