@@ -86,7 +86,7 @@ export default function StatisticsAD(){
 
     // 6th plot
     const optionsForSixthPlot = [
-        {name: "class", label: "Gender", type: "select", values: ["All", "Male", "Female"]},
+        {name: "class", label: "Gender", type: "select", values: ["All", "Per genders"]},
         {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
     ];
 

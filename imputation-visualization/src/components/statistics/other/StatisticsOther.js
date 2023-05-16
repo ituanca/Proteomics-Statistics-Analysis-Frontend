@@ -87,7 +87,7 @@ export default function StatisticsOther(){
 
     //6th plot
     const optionsForSixthPlot = [
-        {name: "class", label: "Class", type: "select", values: ["All",  "Class1", "Class2"]},
+        {name: "class", label: "Class", type: "select", values: ["All",  "Per classes"]},
         {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
     ];
 

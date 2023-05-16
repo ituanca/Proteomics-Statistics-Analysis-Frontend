@@ -64,7 +64,7 @@ export default function StatisticsProgeria(){
 
     // 6th plot
     const optionsForSixthPlot = [
-        {name: "class", label: "Class", type: "select", values: ["All", "With_Progeria", "Without_Progeria"]},
+        {name: "class", label: "Class", type: "select", values: ["All", "With or without Progeria"]},
         {name: "type_of_representation", label: "Type of representation", type: "select", values: ["percentage of missing values", "percentage of missing values per samples"]}
     ];
 
