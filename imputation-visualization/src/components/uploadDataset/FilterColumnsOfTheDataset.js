@@ -6,6 +6,7 @@ import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import isEqual from 'lodash/isEqual';
 import "./ChooseDataset.css"
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
@@ -29,6 +30,24 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         other_columns: []
     });
     const prevOptions = useRef([]);
+
+    const [availableEntries, setAvailableEntries] = useState([]);
+    const [selectedEntries, setSelectedEntries] = useState({
+        entries: []
+    });
+
+    // set the available entries - all the IDs
+    useEffect(() => {
+        if(tableVisible && tableData.rows.length > 0 && tableData.columns.length > 0){
+            let idColumn = data.columns.find(column => column.label === selectedOptions.id)
+            if(idColumn !== {}){
+                let idValues = tableData.rows.map(row => row[idColumn.label])
+                setAvailableEntries(idValues)
+            }
+        }
+    }, [tableVisible])
+
+    console.log(selectedEntries)
 
     function checkIfStringIsUnselectedInMultiselect (string) {
         return ((!selectedOptions.class1.includes(string)) &&
@@ -103,37 +122,70 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         return false;
     }
 
-    const handleButtonClickViewTable = () => {
-        if( ((selectedDisease === "Other" && validate()) ||
-                (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
-            let selectedOptionsList = []
-            selectedOptionsList.push(selectedOptions.id)
-            if(selectedDisease !== "Other"){
-                selectedOptionsList.push("Protein.names")
-            }
-            selectedOptions.class1.map(element => {selectedOptionsList.push(element)})
-            selectedOptions.class2.map(element => {selectedOptionsList.push(element)})
-            selectedOptions.other_columns.map(element => {selectedOptionsList.push(element)})
+    const [filtersSent, setFiltersSent] = useState(false);
 
-            let selectedColumns = data.columns.filter(column => selectedOptionsList.includes(column.label))
-            let selectedColumnsString = selectedColumns.map(column => column.label)
-
-            setTableData({
-                columns: selectedColumns,  // coloanele se adauga in ordinea in care sunt trecute in data.columns
-                rows: data.rows.map(row => {
-                    const newRow = {};
-                    selectedColumnsString.forEach(column => {
-                        if(row[column]=== undefined){
-                            newRow[column] = ""
-                        }else{
-                            newRow[column] = row[column];
-                        }
-                    });
-                    return newRow;
+    useEffect(() => {
+        if(filtersSent){
+            fetch('http://localhost:8000/getIncompleteDfNewGeneral')
+                .then((response) => response.json())
+                .then((json) => {
+                    setTableData({
+                        ...tableData, columns: Object.keys(json[0]).map(key => {
+                            return {
+                                label: key, field: key, sort: 'asc'
+                            };
+                        }), rows: json
+                    })
+                    setFiltersSent(false);
+                    setTableVisible(true);
+                    localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
                 })
-            })
-            setTableVisible(true);
-            localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
+                .catch((error) => console.log(error));
+        }
+    }, [filtersSent])
+
+    const handleButtonClickViewTable = () => {
+        if( ((selectedDisease === "Other" && validate()) || (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
+            // let selectedOptionsList = []
+            // selectedOptionsList.push(selectedOptions.id)
+            // if(selectedDisease !== "Other"){
+            //     selectedOptionsList.push("Protein.names")
+            // }
+            // selectedOptions.class1.map(element => {selectedOptionsList.push(element)})
+            // selectedOptions.class2.map(element => {selectedOptionsList.push(element)})
+            // selectedOptions.other_columns.map(element => {selectedOptionsList.push(element)})
+            //
+            // let selectedColumns = data.columns.filter(column => selectedOptionsList.includes(column.label))
+            // let selectedColumnsString = selectedColumns.map(column => column.label)
+            //
+            // setTableData({
+            //     columns: selectedColumns,  // coloanele se adauga in ordinea in care sunt trecute in data.columns
+            //     rows: data.rows.map(row => {
+            //         const newRow = {};
+            //         selectedColumnsString.forEach(column => {
+            //             if(row[column]=== undefined){
+            //                 newRow[column] = ""
+            //             }else{
+            //                 newRow[column] = row[column];
+            //             }
+            //         });
+            //         return newRow;
+            //     })
+            // })
+            // setTableVisible(true);
+            // localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
+
+            // send the filters for the dataset to the backend and receive them back as a response
+            console.log(selectedOptions)
+            axios
+                .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptions))
+                .then((response) => {
+                    console.info(response);
+                    setFiltersSent(true);
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
         }
     }
 
@@ -149,6 +201,45 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     const handleOptionChange = (option, value, selectedOptions, setSelectedOptions) => {
         setSelectedOptions({...selectedOptions, [option]: value});
     };
+
+
+    const [entriesToEliminateSent, setEntriesToEliminateSent] = useState(false);
+    useEffect(() => {
+        if(entriesToEliminateSent){
+            fetch('http://localhost:8000/getIncompleteDfNewGeneral')
+                .then((response) => response.json())
+                .then((json) => {
+                    setTableData({
+                        ...tableData, columns: Object.keys(json[0]).map(key => {
+                            return {
+                                label: key, field: key, sort: 'asc'
+                            };
+                        }), rows: json
+                    })
+                    setEntriesToEliminateSent(false);
+                })
+                .catch((error) => console.log(error));
+        }
+    }, [entriesToEliminateSent])
+
+    const handleEliminateEntriesButtonClick = () => {
+        if(selectedEntries.entries.length > 0){
+            console.log(selectedEntries)
+            axios
+                .post("http://localhost:8000/eliminateEntries", JSON.stringify(selectedEntries))
+                .then((response) => {
+                    console.info(response);
+                    setEntriesToEliminateSent(true)
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
+        }
+    }
+
+    const onChangeMultiSelectEntries = (selectedItems) => {
+        setSelectedEntries({...selectedEntries, entries: selectedItems})
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -279,6 +370,17 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                             <MDBTableBody rows={tableData.rows}/>
                         </MDBTable>
                     </div>
+                    <div className="label-multiselect-group-choose-dataset">
+                        <label className="label-choose-dataset">Choose entries to be eliminate from dataset</label>
+                        <Multiselect
+                            showArrow
+                            options={availableEntries}
+                            isObject={false}
+                            onSelect={onChangeMultiSelectEntries}
+                            onRemove={onChangeMultiSelectEntries}
+                        />
+                    </div>
+                    <button className="general-button" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
                     <div className="input-container-col-less-space">
                         <Link to="/Statistics">
                             <input type="submit" value="Next"/>

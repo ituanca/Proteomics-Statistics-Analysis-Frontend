@@ -13,18 +13,6 @@ function Statistics(){
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
-    // send the filters for the dataset to the backend and receive them back as a response
-    useEffect(() => {
-        console.log(selectedOptionsForTable)
-        axios
-            .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptionsForTable))
-            .then((response) => {
-                console.info(response);
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
-    }, [])
 
     const getClassNameForColumnHeader = (columnHeader) => {
         if(selectedOptionsForTable.class1.includes(columnHeader.label)){
