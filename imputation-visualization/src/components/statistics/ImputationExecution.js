@@ -109,10 +109,12 @@ export default function ImputationExecution(){
                 <div className="table-container">
                     {(incompleteFullGeneral.length > 0) ?
                         <div className="table-position">
-                            <MDBTable scrollY maxHeight="400px">
-                                <MDBTableHead columns={incompleteData.columns}/>
-                                <MDBTableBody rows={incompleteData.rows} />
-                            </MDBTable>
+                            <div className="table-position-background">
+                                <MDBTable scrollY maxHeight="400px">
+                                    <MDBTableHead columns={incompleteData.columns}/>
+                                    <MDBTableBody rows={incompleteData.rows} />
+                                </MDBTable>
+                            </div>
                         </div>
                         : null}
                 </div>
@@ -145,10 +147,12 @@ export default function ImputationExecution(){
                 <div className="table-container">
                     {(imputedGeneral.length > 0) ?
                         <div className="table-position">
-                            <MDBTable scrollY maxHeight="400px">
-                                <MDBTableHead columns={imputedData.columns}/>
-                                <MDBTableBody rows={imputedData.rows} />
-                            </MDBTable>
+                            <div className="table-position-background">
+                                <MDBTable scrollY maxHeight="400px">
+                                    <MDBTableHead columns={imputedData.columns}/>
+                                    <MDBTableBody rows={imputedData.rows} />
+                                </MDBTable>
+                            </div>
                         </div>
                         : null}
                 </div>

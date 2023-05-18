@@ -47,7 +47,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         }
     }, [tableVisible])
 
-    console.log(selectedEntries)
 
     function checkIfStringIsUnselectedInMultiselect (string) {
         return ((!selectedOptions.class1.includes(string)) &&
@@ -359,19 +358,21 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
                     </div>
                     <div className="table-position">
-                        <MDBTable scrollY maxHeight="500px">
-                            <MDBTableHead>
-                                <tr>
-                                    {tableData.columns.map((columnHeader) => (
-                                        <th className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                    ))}
-                                </tr>
-                            </MDBTableHead>
-                            <MDBTableBody rows={tableData.rows}/>
-                        </MDBTable>
+                        <div className="table-position-background">
+                            <MDBTable scrollY maxHeight="500px">
+                                <MDBTableHead>
+                                    <tr>
+                                        {tableData.columns.map((columnHeader, index) => (
+                                            <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                        ))}
+                                    </tr>
+                                </MDBTableHead>
+                                <MDBTableBody rows={tableData.rows}/>
+                            </MDBTable>
+                        </div>
                     </div>
                     <div className="label-multiselect-group-choose-dataset">
-                        <label className="label-choose-dataset">Choose entries to be eliminate from dataset</label>
+                        <label className="label-choose-dataset"><strong>Optional:</strong> Choose entries to be eliminate from dataset</label>
                         <Multiselect
                             showArrow
                             options={availableEntries}
@@ -379,13 +380,22 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                             onSelect={onChangeMultiSelectEntries}
                             onRemove={onChangeMultiSelectEntries}
                         />
+                        <button className="general-button eliminate-entries" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
                     </div>
-                    <button className="general-button" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
-                    <div className="input-container-col-less-space">
-                        <Link to="/Statistics">
-                            <input type="submit" value="Next"/>
-                        </Link>
+
+                    <div className="input-container-row-less-space">
+                        <div className="button-in-row">
+                            <Link to="/Statistics">
+                                <input type="submit" value="Statistics on the filtered dataset"/>
+                            </Link>
+                        </div>
+                        <div className="button-in-row">
+                            <Link to="/ArtificialImputation">
+                                <input type="submit" value="Artificial imputation"/>
+                            </Link>
+                        </div>
                     </div>
+
                 </div>
             : null}
         </form>

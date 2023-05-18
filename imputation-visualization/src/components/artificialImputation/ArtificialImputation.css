@@ -1,0 +1,19 @@
+.container-artificial-imputation{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.container-col-artificial-imputation{
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+.center-positioning{
+    text-align: center;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.list-item{
+    display: inline;
+}

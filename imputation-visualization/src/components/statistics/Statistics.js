@@ -29,6 +29,7 @@ function Statistics(){
 
     const renderForm = (
         <div>
+            <h1>Statistics</h1>
             <h2>{selectedDisease} dataset</h2>
             <div className="button-container-col">
                 <div className="table-colors-legend">
@@ -42,16 +43,18 @@ function Statistics(){
                     {/*    <MDBTableHead columns={tableData.columns}/>*/}
                     {/*    <MDBTableBody rows={tableData.rows} />*/}
                     {/*</MDBTable>*/}
-                    <MDBTable scrollY maxHeight="500px">
-                        <MDBTableHead>
-                            <tr>
-                                {tableData.columns.map((columnHeader) => (
-                                    <th className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                ))}
-                            </tr>
-                        </MDBTableHead>
-                        <MDBTableBody rows={tableData.rows}/>
-                    </MDBTable>
+                    <div className="table-position-background">
+                        <MDBTable scrollY maxHeight="500px">
+                            <MDBTableHead>
+                                <tr>
+                                    {tableData.columns.map((columnHeader) => (
+                                        <th className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                    ))}
+                                </tr>
+                            </MDBTableHead>
+                            <MDBTableBody rows={tableData.rows}/>
+                        </MDBTable>
+                    </div>
                 </div>
                 {(selectedDisease === "Alzheimer's disease") ? (
                     <StatisticsAD />

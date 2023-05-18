@@ -33,7 +33,7 @@
     color: darkblue;
     padding-top: 0.1%;
     padding-bottom: 1%;
-    font-size: 40px;
+    font-size: 38px;
     text-shadow: 0 0 10px white, 0 1px 0 rgba(0,0,0, .25);
 }
 input[type="file"] {
@@ -80,13 +80,16 @@ input[type="file"] {
     margin:10px;
     max-width: 40%;
 }
+.eliminate-entries{
+    font-size: 16px;
+}
 .label-multiselect-group-choose-dataset{
     position: relative;
     display: flex;
     flex-direction: row;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin:10px;
+    margin:15px;
 }
 .label-choose-dataset{
     color: white;
@@ -110,6 +113,15 @@ input[type="file"] {
     flex-direction: column;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+.input-container-row-less-space {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.button-in-row{
+    margin: 20px;
 }
 .column-header-class1 {
     background-color: darkgreen;

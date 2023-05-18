@@ -221,10 +221,12 @@ function ChooseDataset(){
                                 <label className="label-table-description">The first 100 rows of the dataset:</label>
                             </div>
                             <div className="table-position">
-                                <MDBTable scrollY maxHeight="500px">
-                                    <MDBTableHead columns={tableData.columns}/>
-                                    <MDBTableBody rows={tableData.rows.slice(0,100)}/>
-                                </MDBTable>
+                                <div className="table-position-background">
+                                    <MDBTable scrollY maxHeight="500px">
+                                        <MDBTableHead columns={tableData.columns}/>
+                                        <MDBTableBody rows={tableData.rows.slice(0,100)}/>
+                                    </MDBTable>
+                                </div>
                             </div>
                             <FilterColumnsOfTheDataset data = {data} selectedDisease={selectedDisease}/>
                         </div>
