@@ -157,3 +157,10 @@ td {
   flex-direction: column;
   padding-bottom: 5%;
 }
+
+.text-color-zero-imputation {
+  color: red;
+}
+.text-color-non-zero-imputation {
+  color: black;
+}

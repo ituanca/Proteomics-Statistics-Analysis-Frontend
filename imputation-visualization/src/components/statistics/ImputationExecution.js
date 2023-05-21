@@ -3,6 +3,7 @@ import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {handleOptionChange} from "../Utils";
 
+
 export default function ImputationExecution(){
 
     const [selectedMethod, setSelectedMethod] = useState({
@@ -25,6 +26,11 @@ export default function ImputationExecution(){
         values: []
     });
 
+    const [incompleteDataZeroesMarked, setIncompleteDataZeroesMarked] = useState( {
+        columns: [],
+        rows: []
+    })
+
     useEffect(() => {
         fetch('http://localhost:8000/getImputationMethods')
             .then((response) => response.json())
@@ -35,9 +41,39 @@ export default function ImputationExecution(){
             .catch((error) => console.log(error));
     }, [])
 
+
+    useEffect( () => {
+        if(incompleteData.length > 0){
+            for(let i = 0; i < incompleteData.rows.length; i++){
+                for(let j = 0; j < incompleteData.columns.length; j++){
+                    if(parseInt(incompleteData.rows[i][incompleteData.columns[j].label]) === 0) {
+                        setIncompleteDataZeroesMarked((prevState => {
+                            const newState = {...prevState};
+                            newState.rows[i][newState.columns[j].label] = true
+                            return newState
+                        }))
+                    }else if (!isNaN(incompleteData.rows[i][incompleteData.columns[j].label])){
+                        setIncompleteDataZeroesMarked((prevState => {
+                            const newState = {...prevState};
+                            newState.rows[i][newState.columns[j].label] = false
+                            return newState
+                        }))
+                    }
+                }
+            }
+        }
+    }, [incompleteData])
+
+    console.log(incompleteDataZeroesMarked)
+
     useEffect(() => {
         if(incompleteFullGeneral.length > 0) {
             setIncompleteData({...incompleteData, columns: Object.keys(incompleteFullGeneral[0]).map(key => {
+                    return {
+                        label: key, field: key, sort: 'asc'
+                    };
+                }), rows: incompleteFullGeneral})
+            setIncompleteDataZeroesMarked({...incompleteData, columns: Object.keys(incompleteFullGeneral[0]).map(key => {
                     return {
                         label: key, field: key, sort: 'asc'
                     };
@@ -93,6 +129,23 @@ export default function ImputationExecution(){
             });
     }
 
+    const mapCells = () =>{
+        return incompleteData.rows.map((row, indexRow) => (
+            <tr>
+                {incompleteData.columns.map((column, indexCol) => (
+                        <>
+                            { (incompleteDataZeroesMarked.rows[indexRow][incompleteDataZeroesMarked.columns[indexCol].label] === true) ?
+                                <td className="text-color-zero-imputation">{incompleteDataZeroesMarked[indexRow][incompleteDataZeroesMarked[indexCol].label]}</td>
+                                :
+                                <td className="text-color-non-zero-imputation">{incompleteDataZeroesMarked[indexRow][incompleteDataZeroesMarked[indexCol].label]}</td>
+                            }
+                        </>
+                    )
+                )}
+            </tr>
+        ))
+    }
+
     return (
         <div className="container-perform-imputation">
             <div className="container-row-perform-imputation">
@@ -112,7 +165,9 @@ export default function ImputationExecution(){
                             <div className="table-position-background">
                                 <MDBTable scrollY maxHeight="400px">
                                     <MDBTableHead columns={incompleteData.columns}/>
-                                    <MDBTableBody rows={incompleteData.rows} />
+                                    <MDBTableBody>
+                                        {mapCells}
+                                    </MDBTableBody>
                                 </MDBTable>
                             </div>
                         </div>

@@ -100,7 +100,7 @@ input[type="file"] {
 }
 .label-table-description-container{
     padding-top: 25px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
 }
 .label-table-description{
     color: white;

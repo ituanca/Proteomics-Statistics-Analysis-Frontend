@@ -154,15 +154,6 @@ export default function ArtificialImputation(){
             });
     }
 
-    const [filterForChoiceOfImputationMethod, setFilterForChoiceOfImputationMethod] = useState({
-        name: "imputation_method",
-        label: "Choose the imputation method",
-        type: "select",
-        values: []
-    });
-
-
-
     const getClassNameForColumnHeader = (columnHeader) => {
         if(selectedOptionsForTable.class1.includes(columnHeader.label)){
             return "column-header-class1"
@@ -278,7 +269,7 @@ export default function ArtificialImputation(){
                                 <h3>
                                     <p> 3. Perform imputation using all the available imputation techniques:</p>
                                     {imputationMethods.map((method, index) =>
-                                        <li className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
+                                        <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
                                     )}
                                 </h3>
                                 <button className="general-button" onClick={handlePerformImputation}>
@@ -286,8 +277,8 @@ export default function ArtificialImputation(){
                                 </button>
                             </div>
                         }
-                        { rowsWithNaEliminated && naValuesInserted && imputationPerformed && (listOfImputedTables.length > 0) &&
-                            <StatisticsOnArtificialImputation listOfImputedTables= {listOfImputedTables}/>
+                        { rowsWithNaEliminated && naValuesInserted && imputationPerformed &&
+                            <StatisticsOnArtificialImputation listOfImputedTables={listOfImputedTables}/>
                         }
                     </div>
                 </div>

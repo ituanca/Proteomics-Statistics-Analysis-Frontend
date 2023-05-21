@@ -39,16 +39,12 @@ function Statistics(){
                     <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
                 </div>
                 <div className="table-position">
-                    {/*<MDBTable scrollY maxHeight="300px">*/}
-                    {/*    <MDBTableHead columns={tableData.columns}/>*/}
-                    {/*    <MDBTableBody rows={tableData.rows} />*/}
-                    {/*</MDBTable>*/}
                     <div className="table-position-background">
                         <MDBTable scrollY maxHeight="500px">
                             <MDBTableHead>
                                 <tr>
-                                    {tableData.columns.map((columnHeader) => (
-                                        <th className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                    {tableData.columns.map((columnHeader, index) => (
+                                        <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
                                     ))}
                                 </tr>
                             </MDBTableHead>

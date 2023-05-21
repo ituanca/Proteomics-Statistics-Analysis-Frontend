@@ -145,35 +145,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
     const handleButtonClickViewTable = () => {
         if( ((selectedDisease === "Other" && validate()) || (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
-            // let selectedOptionsList = []
-            // selectedOptionsList.push(selectedOptions.id)
-            // if(selectedDisease !== "Other"){
-            //     selectedOptionsList.push("Protein.names")
-            // }
-            // selectedOptions.class1.map(element => {selectedOptionsList.push(element)})
-            // selectedOptions.class2.map(element => {selectedOptionsList.push(element)})
-            // selectedOptions.other_columns.map(element => {selectedOptionsList.push(element)})
-            //
-            // let selectedColumns = data.columns.filter(column => selectedOptionsList.includes(column.label))
-            // let selectedColumnsString = selectedColumns.map(column => column.label)
-            //
-            // setTableData({
-            //     columns: selectedColumns,  // coloanele se adauga in ordinea in care sunt trecute in data.columns
-            //     rows: data.rows.map(row => {
-            //         const newRow = {};
-            //         selectedColumnsString.forEach(column => {
-            //             if(row[column]=== undefined){
-            //                 newRow[column] = ""
-            //             }else{
-            //                 newRow[column] = row[column];
-            //             }
-            //         });
-            //         return newRow;
-            //     })
-            // })
-            // setTableVisible(true);
-            // localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
-
             // send the filters for the dataset to the backend and receive them back as a response
             console.log(selectedOptions)
             axios
@@ -200,7 +171,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     const handleOptionChange = (option, value, selectedOptions, setSelectedOptions) => {
         setSelectedOptions({...selectedOptions, [option]: value});
     };
-
 
     const [entriesToEliminateSent, setEntriesToEliminateSent] = useState(false);
     useEffect(() => {
