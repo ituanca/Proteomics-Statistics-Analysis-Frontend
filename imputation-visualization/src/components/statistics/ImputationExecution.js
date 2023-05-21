@@ -25,11 +25,15 @@ export default function ImputationExecution(){
         type: "select",
         values: []
     });
-
     const [incompleteDataZeroesMarked, setIncompleteDataZeroesMarked] = useState( {
         columns: [],
         rows: []
     })
+    const [imputedDataMarked, setImputedDataMarked] = useState( {
+        columns: [],
+        rows: []
+    })
+
 
     useEffect(() => {
         fetch('http://localhost:8000/getImputationMethods')
@@ -41,18 +45,18 @@ export default function ImputationExecution(){
             .catch((error) => console.log(error));
     }, [])
 
-
     useEffect( () => {
-        if(incompleteData.length > 0){
+        if(incompleteData.rows.length > 0){
             for(let i = 0; i < incompleteData.rows.length; i++){
                 for(let j = 0; j < incompleteData.columns.length; j++){
-                    if(parseInt(incompleteData.rows[i][incompleteData.columns[j].label]) === 0) {
+                    const crtCell = incompleteData.rows[i][incompleteData.columns[j].label]
+                    if(parseInt(crtCell) === 0) {
                         setIncompleteDataZeroesMarked((prevState => {
                             const newState = {...prevState};
                             newState.rows[i][newState.columns[j].label] = true
                             return newState
                         }))
-                    }else if (!isNaN(incompleteData.rows[i][incompleteData.columns[j].label])){
+                    }else{
                         setIncompleteDataZeroesMarked((prevState => {
                             const newState = {...prevState};
                             newState.rows[i][newState.columns[j].label] = false
@@ -64,27 +68,26 @@ export default function ImputationExecution(){
         }
     }, [incompleteData])
 
-    console.log(incompleteDataZeroesMarked)
-
     useEffect(() => {
         if(incompleteFullGeneral.length > 0) {
-            setIncompleteData({...incompleteData, columns: Object.keys(incompleteFullGeneral[0]).map(key => {
+            const tempIncompleteData = { columns: Object.keys(incompleteFullGeneral[0]).map(key => {
                     return {
                         label: key, field: key, sort: 'asc'
                     };
-                }), rows: incompleteFullGeneral})
-            setIncompleteDataZeroesMarked({...incompleteData, columns: Object.keys(incompleteFullGeneral[0]).map(key => {
-                    return {
-                        label: key, field: key, sort: 'asc'
-                    };
-                }), rows: incompleteFullGeneral})
+                }), rows: incompleteFullGeneral}
+            setIncompleteData(tempIncompleteData)
+            const tempIncompleteDataZeroesMarked = JSON.parse(JSON.stringify(tempIncompleteData))
+            setIncompleteDataZeroesMarked(tempIncompleteDataZeroesMarked)
         }
         if(imputedGeneral.length > 0) {
-            setImputedData({...imputedData, columns: Object.keys(imputedGeneral[0]).map(key => {
+            const tempImputedData = { columns: Object.keys(imputedGeneral[0]).map(key => {
                     return {
                         label: key, field: key, sort: 'asc'
                     };
-                }), rows: imputedGeneral})
+                }), rows: imputedGeneral}
+            setImputedData(tempImputedData)
+            const tempImputedDataMarked = JSON.parse(JSON.stringify(tempImputedData))
+            setIncompleteDataZeroesMarked(tempImputedDataMarked)
         }
     }, [incompleteFullGeneral, imputedGeneral])
 
@@ -129,17 +132,16 @@ export default function ImputationExecution(){
             });
     }
 
-    const mapCells = () =>{
-        return incompleteData.rows.map((row, indexRow) => (
-            <tr>
-                {incompleteData.columns.map((column, indexCol) => (
-                        <>
-                            { (incompleteDataZeroesMarked.rows[indexRow][incompleteDataZeroesMarked.columns[indexCol].label] === true) ?
-                                <td className="text-color-zero-imputation">{incompleteDataZeroesMarked[indexRow][incompleteDataZeroesMarked[indexCol].label]}</td>
-                                :
-                                <td className="text-color-non-zero-imputation">{incompleteDataZeroesMarked[indexRow][incompleteDataZeroesMarked[indexCol].label]}</td>
-                            }
-                        </>
+    const mapCells = (data, markedData) => {
+        return data.rows.map((row, indexRow) => (
+            <tr key={indexRow}>
+                {data.columns.map((column, indexCol) => (
+                    <React.Fragment key={indexCol}>
+                        {(markedData.rows[indexRow][column.label] === true) ?
+                            <td className="text-color-zero-imputation">{data.rows[indexRow][column.label]}</td>
+                            :
+                            <td className="text-color-non-zero-imputation">{data.rows[indexRow][column.label]}</td>}
+                    </React.Fragment>
                     )
                 )}
             </tr>
@@ -166,7 +168,7 @@ export default function ImputationExecution(){
                                 <MDBTable scrollY maxHeight="400px">
                                     <MDBTableHead columns={incompleteData.columns}/>
                                     <MDBTableBody>
-                                        {mapCells}
+                                        {mapCells(incompleteData, incompleteDataZeroesMarked)}
                                     </MDBTableBody>
                                 </MDBTable>
                             </div>
@@ -205,7 +207,9 @@ export default function ImputationExecution(){
                             <div className="table-position-background">
                                 <MDBTable scrollY maxHeight="400px">
                                     <MDBTableHead columns={imputedData.columns}/>
-                                    <MDBTableBody rows={imputedData.rows} />
+                                    <MDBTableBody>
+                                        {mapCells(imputedData, incompleteDataZeroesMarked)}
+                                    </MDBTableBody>
                                 </MDBTable>
                             </div>
                         </div>
