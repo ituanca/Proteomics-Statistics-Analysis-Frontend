@@ -160,6 +160,7 @@ td {
 
 .text-color-zero-imputation {
   color: red;
+  font-weight: bold;
 }
 .text-color-non-zero-imputation {
   color: black;

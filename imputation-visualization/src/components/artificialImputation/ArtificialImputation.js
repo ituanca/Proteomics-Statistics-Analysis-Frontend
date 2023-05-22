@@ -26,6 +26,15 @@ export default function ArtificialImputation(){
         percentage_missing_data: "",
         MNAR_rate: ""
     })
+    const [nrOfRowsInTheOriginalTable, setNrOfRowsInTheOriginalTable] = useState(0);
+    useEffect(() => {
+        setNrOfRowsInTheOriginalTable(tableData.rows.length)
+    }, [tableData])
+
+    const [nrOfRowsInTheMissingEliminatedTable, setNrOfRowsInTheMissingEliminatedTable] = useState(0);
+    useEffect(() => {
+        setNrOfRowsInTheMissingEliminatedTable(missingEliminatedTableData.rows.length)
+    }, [missingEliminatedTableData])
 
     useEffect(() => {
         if(rowsWithNaEliminated){
@@ -59,29 +68,58 @@ export default function ArtificialImputation(){
     }
 
     const[naValuesInserted, setNaValuesInserted] = useState(false)
-    const[paramsChanged, setParamsChanged] = useState(false)
+    const[paramsForNaInsertionChanged, setParamsForNaInsertionChanged] = useState(false)
     const[missingInsertedTableData, setMissingInsertedTableData] = useState({
         columns: [],
         rows: []
     })
+    const [missingInsertedDataZeroesMarked, setMissingInsertedDataZeroesMarked] = useState( {
+        columns: [],
+        rows: []
+    })
+
+    useEffect( () => {
+        if(missingInsertedTableData.rows.length > 0){
+            for(let i = 0; i < missingInsertedTableData.rows.length; i++){
+                for(let j = 0; j < missingInsertedTableData.columns.length; j++){
+                    const crtCell = missingInsertedTableData.rows[i][missingInsertedTableData.columns[j].label]
+                    if(parseInt(crtCell) === 0) {
+                        setMissingInsertedDataZeroesMarked((prevState => {
+                            const newState = {...prevState};
+                            newState.rows[i][newState.columns[j].label] = true
+                            return newState
+                        }))
+                    }else{
+                        setMissingInsertedDataZeroesMarked((prevState => {
+                            const newState = {...prevState};
+                            newState.rows[i][newState.columns[j].label] = false
+                            return newState
+                        }))
+                    }
+                }
+            }
+        }
+    }, [missingInsertedTableData])
 
     useEffect(() => {
-        if(paramsChanged){
+        if(paramsForNaInsertionChanged){
             fetch('http://localhost:8000/getMissingInsertedDfNewGeneral')
                 .then((response) => response.json())
                 .then((json) => {
-                    setMissingInsertedTableData({
-                        ...missingInsertedTableData, columns: Object.keys(json[0]).map(key => {
+                    const tempMissingInsertedTableData = { columns: Object.keys(json[0]).map(key => {
                             return {
                                 label: key, field: key, sort: 'asc'
                             };
                         }), rows: json
-                    })
-                    setParamsChanged(false);
+                    }
+                    setMissingInsertedTableData(tempMissingInsertedTableData)
+                    const tempMissingInsertedDataZeroesMarked = JSON.parse(JSON.stringify(tempMissingInsertedTableData))
+                    setMissingInsertedDataZeroesMarked(tempMissingInsertedDataZeroesMarked)
+                    setParamsForNaInsertionChanged(false);
                 })
                 .catch((error) => console.log(error));
         }
-    }, [paramsChanged])
+    }, [paramsForNaInsertionChanged])
 
     const validateParams = () => {
         if(paramsForNaInsertion.percentage_missing_data === "" || paramsForNaInsertion.MNAR_rate === ""){
@@ -103,7 +141,7 @@ export default function ArtificialImputation(){
                 .then((response) => {
                     console.info(response);
                     setNaValuesInserted(true);
-                    setParamsChanged(true);
+                    setParamsForNaInsertionChanged(true);
                 })
                 .catch((error) => {
                     console.error("There was an error!", error.response.data.message)
@@ -130,17 +168,7 @@ export default function ArtificialImputation(){
         rows: []
     }])
 
-    // useEffect(() => {
-    //     if(imputationPerformed){
-    //         fetch('http://localhost:8000/getListOfImputedTables')
-    //             .then((response) => response.json())
-    //             .then((json) => {
-    //                 setListOfImputedTables(json)
-    //             })
-    //             .catch((error) => console.log(error));
-    //     }
-    // }, [imputationPerformed, listOfImputedTables])
-
+    // send request to perform all imputation methods and receive the imputed dataframes as a response
     const handlePerformImputation = () => {
         axios
             .post("http://localhost:8000/performAllImputationMethods")
@@ -174,18 +202,34 @@ export default function ArtificialImputation(){
         console.log(paramsForNaInsertion);
     }
 
+    const mapCells = (data, markedData) => {
+        return data.rows.map((row, indexRow) => (
+            <tr key={indexRow}>
+                {data.columns.map((column, indexCol) => (
+                        <React.Fragment key={indexCol}>
+                            {(markedData.rows[indexRow][column.label] === true) ?
+                                <td className="text-color-zero-imputation">{data.rows[indexRow][column.label]}</td>
+                                :
+                                <td className="text-color-non-zero-imputation">{data.rows[indexRow][column.label]}</td>}
+                        </React.Fragment>
+                    )
+                )}
+            </tr>
+        ))
+    }
+
     const renderForm = (
         <div>
             <h1>Artificial imputation</h1>
             <h2>{selectedDisease} dataset</h2>
             <div className="button-container-col">
-                <div className="table-colors-legend">
-                    <div className="legend-container-row"><div className='box id-color'/>ID</div>
-                    <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
-                    <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
-                    <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
-                </div>
                 <div className="container-artificial-imputation">
+                    <div className="table-colors-legend">
+                        <div className="legend-container-row"><div className='box id-color'/>ID</div>
+                        <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
+                        <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
+                        <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
+                    </div>
                     <div className="container-col-artificial-imputation">
                         <div className="table-position">
                             <div className="table-position-background">
@@ -200,6 +244,7 @@ export default function ArtificialImputation(){
                                     <MDBTableBody rows={tableData.rows}/>
                                 </MDBTable>
                             </div>
+                            <div className="table-nr-rows"><label>The table has {nrOfRowsInTheOriginalTable} rows</label></div>
                         </div>
                         <div className="center-positioning">
                             <h3> 1. Eliminate the rows containing at least one missing value</h3>
@@ -221,6 +266,7 @@ export default function ArtificialImputation(){
                                         <MDBTableBody rows={missingEliminatedTableData.rows}/>
                                     </MDBTable>
                                 </div>
+                                <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
                             </div> }
                         { rowsWithNaEliminated &&
                             <div className="center-positioning">
@@ -259,7 +305,9 @@ export default function ArtificialImputation(){
                                                 ))}
                                             </tr>
                                         </MDBTableHead>
-                                        <MDBTableBody rows={missingInsertedTableData.rows}/>
+                                        <MDBTableBody>
+                                            {mapCells(missingInsertedTableData, missingInsertedDataZeroesMarked)}
+                                        </MDBTableBody>
                                     </MDBTable>
                                 </div>
                             </div>
@@ -278,7 +326,7 @@ export default function ArtificialImputation(){
                             </div>
                         }
                         { rowsWithNaEliminated && naValuesInserted && imputationPerformed &&
-                            <StatisticsOnArtificialImputation listOfImputedTables={listOfImputedTables}/>
+                            <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked}/>
                         }
                     </div>
                 </div>

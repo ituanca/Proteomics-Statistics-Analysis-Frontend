@@ -36,6 +36,8 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         entries: []
     });
 
+    const [numberOfRowsInTable, setNumberOfRowsInTable] = useState(0);
+
     // set the available entries - all the IDs
     useEffect(() => {
         if(tableVisible && tableData.rows.length > 0 && tableData.columns.length > 0){
@@ -79,6 +81,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
     useEffect(() => {
         localStorage.setItem("selectedDataset", JSON.stringify(tableData));
+        setNumberOfRowsInTable(tableData.rows.length)
     }, [tableData])
 
     const validateClasses = () => {
@@ -340,7 +343,9 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                                 <MDBTableBody rows={tableData.rows}/>
                             </MDBTable>
                         </div>
+                        <div className="table-nr-rows"><label>The table has {numberOfRowsInTable} rows</label></div>
                     </div>
+
                     <div className="label-multiselect-group-choose-dataset">
                         <label className="label-choose-dataset"><strong>Optional:</strong> Choose entries to be eliminate from dataset</label>
                         <Multiselect

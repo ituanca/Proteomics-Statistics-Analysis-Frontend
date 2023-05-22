@@ -29,11 +29,6 @@ export default function ImputationExecution(){
         columns: [],
         rows: []
     })
-    const [imputedDataMarked, setImputedDataMarked] = useState( {
-        columns: [],
-        rows: []
-    })
-
 
     useEffect(() => {
         fetch('http://localhost:8000/getImputationMethods')

@@ -1,20 +1,9 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import {Link} from "react-router-dom";
-import FirstPlot from "../statistics/plots/FirstPlot";
-import {
-    generalOptionsAD,
-    handleOptionChangeWithCorrelation,
-    optionsForThirdPlotAD
-} from "../uploadDataset/FunctionsForEntrySelectionPlot";
-import SecondPlot from "../statistics/plots/SecondPlot";
-import ThirdPlot from "../statistics/plots/ThirdPlot";
-import FourthPlot from "../statistics/plots/FourthPlot";
-import SixthPlot from "../statistics/plots/SixthPlot";
 
 
-export default function StatisticsOnArtificialImputation({listOfImputedTables}){
+export default function StatisticsOnArtificialImputation({listOfImputedDataframes, markedData}){
 
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
@@ -22,10 +11,10 @@ export default function StatisticsOnArtificialImputation({listOfImputedTables}){
     const [tablesDisplayed, setTablesDisplayed] = useState(true);
 
     useEffect( () => {
-        let tables = [];
-        Object.keys(listOfImputedTables).map((key) => {
-            const value = listOfImputedTables[key]
-            tables[key] = {
+        let tempTables = [];
+        Object.keys(listOfImputedDataframes).map((key) => {
+            const value = listOfImputedDataframes[key]
+            tempTables[key] = {
                 columns: Object.keys(value[0]).map(key => {
                     return {
                         label: key, field: key, sort: 'asc'
@@ -33,7 +22,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedTables}){
                 }), rows: value
             }
         })
-        setTables(tables)
+        setTables(tempTables)
     }, [])
 
     const getClassNameForColumnHeader = (columnHeader) => {
@@ -59,6 +48,22 @@ export default function StatisticsOnArtificialImputation({listOfImputedTables}){
             setTablesDisplayed(true);
             setButtonText("Hide the imputed tables")
         }
+    }
+
+    const mapCells = (rows, columns) => {
+        return rows.map((row, indexRow) => (
+            <tr key={indexRow}>
+                {columns.map((column, indexCol) => (
+                        <React.Fragment key={indexCol}>
+                            {(markedData.rows[indexRow][column.label] === true) ?
+                                <td className="text-color-zero-imputation">{rows[indexRow][column.label]}</td>
+                                :
+                                <td className="text-color-non-zero-imputation">{rows[indexRow][column.label]}</td>}
+                        </React.Fragment>
+                    )
+                )}
+            </tr>
+        ))
     }
 
     return (
@@ -95,7 +100,9 @@ export default function StatisticsOnArtificialImputation({listOfImputedTables}){
                                                 ))}
                                             </tr>
                                         </MDBTableHead>
-                                        <MDBTableBody rows={rows}/>
+                                        <MDBTableBody>
+                                            {mapCells(rows, columns)}
+                                        </MDBTableBody>
                                     </MDBTable>
                                 </div>
                             </div>
