@@ -17,3 +17,22 @@
 .list-item{
     display: inline;
 }
+.container-col-with-background {
+    flex-direction: column;
+}
+.statistics-view-errors{
+    text-align: center;
+    justify-content: center;
+    padding: 35px;
+}
+.list-item-errors{
+    display: flex;
+    justify-content: space-between;
+}
+.left-part{
+    text-align: left;
+    padding-right: 20px;
+}
+.right-part{
+    text-align: right;
+}

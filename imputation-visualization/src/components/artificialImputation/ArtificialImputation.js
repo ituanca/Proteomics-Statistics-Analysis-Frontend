@@ -26,6 +26,9 @@ export default function ArtificialImputation(){
         percentage_missing_data: "",
         MNAR_rate: ""
     })
+    const [selectedOptionClass, setSelectedOptionClass] = useState({
+        type_of_imputation: ""
+    });
     const [nrOfRowsInTheOriginalTable, setNrOfRowsInTheOriginalTable] = useState(0);
     useEffect(() => {
         setNrOfRowsInTheOriginalTable(tableData.rows.length)
@@ -36,29 +39,19 @@ export default function ArtificialImputation(){
         setNrOfRowsInTheMissingEliminatedTable(missingEliminatedTableData.rows.length)
     }, [missingEliminatedTableData])
 
-    useEffect(() => {
-        if(rowsWithNaEliminated){
-            fetch('http://localhost:8000/getMissingEliminatedDfNewGeneral')
-                .then((response) => response.json())
-                .then((json) => {
-                    setMissingEliminatedTableData({
-                        ...missingEliminatedTableData, columns: Object.keys(json[0]).map(key => {
-                            return {
-                                label: key, field: key, sort: 'asc'
-                            };
-                        }), rows: json
-                    })
-                })
-                .catch((error) => console.log(error));
-        }
-    }, [rowsWithNaEliminated])
-
     const handleEliminateRowsWithNaValues = () => {
         if(!rowsWithNaEliminated){
             axios
                 .post("http://localhost:8000/eliminateRowsWithNaValues")
                 .then((response) => {
-                    console.info(response);
+                    console.info(response.data);
+                    setMissingEliminatedTableData({
+                        ...missingEliminatedTableData, columns: Object.keys(response.data[0]).map(key => {
+                            return {
+                                label: key, field: key, sort: 'asc'
+                            };
+                        }), rows: response.data
+                    })
                     setRowsWithNaEliminated(true);
                 })
                 .catch((error) => {
@@ -150,6 +143,12 @@ export default function ArtificialImputation(){
     }
 
     const [imputationMethods, setImputationMethods] = useState([])
+    const [filterForChoiceOfImputationType, setFilterForChoiceOfImputationType] = useState({
+        name: "type_of_imputation",
+        label: "Choose the way to perform the imputation",
+        type: "select",
+        values: []
+    });
 
     useEffect(() => {
         if(naValuesInserted){
@@ -157,6 +156,13 @@ export default function ArtificialImputation(){
                 .then((response) => response.json())
                 .then((json) => {
                     setImputationMethods(json)
+                })
+                .catch((error) => console.log(error));
+            fetch('http://localhost:8000/getImputationOptionsClass')
+                .then((response) => response.json())
+                .then((json) => {
+                    setFilterForChoiceOfImputationType({...filterForChoiceOfImputationType, values: json});
+                    setSelectedOptionClass({...selectedOptionClass, type_of_imputation: json[0]});
                 })
                 .catch((error) => console.log(error));
         }
@@ -171,7 +177,7 @@ export default function ArtificialImputation(){
     // send request to perform all imputation methods and receive the imputed dataframes as a response
     const handlePerformImputation = () => {
         axios
-            .post("http://localhost:8000/performAllImputationMethods")
+            .post("http://localhost:8000/performAllImputationMethods", JSON.stringify(selectedOptionClass))
             .then((response) => {
                 console.info(response.data);
                 setImputationPerformed(true);
@@ -201,6 +207,10 @@ export default function ArtificialImputation(){
         setParamsForNaInsertion({ ...paramsForNaInsertion, [name] : value});
         console.log(paramsForNaInsertion);
     }
+
+    const handleOptionClassChange = (value) => {
+        setSelectedOptionClass(value);
+    };
 
     const mapCells = (data, markedData) => {
         return data.rows.map((row, indexRow) => (
@@ -320,13 +330,27 @@ export default function ArtificialImputation(){
                                         <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
                                     )}
                                 </h3>
+                                <div className="label-field-group-with-space">
+                                    <label className="label-statistics">Select the way to perform the imputation</label>
+                                    <select className="input-for-statistics-ad-select"
+                                            value={selectedOptionClass[filterForChoiceOfImputationType.name]}
+                                            onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value, selectedOptionClass, setSelectedOptionClass)}
+                                    >
+                                        {filterForChoiceOfImputationType.values.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {renderErrorMessage("params_not_specified", errorMessages)}
                                 <button className="general-button" onClick={handlePerformImputation}>
-                                    View the imputed tables
+                                    View the result
                                 </button>
                             </div>
                         }
                         { rowsWithNaEliminated && naValuesInserted && imputationPerformed &&
-                            <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked}/>
+                            <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
                         }
                     </div>
                 </div>

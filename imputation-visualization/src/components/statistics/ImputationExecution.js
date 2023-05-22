@@ -7,8 +7,10 @@ import {handleOptionChange} from "../Utils";
 export default function ImputationExecution(){
 
     const [selectedMethod, setSelectedMethod] = useState({
-        imputation_method: ""
+        imputation_method: "",
+        type_of_imputation: ""
     });
+    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
     const [incompleteFullGeneral, setIncompleteFullGeneral] = useState([])
     const [imputedGeneral, setImputedGeneral] = useState([])
     const [incompleteData, setIncompleteData] = useState( {
@@ -25,17 +27,36 @@ export default function ImputationExecution(){
         type: "select",
         values: []
     });
+    const [filterForChoiceOfImputationType, setFilterForChoiceOfImputationType] = useState({
+        name: "type_of_imputation",
+        label: "Choose the way to perform the imputation",
+        type: "select",
+        values: []
+    });
     const [incompleteDataZeroesMarked, setIncompleteDataZeroesMarked] = useState( {
         columns: [],
         rows: []
     })
+
+    console.log(selectedMethod)
+
+    useEffect(() => {
+        setSelectedMethod({...selectedMethod,
+            imputation_method: filterForChoiceOfImputationMethod.values[0],
+            type_of_imputation: filterForChoiceOfImputationType.values[0]});
+    },[filterForChoiceOfImputationMethod, filterForChoiceOfImputationType])
 
     useEffect(() => {
         fetch('http://localhost:8000/getImputationMethods')
             .then((response) => response.json())
             .then((json) => {
                 setFilterForChoiceOfImputationMethod({...filterForChoiceOfImputationMethod, values: json});
-                setSelectedMethod({...selectedMethod, imputation_method: json[0]});
+            })
+            .catch((error) => console.log(error));
+        fetch('http://localhost:8000/getImputationOptionsClass')
+            .then((response) => response.json())
+            .then((json) => {
+                setFilterForChoiceOfImputationType({...filterForChoiceOfImputationType, values: json});
             })
             .catch((error) => console.log(error));
     }, [])
@@ -127,6 +148,20 @@ export default function ImputationExecution(){
             });
     }
 
+    const getClassNameForColumnHeader = (columnHeader) => {
+        if(selectedOptionsForTable.class1.includes(columnHeader.label)){
+            return "column-header-class1"
+        }else if(selectedOptionsForTable.class2.includes(columnHeader.label)){
+            return "column-header-class2"
+        }else if(selectedOptionsForTable.other_columns.includes(columnHeader.label)){
+            return "column-header-other-columns";
+        }else if(selectedOptionsForTable.id === columnHeader.label){
+            return "column-header-id";
+        }
+        return "column-header-other-columns";
+    }
+
+
     const mapCells = (data, markedData) => {
         return data.rows.map((row, indexRow) => (
             <tr key={indexRow}>
@@ -161,7 +196,13 @@ export default function ImputationExecution(){
                         <div className="table-position">
                             <div className="table-position-background">
                                 <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead columns={incompleteData.columns}/>
+                                    <MDBTableHead>
+                                        <tr>
+                                            {incompleteData.columns.map((columnHeader, index) => (
+                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                            ))}
+                                        </tr>
+                                    </MDBTableHead>
                                     <MDBTableBody>
                                         {mapCells(incompleteData, incompleteDataZeroesMarked)}
                                     </MDBTableBody>
@@ -187,6 +228,19 @@ export default function ImputationExecution(){
                             ))}
                         </select>
                     </div>
+                    <div className="label-field-group-with-space">
+                        <label className="label-statistics">{filterForChoiceOfImputationType.label}</label>
+                        <select className="input-for-statistics-ad-select"
+                                value={selectedMethod[filterForChoiceOfImputationType.name]}
+                                onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value, selectedMethod, setSelectedMethod)}
+                        >
+                            {filterForChoiceOfImputationType.values.map((value) => (
+                                <option key={value} value={value}>
+                                    {value}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     <div className="input-container-col">
                         <button onClick={performImputationGeneralOriginal} className="general-button">
                             View the original imputed dataset
@@ -201,7 +255,13 @@ export default function ImputationExecution(){
                         <div className="table-position">
                             <div className="table-position-background">
                                 <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead columns={imputedData.columns}/>
+                                    <MDBTableHead>
+                                        <tr>
+                                            {imputedData.columns.map((columnHeader, index) => (
+                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                            ))}
+                                        </tr>
+                                    </MDBTableHead>
                                     <MDBTableBody>
                                         {mapCells(imputedData, incompleteDataZeroesMarked)}
                                     </MDBTableBody>
