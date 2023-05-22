@@ -196,6 +196,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     {viewErrorsClicked &&
                         <div className="container-col-with-background">
                             <div className="statistics-view-errors">
+                                <h4> Mean Absolute Error </h4>
                                 <ul>
                                     {Object.keys(errorsForDisplay).map((key) =>
                                         <li className="list-item-errors">

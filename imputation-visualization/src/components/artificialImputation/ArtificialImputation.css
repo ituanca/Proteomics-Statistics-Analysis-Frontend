@@ -28,6 +28,7 @@
 .list-item-errors{
     display: flex;
     justify-content: space-between;
+    margin-right: 30px
 }
 .left-part{
     text-align: left;
