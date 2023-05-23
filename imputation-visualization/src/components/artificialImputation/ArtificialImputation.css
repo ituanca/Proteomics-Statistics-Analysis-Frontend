@@ -1,12 +1,14 @@
 .container-artificial-imputation{
-    padding-left: 20px;
-    padding-right: 20px;
+    /*padding-left: 20px;*/
+    /*padding-right: 20px;*/
 }
 .container-col-artificial-imputation{
     align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
     justify-content: center;
     display: flex;
     flex-direction: column;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 .center-positioning{
     text-align: center;
@@ -23,7 +25,15 @@
 .statistics-view-errors{
     text-align: center;
     justify-content: center;
-    padding: 35px;
+    padding: 20px;
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    display: flex;
+    flex-direction: column;
+    /*margin: 20px;*/
+}
+.button-in-col{
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 .list-item-errors{
     display: flex;
@@ -36,4 +46,8 @@
 }
 .right-part{
     text-align: right;
+}
+.errors-button{
+    font-size: 16px;
+    width: 300px;
 }

@@ -175,7 +175,7 @@ input[type="file"] {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
-    margin-left: 1%;
+    margin-bottom: 1%;
 }
 .legend-container-row {
     display: flex;

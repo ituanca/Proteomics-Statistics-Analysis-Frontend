@@ -6,26 +6,13 @@ import "./Statistics.css"
 import StatisticsProgeria from "./progeria/StatisticsProgeria";
 import StatisticsOther from "./other/StatisticsOther";
 import axios from "axios";
+import {getClassNameForColumnHeader} from "../Utils";
 
 function Statistics(){
 
     const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
-
-
-    const getClassNameForColumnHeader = (columnHeader) => {
-        if(selectedOptionsForTable.class1.includes(columnHeader.label)){
-            return "column-header-class1"
-        }else if(selectedOptionsForTable.class2.includes(columnHeader.label)){
-            return "column-header-class2"
-        }else if(selectedOptionsForTable.other_columns.includes(columnHeader.label)){
-            return "column-header-other-columns";
-        }else if(selectedOptionsForTable.id === columnHeader.label){
-            return "column-header-id";
-        }
-        return "column-header-other-columns";
-    }
 
     const renderForm = (
         <div>

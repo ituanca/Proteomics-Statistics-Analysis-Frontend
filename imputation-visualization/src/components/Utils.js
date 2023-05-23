@@ -25,3 +25,17 @@ export const labelAndDropdownGroupWithSpace = (option, selectedOptions, setSelec
     </div>
 );
 
+const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
+
+export const getClassNameForColumnHeader = (columnHeader) => {
+    if(selectedOptionsForTable.class1.includes(columnHeader.label)){
+        return "column-header-class1"
+    }else if(selectedOptionsForTable.class2.includes(columnHeader.label)){
+        return "column-header-class2"
+    }else if(selectedOptionsForTable.other_columns.includes(columnHeader.label)){
+        return "column-header-other-columns";
+    }else if(selectedOptionsForTable.id === columnHeader.label){
+        return "column-header-id";
+    }
+    return "column-header-other-columns";
+}

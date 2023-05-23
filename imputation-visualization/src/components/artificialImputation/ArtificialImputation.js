@@ -3,7 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import "./ArtificialImputation.css"
 import axios from "axios";
-import {handleOptionChange, renderErrorMessage} from "../Utils";
+import {getClassNameForColumnHeader, handleOptionChange, renderErrorMessage} from "../Utils";
 import StatisticsOnArtificialImputation from "./StatisticsOnArtificialImputation";
 
 export default function ArtificialImputation(){
@@ -15,7 +15,6 @@ export default function ArtificialImputation(){
     };
     const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
-    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
     const [rowsWithNaEliminated, setRowsWithNaEliminated] = useState(false);
     const [missingEliminatedTableData, setMissingEliminatedTableData] = useState({
@@ -188,19 +187,6 @@ export default function ArtificialImputation(){
             });
     }
 
-    const getClassNameForColumnHeader = (columnHeader) => {
-        if(selectedOptionsForTable.class1.includes(columnHeader.label)){
-            return "column-header-class1"
-        }else if(selectedOptionsForTable.class2.includes(columnHeader.label)){
-            return "column-header-class2"
-        }else if(selectedOptionsForTable.other_columns.includes(columnHeader.label)){
-            return "column-header-other-columns";
-        }else if(selectedOptionsForTable.id === columnHeader.label){
-            return "column-header-id";
-        }
-        return "column-header-other-columns";
-    }
-
     const handleInput = event => {
         const name = event.target.name;
         const value = event.target.value;
@@ -208,8 +194,9 @@ export default function ArtificialImputation(){
         console.log(paramsForNaInsertion);
     }
 
-    const handleOptionClassChange = (value) => {
-        setSelectedOptionClass(value);
+    const handleOptionChange = (option, value) => {
+        setImputationPerformed(false)
+        setSelectedOptionClass({...selectedOptionClass, type_of_imputation: value});
     };
 
     const mapCells = (data, markedData) => {
@@ -229,19 +216,17 @@ export default function ArtificialImputation(){
     }
 
     const renderForm = (
-        <div>
-            <h1>Artificial imputation</h1>
-            <h2>{selectedDisease} dataset</h2>
             <div className="button-container-col">
-                <div className="container-artificial-imputation">
-                    <div className="table-colors-legend">
-                        <div className="legend-container-row"><div className='box id-color'/>ID</div>
-                        <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
-                        <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
-                        <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
-                    </div>
-                    <div className="container-col-artificial-imputation">
+                <h1>Artificial imputation</h1>
+                <h2>{selectedDisease} dataset</h2>
+                <div className="container-col-artificial-imputation">
                         <div className="table-position">
+                            <div className="table-colors-legend">
+                                <div className="legend-container-row"><div className='box id-color'/>ID</div>
+                                <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
+                                <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
+                                <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
+                            </div>
                             <div className="table-position-background">
                                 <MDBTable scrollY maxHeight="400px">
                                     <MDBTableHead>
@@ -334,7 +319,7 @@ export default function ArtificialImputation(){
                                     <label className="label-statistics">Select the way to perform the imputation</label>
                                     <select className="input-for-statistics-ad-select"
                                             value={selectedOptionClass[filterForChoiceOfImputationType.name]}
-                                            onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value, selectedOptionClass, setSelectedOptionClass)}
+                                            onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
                                     >
                                         {filterForChoiceOfImputationType.values.map((value) => (
                                             <option key={value} value={value}>
@@ -344,15 +329,16 @@ export default function ArtificialImputation(){
                                     </select>
                                 </div>
                                 {renderErrorMessage("params_not_specified", errorMessages)}
-                                <button className="general-button" onClick={handlePerformImputation}>
-                                    View the result
-                                </button>
+                                {!imputationPerformed &&
+                                    <button className="general-button" onClick={handlePerformImputation}>
+                                        View the result
+                                    </button>
+                                }
                             </div>
                         }
                         { rowsWithNaEliminated && naValuesInserted && imputationPerformed &&
                             <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
                         }
-                    </div>
                 </div>
                 <div className="button-container-row">
                     <div className="input-container-col">
@@ -360,12 +346,8 @@ export default function ArtificialImputation(){
                             <button className="general-button">Go back</button>
                         </Link>
                     </div>
-                    <div className="input-container-col">
-                        <input type="submit" value="Next"/>
-                    </div>
                 </div>
             </div>
-        </div>
     );
 
     return (
