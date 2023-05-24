@@ -41,6 +41,7 @@ export default function StatisticsAD(){
         {name: "entry_id_5", label: "Protein ID 5", type: "select", values: newIds},
         {name: "entry_name_5", label: "Protein Name 5", type: "select", values: newProteinNames}
     ];
+    console.log(data)
     const [selectedOptions, setSelectedOptions] = useState({
         class: "",
         entry_id_1: "", entry_name_1: "",
@@ -81,7 +82,8 @@ export default function StatisticsAD(){
         entry_id_4: "", entry_name_4: "",
         entry_id_5: "", entry_name_5: "",
         metric: "",
-        type_of_plot: ""
+        type_of_plot: "",
+
     });
 
     // 6th plot

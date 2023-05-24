@@ -27,7 +27,7 @@ function Statistics(){
                 </div>
                 <div className="table-position">
                     <div className="table-position-background">
-                        <MDBTable scrollY maxHeight="500px">
+                        <MDBTable scrollY maxHeight="400px">
                             <MDBTableHead>
                                 <tr>
                                     {tableData.columns.map((columnHeader, index) => (

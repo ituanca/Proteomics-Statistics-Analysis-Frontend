@@ -35,7 +35,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     const [selectedEntries, setSelectedEntries] = useState({
         entries: []
     });
-
     const [numberOfRowsInTable, setNumberOfRowsInTable] = useState(0);
 
     // set the available entries - all the IDs
@@ -48,7 +47,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
             }
         }
     }, [tableVisible])
-
 
     function checkIfStringIsUnselectedInMultiselect (string) {
         return ((!selectedOptions.class1.includes(string)) &&
@@ -150,8 +148,12 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         if( ((selectedDisease === "Other" && validate()) || (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
             // send the filters for the dataset to the backend and receive them back as a response
             console.log(selectedOptions)
+            let optionsToBeSent = selectedOptions
+            if(selectedDisease === "Alzheimer's disease" && (!optionsToBeSent.other_columns.includes("Protein.names"))){
+                optionsToBeSent.other_columns.push("Protein.names")
+            }
             axios
-                .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(selectedOptions))
+                .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(optionsToBeSent))
                 .then((response) => {
                     console.info(response);
                     setFiltersSent(true);
@@ -288,6 +290,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         }
                     </div>
                 }
+                <label className="label-choose-dataset">Select at least 2 samples for each class, or 3 samples if you are going to perform separate imputation. Additionally, you have the option to include other samples in the table, which may not be part of the selected classes.</label>
                 <div className="label-multiselect-group-choose-dataset">
                     <label className="label-choose-dataset">Columns for the first class</label>
                     <Multiselect

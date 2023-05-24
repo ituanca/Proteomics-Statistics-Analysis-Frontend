@@ -21,6 +21,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
     const [imageUrl, setImageUrl] = useState("");
     const [nameOfErrorMetric, setNameOfErrorMetric] = useState("");
     const [errorMetricsIds, setErrorMetricsIds] = useState([])
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect( () => {
         let tempTables = [];
@@ -64,12 +65,9 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                         rows: value.rows
                     }
                 }})
-            console.log(filteredTables)
             setTablesToBeDisplayed(filteredTables)
         }
     }
-
-    console.log(errorMetricsIds)
 
     const handleViewStatisticsClick = () => {
         setStatisticsDisplayed(true)
@@ -102,13 +100,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         if(id === errorMetricsIds[0]) return "Mean Absolute Error"
         else if(id === errorMetricsIds[1]) return "Root Mean Square Error"
         else if(id === errorMetricsIds[2]) return "Mean Absolute Percentage Error"
-        else if(id === errorMetricsIds[3]) return "R-Squared Error"
-        else if(id === errorMetricsIds[4]) return "Mean Imputation Error"
     }
-
-    useEffect(() => {
-        setOneTypeOfErrorClicked(true)
-    },[errorsForDisplay])
 
     const handleOneTypeOfErrorClick = (event, id) => {
         console.log(id)
@@ -124,11 +116,27 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 console.error("There was an error!", error.response.data.message)
             });
         setNameOfErrorMetric(setCompleteName(id))
+        setOneTypeOfErrorClicked(true)
         let tempErrors = [];
         Object.keys(errors).map((imputationMethod) => {
             tempErrors[imputationMethod] = errors[imputationMethod][id]
         })
         setErrorsForDisplay(tempErrors)
+    }
+
+    const handleAllTypesOfErrorClick = () => {
+        console.log(errors)
+        // axios
+        //     .post("http://localhost:8000/requestErrorsChartForAllMethods", {
+        //         responseType: "arraybuffer"
+        //     })
+        //     .then((response) => {
+        //         console.info(response);
+        //         setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
+        //     })
+        //     .catch((error) => {
+        //         console.error("There was an error!", error.response.data.message)
+        //     });
     }
 
     const onChangeMultiSelect = (selectedItems) => {
@@ -226,15 +234,10 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                                     onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[2])}>Mean Absolute Percentage Error</button>
                         </div>
                         <div className="button-in-col">
-                            <button className="general-button errors-button"
-                                    onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[3])}>R-Squared Error</button>
-                        </div>
-                        <div className="button-in-col">
-                            <button className="general-button errors-button"
-                                    onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[4])}>Mean Imputation Error</button>
+                            <button className="general-button errors-button" onClick={handleAllTypesOfErrorClick}>All error metrics</button>
                         </div>
                     </div>
-                    {Object.keys(errorsForDisplay) !== [] &&
+                    {oneTypeOfErrorClicked && Object.keys(errorsForDisplay) !== [] &&
                         <div className="statistics-view-errors">
                             <h4> {nameOfErrorMetric} </h4>
                             <ul>
@@ -247,7 +250,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                             </ul>
                         </div>
                     }
-                    {imageUrl !== "" &&
+                    {oneTypeOfErrorClicked && imageUrl !== "" &&
                         <img src={imageUrl} alt="My Plot"/>
                     }
                 </div>

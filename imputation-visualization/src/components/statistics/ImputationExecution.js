@@ -161,7 +161,6 @@ export default function ImputationExecution(){
         return "column-header-other-columns";
     }
 
-
     const mapCells = (data, markedData) => {
         return data.rows.map((row, indexRow) => (
             <tr key={indexRow}>

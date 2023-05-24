@@ -5,13 +5,16 @@ import "./ArtificialImputation.css"
 import axios from "axios";
 import {getClassNameForColumnHeader, handleOptionChange, renderErrorMessage} from "../Utils";
 import StatisticsOnArtificialImputation from "./StatisticsOnArtificialImputation";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function ArtificialImputation(){
 
+    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
         params_not_specified: "You have to specify the parameters needed fo the missing values insertion",
         out_of_bounds: "The values must belong to the interval [0,100]",
+        separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
     };
     const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
@@ -28,6 +31,7 @@ export default function ArtificialImputation(){
     const [selectedOptionClass, setSelectedOptionClass] = useState({
         type_of_imputation: ""
     });
+    const [isLoading, setIsLoading] = useState(false);
     const [nrOfRowsInTheOriginalTable, setNrOfRowsInTheOriginalTable] = useState(0);
     useEffect(() => {
         setNrOfRowsInTheOriginalTable(tableData.rows.length)
@@ -173,18 +177,33 @@ export default function ArtificialImputation(){
         rows: []
     }])
 
+    const validateTypeOfImputation = () => {
+        if(selectedOptionClass.type_of_imputation === "separate" && (selectedOptionsForTable.class1.length < 3 || selectedOptionsForTable.class2.length < 3)){
+            setErrorMessages({name: "separate_not_allowed", message: errors.separate_not_allowed});
+        } else {
+            setErrorMessages({});
+            return true;
+        }
+        return false;
+    }
+
     // send request to perform all imputation methods and receive the imputed dataframes as a response
     const handlePerformImputation = () => {
-        axios
-            .post("http://localhost:8000/performAllImputationMethods", JSON.stringify(selectedOptionClass))
-            .then((response) => {
-                console.info(response.data);
-                setImputationPerformed(true);
-                setListOfImputedTables(response.data)
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
+        if(validateTypeOfImputation()){
+            setIsLoading(true)
+            axios
+                .post("http://localhost:8000/performAllImputationMethods", JSON.stringify(selectedOptionClass))
+                .then((response) => {
+                    console.info(response.data);
+                    setImputationPerformed(true);
+                    setListOfImputedTables(response.data)
+                    setIsLoading(false)
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                    setIsLoading(false)
+                });
+        }
     }
 
     const handleInput = event => {
@@ -316,29 +335,34 @@ export default function ArtificialImputation(){
                                     )}
                                 </h3>
                                 <div className="label-field-group-with-space">
-                                    <label className="label-statistics">Select the way to perform the imputation</label>
-                                    <select className="input-for-statistics-ad-select"
-                                            value={selectedOptionClass[filterForChoiceOfImputationType.name]}
-                                            onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
-                                    >
-                                        {filterForChoiceOfImputationType.values.map((value) => (
-                                            <option key={value} value={value}>
-                                                {value}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label className="label-statistics">
+                                        <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
+                                    </label>
+                                    <div className="simple-container-col">
+                                        <select className="input-for-statistics-ad-select"
+                                                value={selectedOptionClass[filterForChoiceOfImputationType.name]}
+                                                onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
+                                        >
+                                            {filterForChoiceOfImputationType.values.map((value) => (
+                                                <option key={value} value={value}>
+                                                    {value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
-                                {renderErrorMessage("params_not_specified", errorMessages)}
+                                {renderErrorMessage("separate_not_allowed", errorMessages)}
                                 {!imputationPerformed &&
-                                    <button className="general-button" onClick={handlePerformImputation}>
+                                    <button className="general-button" onClick={handlePerformImputation} disabled={isLoading}>
                                         View the result
                                     </button>
                                 }
                             </div>
                         }
-                        { rowsWithNaEliminated && naValuesInserted && imputationPerformed &&
-                            <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
-                        }
+                    { isLoading ? <LoadingSpinner /> : null}
+                    { imputationPerformed &&
+                        <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
+                    }
                 </div>
                 <div className="button-container-row">
                     <div className="input-container-col">

@@ -19,7 +19,7 @@
 .list-item{
     display: inline;
 }
-.container-col-with-background {
+.simple-container-col {
     flex-direction: column;
 }
 .statistics-view-errors{
