@@ -1,7 +1,3 @@
-.container-artificial-imputation{
-    /*padding-left: 20px;*/
-    /*padding-right: 20px;*/
-}
 .container-col-artificial-imputation{
     align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
     justify-content: center;
@@ -21,6 +17,25 @@
 }
 .simple-container-col {
     flex-direction: column;
+}
+.container-statistics-buttons-ai{
+    background-color: lightblue;
+    margin: 1%;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px;
+}
+.container-row-statistics-ai {
+    align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    /*margin: 20px;*/
+    background-color: lightblue;
+    /*padding: 30px 30px;*/
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 .statistics-view-errors{
     text-align: center;
@@ -50,4 +65,22 @@
 .errors-button{
     font-size: 16px;
     width: 300px;
+}
+.button-select-methods-statistics-ai{
+    width: 650px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+.button-statistics-ai {
+    margin: 10px;
+    font-size: 18px;
+    width: 300px;
+    height: 100px
+}
+.button-general-statistics-ai{
+    width: 200px;
+    height: 90px;
+    margin: 5px;
+    font-size: 16px;
 }

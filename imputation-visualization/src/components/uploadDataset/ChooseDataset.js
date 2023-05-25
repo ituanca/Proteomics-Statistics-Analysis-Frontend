@@ -68,7 +68,7 @@ function ChooseDataset(){
         }
     }, [selectedDisease, preparedImportedData])
 
-    // include "" in the fields corresponding to the Excel cells where there is nothing
+    // include "" in the fields corresponding to the Excel cells where there is nothing, so importedData -> preparedImportedData
     useEffect(() => {
         if(importedData.length > 0){
             let importedColumns = Object.keys(importedData[0]);

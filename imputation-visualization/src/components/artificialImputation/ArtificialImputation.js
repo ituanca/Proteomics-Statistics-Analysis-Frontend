@@ -308,7 +308,7 @@ export default function ArtificialImputation(){
                                 </button>
                             </div>
                         }
-                        { rowsWithNaEliminated && naValuesInserted  &&
+                        { naValuesInserted  &&
                             <div className="table-position">
                                 <div className="table-position-background">
                                     <MDBTable scrollY maxHeight="400px">
@@ -326,7 +326,7 @@ export default function ArtificialImputation(){
                                 </div>
                             </div>
                         }
-                        { rowsWithNaEliminated && naValuesInserted &&
+                        { naValuesInserted &&
                             <div className="center-positioning">
                                 <h3>
                                     <p> 3. Perform imputation using all the available imputation techniques:</p>
