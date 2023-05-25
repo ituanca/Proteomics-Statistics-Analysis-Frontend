@@ -335,11 +335,11 @@ export default function ArtificialImputation(){
                                     )}
                                 </h3>
                                 <div className="label-field-group-with-space">
-                                    <label className="label-statistics">
+                                    <label className="label-statistics-ai">
                                         <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
                                     </label>
                                     <div className="simple-container-col">
-                                        <select className="input-for-statistics-ad-select"
+                                        <select className="input-for-statistics-ad-select input-ai"
                                                 value={selectedOptionClass[filterForChoiceOfImputationType.name]}
                                                 onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
                                         >

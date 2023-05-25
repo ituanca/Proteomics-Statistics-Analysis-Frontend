@@ -67,7 +67,7 @@
     width: 300px;
 }
 .button-select-methods-statistics-ai{
-    width: 650px;
+    width: 600px;
     margin-top: 5px;
     margin-bottom: 5px;
     font-size: 18px;
@@ -75,7 +75,6 @@
 .button-statistics-ai {
     margin: 10px;
     font-size: 18px;
-    width: 300px;
     height: 100px
 }
 .button-general-statistics-ai{
@@ -83,4 +82,28 @@
     height: 90px;
     margin: 5px;
     font-size: 16px;
+}
+.input-ai-text-field{
+    width: 20%;
+    right: 48%;
+    position: absolute;
+}
+.input-ai{
+    width: 30%;
+    right: 22%;
+    position: absolute;
+}
+.label-statistics-ai{
+    color: white;
+    text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);
+    text-align: start;
+    max-width: 45%;
+    padding-right: 10px;
+}
+.indication-label{
+    margin-bottom: 18px
+}
+.colored-text{
+    color: darkblue;
+    text-shadow: none;
 }

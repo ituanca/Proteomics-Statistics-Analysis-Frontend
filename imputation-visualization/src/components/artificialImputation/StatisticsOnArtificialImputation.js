@@ -4,11 +4,11 @@ import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {Multiselect} from "multiselect-react-dropdown";
 import {getClassNameForColumnHeader, labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
 import LoadingSpinner from "../LoadingSpinner";
+import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificialImputation";
 
 
 export default function StatisticsOnArtificialImputation({listOfImputedDataframes, markedData, imputationMethods}){
 
-    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
     const [tables, setTables] = useState([]);
     const [tablesDisplayed, setTablesDisplayed] = useState(false);
     const [buttonText, setButtonText] = useState("View all the imputed tables");
@@ -26,23 +26,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
     const [errorMetricsIds, setErrorMetricsIds] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [generalStatisticsDisplayed, setGeneralStatisticsDisplayed] = useState(false);
-    const [errorMessages, setErrorMessages] = useState({});
-    const errorsStatistics = {
-        param_not_specified: "You have to specify the parameter needed fo the missing values insertion",
-        out_of_bounds: "The values must belong to the interval [0,100]",
-        separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
-    };
-    const [filterForChoiceOfImputationType, setFilterForChoiceOfImputationType] = useState({
-        name: "type_of_imputation",
-        label: "Choose the way to perform the imputation",
-        type: "select",
-        values: []
-    });
-    const [paramsForGeneralStatistics, setParamsForGeneralStatistics] = useState({
-        percentage_missing_data: "",
-        MNAR_rate: "",
-        type_of_imputation: ""
-    })
 
     useEffect( () => {
         let tempTables = [];
@@ -178,37 +161,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
             .catch((error) => console.log(error));
     }
 
-    const validate = (param) => {
-        if(param === ""){
-            setErrorMessages({name: "param_not_specified", message: errorsStatistics.param_not_specified});
-        }else if (parseInt(param) < 0 || parseInt(param) > 100 ){
-            setErrorMessages({name: "out_of_bounds", message: errorsStatistics.out_of_bounds});
-        }else{
-            setErrorMessages({});
-            return true;
-        }
-        return false;
-    }
-
-    const validateTypeOfImputation = () => {
-        if(paramsForGeneralStatistics.type_of_imputation === "separate" && (selectedOptionsForTable.class1.length < 3 || selectedOptionsForTable.class2.length < 3)){
-            setErrorMessages({name: "separate_not_allowed", message: errorsStatistics.separate_not_allowed});
-        } else {
-            setErrorMessages({});
-            return true;
-        }
-        return false;
-    }
-
-    const handleChoiceOfParam = (event, param) => {
-        if(validate(param)){
-
-        }
-    }
-    const handleOptionChange = (option, value) => {
-        setParamsForGeneralStatistics({...paramsForGeneralStatistics, type_of_imputation: value});
-    };
-
     const onChangeMultiSelect = (selectedItems) => {
         setKeysOfTablesToBeDisplayed({...keysOfTablesToBeDisplayed, tables: selectedItems})
     }
@@ -227,12 +179,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 )}
             </tr>
         ))
-    }
-
-    const handleParamsForGeneralStatisticsInput = event => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setParamsForGeneralStatistics({ ...paramsForGeneralStatistics, [name] : value});
     }
 
     return (
@@ -299,7 +245,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     })}
                 </>
                 : null}
-            {statisticsDisplayed &&
+            { statisticsDisplayed &&
                 <div className="container-row-statistics-ai">
                     <div className="statistics-view-errors">
                         <div className="button-in-col">
@@ -337,92 +283,8 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     }
                 </div>
                }
-            {generalStatisticsDisplayed &&
-                <div className="container-row-statistics-ai">
-                    <div className="statistics-view-errors">
-                        <div className="center-positioning">
-                            <div className="label-field-group-with-space">
-                                <label className="label-statistics">Insert the percentage of missing values</label>
-                                <input type="number"
-                                       value={paramsForGeneralStatistics.percentage_missing_data}
-                                       onChange={handleParamsForGeneralStatisticsInput}
-                                       name="percentage_missing_data" required
-                                       id="percentage_missing_data"/>
-                            </div>
-                            <div className="label-field-group-with-space">
-                                <label className="label-statistics">Insert the rate of Missing-Not-At-Random</label>
-                                <input type="number"
-                                       value={paramsForGeneralStatistics.MNAR_rate}
-                                       onChange={handleParamsForGeneralStatisticsInput}
-                                       name="MNAR_rate" required
-                                       id="MNAR_rate"/>
-                            </div>
-                            <div className="label-field-group-with-space">
-                                <label className="label-statistics">
-                                    <div>Select the way to perform the imputation (You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
-                                </label>
-                                <div className="simple-container-col">
-                                    <select className="input-for-statistics-ad-select"
-                                            value={paramsForGeneralStatistics[filterForChoiceOfImputationType.name]}
-                                            onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
-                                    >
-                                        {filterForChoiceOfImputationType.values.map((value) => (
-                                            <option key={value} value={value}>
-                                                {value}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            {renderErrorMessage("params_not_specified", errorMessages)}
-                            {renderErrorMessage("out_of_bounds", errorMessages)}
-                            <div className="input-container-row-less-space">
-                                <button className="general-button button-general-statistics-ai" onClick= {(event) => handleChoiceOfParam(event, paramsForGeneralStatistics.percentage_missing_data)}>
-                                    Statistics based on the introduced percentage of missing values
-                                </button>
-                                <button className="general-button button-general-statistics-ai" onClick= {(event) => handleChoiceOfParam(event, paramsForGeneralStatistics.MNAR_rate)}>
-                                    Statistics based on the introduced MNAR rate
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    { isLoading ? <LoadingSpinner /> : null}
-                    { !isLoading &&
-                        <div className="statistics-view-errors">
-                            <div className="button-in-col">
-                                <button className="general-button errors-button"
-                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[0])}>Mean Absolute Error</button>
-                            </div>
-                            <div className="button-in-col">
-                                <button className="general-button errors-button"
-                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[1])}>Root Mean Squared Error</button>
-                            </div>
-                            <div className="button-in-col">
-                                <button className="general-button errors-button"
-                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[2])}>Mean Absolute Percentage Error</button>
-                            </div>
-                            <div className="button-in-col">
-                                <button className="general-button errors-button" onClick={handleAllTypesOfErrorClick}>All error metrics</button>
-                            </div>
-                        </div>
-                    }
-                    {/*{ oneTypeOfErrorClicked && Object.keys(errorsForDisplay) !== [] && (!isLoading) &&*/}
-                    {/*    <div className="statistics-view-errors">*/}
-                    {/*        <h4> {nameOfErrorMetric} </h4>*/}
-                    {/*        <ul>*/}
-                    {/*            {Object.keys(errorsForDisplay).map((key) =>*/}
-                    {/*                <li className="list-item-errors">*/}
-                    {/*                    <div className="left-part"><strong>{key}:</strong></div>*/}
-                    {/*                    <div className="right-part">{errorsForDisplay[key]}</div>*/}
-                    {/*                </li>*/}
-                    {/*            )}*/}
-                    {/*        </ul>*/}
-                    {/*    </div>*/}
-                    {/*}*/}
-                    {/*{ oneTypeOfErrorClicked && imageUrl !== "" && (!isLoading) &&*/}
-                    {/*    <img src={imageUrl} alt="My Plot"/>*/}
-                    {/*}*/}
-                </div>
+            { generalStatisticsDisplayed &&
+                <GeneralStatisticsArtificialImputation/>
             }
         </>
     );
