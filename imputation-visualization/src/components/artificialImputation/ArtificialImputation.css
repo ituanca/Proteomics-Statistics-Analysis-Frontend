@@ -24,11 +24,10 @@
     border-radius: 10px;
     box-shadow: 4px 4px 10px;
 }
-.container-row-statistics-ai {
+.container-statistics-ai {
     align-items: center;     /*if they are commented, the content of the statistics_options appear at the top and the image from the right can be resized*/
     justify-content: center;
     display: flex;
-    flex-direction: row;
     /*margin: 20px;*/
     background-color: lightblue;
     /*padding: 30px 30px;*/
@@ -36,6 +35,12 @@
     box-shadow: 4px 4px 10px;
     padding-left: 2%;
     padding-right: 2%;
+}
+.row{
+    flex-direction: row;
+}
+.col{
+    flex-direction: column;
 }
 .statistics-view-errors{
     text-align: center;

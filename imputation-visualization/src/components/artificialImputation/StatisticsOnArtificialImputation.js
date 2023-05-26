@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {Multiselect} from "multiselect-react-dropdown";
-import {getClassNameForColumnHeader, labelAndDropdownGroupWithSpace, renderErrorMessage} from "../Utils";
+import {getClassNameForColumnHeader} from "../Utils";
 import LoadingSpinner from "../LoadingSpinner";
 import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificialImputation";
 
@@ -153,12 +153,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         setGeneralStatisticsDisplayed(true)
         setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
-        fetch('http://localhost:8000/getErrorMetrics')
-            .then((response) => response.json())
-            .then((json) => {
-                setErrorMetricsIds(json)
-            })
-            .catch((error) => console.log(error));
     }
 
     const onChangeMultiSelect = (selectedItems) => {
@@ -246,7 +240,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 </>
                 : null}
             { statisticsDisplayed &&
-                <div className="container-row-statistics-ai">
+                <div className="container-statistics-ai row">
                     <div className="statistics-view-errors">
                         <div className="button-in-col">
                             <button className="general-button errors-button"

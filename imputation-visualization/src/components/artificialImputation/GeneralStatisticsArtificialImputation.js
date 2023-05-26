@@ -38,6 +38,17 @@ export default function GeneralStatisticsArtificialImputation(){
     const [errors, setErrors] = useState([]);
     const [errorsForDisplay, setErrorsForDisplay] = useState([]);
     const [errorMetricsIds, setErrorMetricsIds] = useState([])
+    const [resultsOfErrorMetricsFetched, setResultsOfErrorMetricsFetched] = useState(false);
+
+    useEffect(() => {
+        console.log(paramsForGeneralStatistics)
+        fetch('http://localhost:8000/getErrorMetrics')
+            .then((response) => response.json())
+            .then((json) => {
+                setErrorMetricsIds(json)
+            })
+            .catch((error) => console.log(error));
+    }, [])
 
     useEffect(() => {
         setParamsForGeneralStatistics({...paramsForGeneralStatistics,
@@ -78,14 +89,29 @@ export default function GeneralStatisticsArtificialImputation(){
     const handleChoiceOfParam = (event, param) => {
         if(validate(param)){
             setIsLoading(true)
+            console.log(paramsForGeneralStatistics)
+            let tempParams = paramsForGeneralStatistics
+            if(param === paramsForGeneralStatistics.percentage_missing_data){
+                tempParams.MNAR_rate = "";
+            }else{
+                tempParams.percentage_missing_data = "";
+            }
             axios
-                .post("http://localhost:8000/requestErrorsChartForOneFixedParameter", JSON.stringify(paramsForGeneralStatistics), {
-                    responseType: "arraybuffer"
-                })
+                .post("http://localhost:8000/requestErrorsForOneFixedParameter", JSON.stringify(tempParams) )
                 .then((response) => {
                     console.info(response);
-                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
+                    let tempListOfErrors = [];
+                    Object.keys(response.data).map((imputationMethod) => {
+                        let tempListOfMetrics = [];
+                        Object.keys(response.data[imputationMethod]).map((errorMetric) => {
+                            tempListOfMetrics[errorMetric] = response.data[imputationMethod][errorMetric]
+                        })
+                        tempListOfErrors[imputationMethod] = tempListOfMetrics
+                    })
+                    setErrors(tempListOfErrors)
                     setIsLoading(false);
+                    setResultsOfErrorMetricsFetched(true);
+                    setOneTypeOfErrorClicked(false)
                 })
                 .catch((error) => {
                     console.error("There was an error!", error.response.data.message)
@@ -99,9 +125,15 @@ export default function GeneralStatisticsArtificialImputation(){
         else if(id === errorMetricsIds[2]) return "Mean Absolute Percentage Error"
     }
 
+    useEffect(() => {
+        if(errors !== [] && errorsForDisplay !== []){
+            setIsLoading(false);
+        }
+    }, [errors, errorsForDisplay])
+
     const handleOneTypeOfErrorClick = (event, id) => {
         axios
-            .post("http://localhost:8000/requestErrorsChartPerMethods", JSON.stringify(id), {
+            .post("http://localhost:8000/requestErrorsChartForOneFixedParameter", JSON.stringify(id), {
                 responseType: "arraybuffer"
             })
             .then((response) => {
@@ -132,7 +164,7 @@ export default function GeneralStatisticsArtificialImputation(){
     }
 
     return (
-        <div className="container-row-statistics-ai">
+        <div className="container-statistics-ai col">
             <div className="statistics-view-errors">
                 <div className="center-positioning">
                     <div className="indication-label">
@@ -200,6 +232,7 @@ export default function GeneralStatisticsArtificialImputation(){
                     </div>
                     {renderErrorMessage("param_not_specified", errorMessages)}
                     {renderErrorMessage("out_of_bounds", errorMessages)}
+                    {renderErrorMessage("separate_not_allowed", errorMessages)}
                     <div className="input-container-row-less-space">
                         <button className="general-button button-general-statistics-ai"
                                 onClick= {(event) => handleChoiceOfParam(event, paramsForGeneralStatistics.percentage_missing_data)}>
@@ -213,19 +246,39 @@ export default function GeneralStatisticsArtificialImputation(){
                 </div>
             </div>
             { isLoading ? <LoadingSpinner /> : null}
-            { !isLoading &&
+            { !isLoading && resultsOfErrorMetricsFetched &&
                 <div className="statistics-view-errors">
-                    <div className="button-in-col">
-                        <button className="general-button errors-button"
-                                onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[0])}>Mean Absolute Error</button>
-                    </div>
-                    <div className="button-in-col">
-                        <button className="general-button errors-button"
-                                onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[1])}>Root Mean Squared Error</button>
-                    </div>
-                    <div className="button-in-col">
-                        <button className="general-button errors-button"
-                                onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[2])}>Mean Absolute Percentage Error</button>
+                    <div className="container-col-artificial-imputation row">
+                        <div className="statistics-view-errors">
+                            <div className="button-in-col">
+                                <button className="general-button errors-button"
+                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[0])}>Mean Absolute Error</button>
+                            </div>
+                            <div className="button-in-col">
+                                <button className="general-button errors-button"
+                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[1])}>Root Mean Squared Error</button>
+                            </div>
+                            <div className="button-in-col">
+                                <button className="general-button errors-button"
+                                        onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[2])}>Mean Absolute Percentage Error</button>
+                            </div>
+                        </div>
+                        { oneTypeOfErrorClicked && Object.keys(errorsForDisplay) !== [] &&
+                            <div className="statistics-view-errors">
+                                <h4> {nameOfErrorMetric} </h4>
+                                <ul>
+                                    {Object.keys(errorsForDisplay).map((key) =>
+                                        <li className="list-item-errors">
+                                            <div className="left-part"><strong>{key}:</strong></div>
+                                            <div className="right-part">{errorsForDisplay[key]}</div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        }
+                        { oneTypeOfErrorClicked && imageUrl !== "" &&
+                            <img src={imageUrl} alt="My Plot"/>
+                        }
                     </div>
                 </div>
             }
