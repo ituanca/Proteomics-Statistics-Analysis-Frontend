@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {handleOptionChange} from "../Utils";
+import LoadingSpinner from "../LoadingSpinner";
 
 
 export default function ImputationExecution(){
@@ -37,8 +38,7 @@ export default function ImputationExecution(){
         columns: [],
         rows: []
     })
-
-    console.log(selectedMethod)
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setSelectedMethod({...selectedMethod,
@@ -104,6 +104,7 @@ export default function ImputationExecution(){
             setImputedData(tempImputedData)
             const tempImputedDataMarked = JSON.parse(JSON.stringify(tempImputedData))
             setIncompleteDataZeroesMarked(tempImputedDataMarked)
+            setIsLoading(false);
         }
     }, [incompleteFullGeneral, imputedGeneral])
 
@@ -126,6 +127,7 @@ export default function ImputationExecution(){
     }
 
     const performImputationGeneralNormalized = () => {
+        setIsLoading(true)
         axios
             .post("http://localhost:8000/performImputationGeneralNormalized", JSON.stringify(selectedMethod))
             .then((response) => {
@@ -137,6 +139,7 @@ export default function ImputationExecution(){
             });
     }
     const performImputationGeneralOriginal = () => {
+        setIsLoading(true)
         axios
             .post("http://localhost:8000/performImputationGeneralOriginal", JSON.stringify(selectedMethod))
             .then((response) => {
@@ -249,26 +252,30 @@ export default function ImputationExecution(){
                         </button>
                     </div>
                 </div>
-                <div className="table-container">
-                    {(imputedGeneral.length > 0) ?
-                        <div className="table-position">
-                            <div className="table-position-background">
-                                <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead>
-                                        <tr>
-                                            {imputedData.columns.map((columnHeader, index) => (
-                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                            ))}
-                                        </tr>
-                                    </MDBTableHead>
-                                    <MDBTableBody>
-                                        {mapCells(imputedData, incompleteDataZeroesMarked)}
-                                    </MDBTableBody>
-                                </MDBTable>
+                { isLoading ?
+                    <LoadingSpinner />
+                    :
+                    <div className="table-container">
+                        {(imputedGeneral.length > 0) ?
+                            <div className="table-position">
+                                <div className="table-position-background">
+                                    <MDBTable scrollY maxHeight="400px">
+                                        <MDBTableHead>
+                                            <tr>
+                                                {imputedData.columns.map((columnHeader, index) => (
+                                                    <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                                ))}
+                                            </tr>
+                                        </MDBTableHead>
+                                        <MDBTableBody>
+                                            {mapCells(imputedData, incompleteDataZeroesMarked)}
+                                        </MDBTableBody>
+                                    </MDBTable>
+                                </div>
                             </div>
-                        </div>
-                        : null}
-                </div>
+                            : null}
+                    </div>
+                }
             </div>
         </div>
     );

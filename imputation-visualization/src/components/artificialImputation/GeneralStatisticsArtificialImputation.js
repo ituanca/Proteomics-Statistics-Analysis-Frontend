@@ -101,12 +101,12 @@ export default function GeneralStatisticsArtificialImputation(){
                 .then((response) => {
                     console.info(response);
                     let tempListOfErrors = [];
-                    Object.keys(response.data).map((imputationMethod) => {
+                    Object.keys(response.data).map((variableValue) => {
                         let tempListOfMetrics = [];
-                        Object.keys(response.data[imputationMethod]).map((errorMetric) => {
-                            tempListOfMetrics[errorMetric] = response.data[imputationMethod][errorMetric]
+                        Object.keys(response.data[variableValue]).map((errorMetric) => {
+                            tempListOfMetrics[errorMetric] = response.data[variableValue][errorMetric]
                         })
-                        tempListOfErrors[imputationMethod] = tempListOfMetrics
+                        tempListOfErrors[(parseInt(variableValue)+1)*10] = tempListOfMetrics
                     })
                     setErrors(tempListOfErrors)
                     setIsLoading(false);
