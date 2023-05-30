@@ -70,7 +70,8 @@ export default function StatisticsProgeria(){
 
     //5th plot
     const errors5thPlot = {
-        entries: "select at least 1 entry",
+        entries: "select at least 1 protein",
+        separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
     };
     const [selectedOptions5thPlot, setSelectedOptions5thPlot] = useState({
         class: "",

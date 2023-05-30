@@ -285,7 +285,6 @@ export default function ArtificialImputation(){
                             </div> }
                         { rowsWithNaEliminated &&
                             <div className="center-positioning">
-                                <GeneralStatisticsArtificialImputation/>
                                 <h3> 2. Insert random missing values by choosing the percentage of missing data and the rate of Missing-Not-At-Random</h3>
                                 <div className="label-field-group-with-space">
                                     <label className="label-statistics">Insert the percentage of missing values</label>

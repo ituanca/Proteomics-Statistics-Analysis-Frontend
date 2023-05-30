@@ -59,9 +59,10 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         if(keysOfTablesToBeDisplayed.tables.length > 0){
             setButtonText("View all the imputed tables")
             setStatisticsDisplayed(false)
+            setGeneralStatisticsDisplayed(false)
             setTablesDisplayed(true);
             let filteredTables = []
-            Object.keys(tables).map((key) => {
+            Object.keys(tables).map((key, index) => {
                 const value = tables[key];
                 if(keysOfTablesToBeDisplayed.tables.includes(key)) {
                     filteredTables[key] = {
@@ -75,6 +76,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
 
     const handleViewStatisticsClick = () => {
         setStatisticsDisplayed(true)
+        setGeneralStatisticsDisplayed(false)
         setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
         fetch('http://localhost:8000/getErrorMetrics')
@@ -87,9 +89,9 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
             .then((response) => response.json())
             .then((json) => {
                 let tempListOfErrors = [];
-                Object.keys(json).map((imputationMethod) => {
+                Object.keys(json).map((imputationMethod, index) => {
                     let tempListOfMetrics = [];
-                    Object.keys(json[imputationMethod]).map((errorMetric) => {
+                    Object.keys(json[imputationMethod]).map((errorMetric, index) => {
                         tempListOfMetrics[errorMetric] = json[imputationMethod][errorMetric]
                     })
                     tempListOfErrors[imputationMethod] = tempListOfMetrics
@@ -151,6 +153,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
 
     const handleViewGeneralStatisticsClick = () => {
         setGeneralStatisticsDisplayed(true)
+        setStatisticsDisplayed(false)
         setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
     }

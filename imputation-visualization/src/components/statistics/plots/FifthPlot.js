@@ -7,8 +7,9 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
                                       limitForEnoughEntries, entryOptions, condForTypeOfGroup, handleOptionChange}){
 
     const [errorMessages, setErrorMessages] = useState({});
-    // data, filteredData, Ids, newIds and entryOptions have to be declared here, otherwise they don't update unless I refresh the page
+    // data has to be declared here, otherwise it doesn't update unless I refresh the page
     const data = JSON.parse(localStorage.getItem('selectedDataset'))
+    const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
 
     const [imageUrl, setImageUrl] = useState("");
     const [filterForChoiceOfImputationMethod, setFilterForChoiceOfImputationMethod] = useState({
@@ -17,18 +18,35 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
         type: "select",
         values: []
     });
+    const [filterForChoiceOfImputationType, setFilterForChoiceOfImputationType] = useState({
+        name: "type_of_imputation",
+        label: "Choose the way to perform the imputation",
+        type: "select",
+        values: []
+    });
+
+    useEffect(() => {
+        setSelectedOptions({
+            ...selectedOptions,
+            [generalOptions[0].name]: generalOptions[0].values[0],
+            [generalOptions[1].name]: generalOptions[1].values[0],
+            [generalOptions[2].name]: generalOptions[2].values[0],
+            [filterForChoiceOfImputationMethod.name]: filterForChoiceOfImputationMethod.values[0],
+            [filterForChoiceOfImputationType.name]: filterForChoiceOfImputationType.values[0]
+        });
+    }, [filterForChoiceOfImputationMethod, filterForChoiceOfImputationType]);
 
     useEffect(() => {
         fetch('http://localhost:8000/getImputationMethods')
             .then((response) => response.json())
             .then((json) => {
                 setFilterForChoiceOfImputationMethod({...filterForChoiceOfImputationMethod, values: json});
-                setSelectedOptions({...selectedOptions,
-                    [generalOptions[0].name]: generalOptions[0].values[0],
-                    [generalOptions[1].name]: generalOptions[1].values[0],
-                    [generalOptions[2].name]: generalOptions[2].values[0],
-                    [filterForChoiceOfImputationMethod.name]: json[0]
-                });
+            })
+            .catch((error) => console.log(error));
+        fetch('http://localhost:8000/getImputationOptionsClass')
+            .then((response) => response.json())
+            .then((json) => {
+                setFilterForChoiceOfImputationType({...filterForChoiceOfImputationType, values: json});
             })
             .catch((error) => console.log(error));
     }, [])
@@ -36,10 +54,20 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
     const nonEmptyFieldsCount = Object.values(selectedOptions).filter(value => value !== "").length;
     const enoughProteinsSelected = (nonEmptyFieldsCount >= limitForEnoughEntries)
 
+    const validateTypeOfImputation = () => {
+        if(selectedOptions.type_of_imputation === "separate" && (selectedOptionsForTable.class1.length < 3 || selectedOptionsForTable.class2.length < 3)){
+            setErrorMessages({name: "separate_not_allowed", message: errors.separate_not_allowed});
+        } else {
+            setErrorMessages({});
+            return true;
+        }
+        return false;
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(selectedOptions)
-        if(validate(enoughProteinsSelected, setErrorMessages, errors)){
+        if(validate(enoughProteinsSelected, setErrorMessages, errors) && validateTypeOfImputation()){
             axios
                 .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
                     responseType: "arraybuffer"
@@ -86,7 +114,9 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationMethod, selectedOptions, setSelectedOptions)}
+                    {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationType, selectedOptions, setSelectedOptions)}
                     {renderErrorMessage("entries", errorMessages)}
+                    {renderErrorMessage("separate_not_allowed", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>
                     </div>
