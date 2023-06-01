@@ -25,7 +25,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
     const [nameOfErrorMetric, setNameOfErrorMetric] = useState("");
     const [errorMetricsIds, setErrorMetricsIds] = useState([])
     const [isLoading, setIsLoading] = useState(false);
-    const [generalStatisticsDisplayed, setGeneralStatisticsDisplayed] = useState(false);
 
     useEffect( () => {
         let tempTables = [];
@@ -59,7 +58,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         if(keysOfTablesToBeDisplayed.tables.length > 0){
             setButtonText("View all the imputed tables")
             setStatisticsDisplayed(false)
-            setGeneralStatisticsDisplayed(false)
             setTablesDisplayed(true);
             let filteredTables = []
             Object.keys(tables).map((key, index) => {
@@ -76,7 +74,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
 
     const handleViewStatisticsClick = () => {
         setStatisticsDisplayed(true)
-        setGeneralStatisticsDisplayed(false)
         setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
         fetch('http://localhost:8000/getErrorMetrics')
@@ -136,28 +133,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
             });
     }
 
-    const handleAllTypesOfErrorClick = () => {
-        console.log(errors)
-        // axios
-        //     .post("http://localhost:8000/requestErrorsChartForAllMethods", {
-        //         responseType: "arraybuffer"
-        //     })
-        //     .then((response) => {
-        //         console.info(response);
-        //         setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-        //     })
-        //     .catch((error) => {
-        //         console.error("There was an error!", error.response.data.message)
-        //     });
-    }
-
-    const handleViewGeneralStatisticsClick = () => {
-        setGeneralStatisticsDisplayed(true)
-        setStatisticsDisplayed(false)
-        setTablesDisplayed(false)
-        setButtonText("View all the imputed tables")
-    }
-
     const onChangeMultiSelect = (selectedItems) => {
         setKeysOfTablesToBeDisplayed({...keysOfTablesToBeDisplayed, tables: selectedItems})
     }
@@ -206,11 +181,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                         View statistics for the current situation
                     </button>
                 </div>
-                <div className="button-in-row">
-                    <button className="general-button button-statistics-ai" onClick={handleViewGeneralStatisticsClick}>
-                        View more general statistics
-                    </button>
-                </div>
             </div>
             {tablesDisplayed ?
                 <>
@@ -257,9 +227,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                             <button className="general-button errors-button"
                                     onClick={(event) => handleOneTypeOfErrorClick(event, errorMetricsIds[2])}>Mean Absolute Percentage Error</button>
                         </div>
-                        <div className="button-in-col">
-                            <button className="general-button errors-button" onClick={handleAllTypesOfErrorClick}>All error metrics</button>
-                        </div>
                     </div>
                     { isLoading ? <LoadingSpinner /> : null}
                     { oneTypeOfErrorClicked && Object.keys(errorsForDisplay) !== [] && (!isLoading) &&
@@ -280,9 +247,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     }
                 </div>
                }
-            { generalStatisticsDisplayed &&
-                <GeneralStatisticsArtificialImputation/>
-            }
         </>
     );
 }

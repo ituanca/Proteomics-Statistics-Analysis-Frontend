@@ -5,7 +5,7 @@ import './StartPage.css';
 function StartPage(){
     return (
         <div className="container-title-button">
-            <label className="title"><strong>Proteomics Statistics Visualization</strong></label>
+            <label className="title"><strong>Proteomics Statistics Analysis</strong></label>
             <nav>
                 <div>
                     <Link to="/ChooseDataset">

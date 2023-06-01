@@ -96,3 +96,7 @@ h3{
 }
 /* Ends overriding */
 
+.button-margin-top-bottom{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

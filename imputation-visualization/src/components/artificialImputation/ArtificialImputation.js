@@ -43,6 +43,9 @@ export default function ArtificialImputation(){
         setNrOfRowsInTheMissingEliminatedTable(missingEliminatedTableData.rows.length)
     }, [missingEliminatedTableData])
 
+    const [stepByStepApproachSelected, setStepByStepApproachSelected] = useState(false);
+    const [viewDirectlyStatisticsSelected, setViewDirectlyStatisticsSelected] = useState(false);
+
     const handleEliminateRowsWithNaValues = () => {
         if(!rowsWithNaEliminated){
             axios
@@ -219,6 +222,16 @@ export default function ArtificialImputation(){
         setSelectedOptionClass({...selectedOptionClass, type_of_imputation: value});
     };
 
+    const handleChoiceOfStepByStepApproach = () => {
+        setStepByStepApproachSelected(true);
+        setViewDirectlyStatisticsSelected(false);
+    }
+
+    const handleChoiceOfViewStatisticsApproach = () => {
+        setStepByStepApproachSelected(false);
+        setViewDirectlyStatisticsSelected(true);
+    }
+
     const mapCells = (data, markedData) => {
         return data.rows.map((row, indexRow) => (
             <tr key={indexRow}>
@@ -240,129 +253,145 @@ export default function ArtificialImputation(){
                 <h1>Artificial imputation</h1>
                 <h2>{selectedDisease} dataset</h2>
                 <div className="container-col-artificial-imputation">
-                        <div className="table-position">
-                            <div className="table-colors-legend">
-                                <div className="legend-container-row"><div className='box id-color'/>ID</div>
-                                <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
-                                <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
-                                <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
-                            </div>
-                            <div className="table-position-background">
-                                <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead>
-                                        <tr>
-                                            {tableData.columns.map((columnHeader, index) => (
-                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                            ))}
-                                        </tr>
-                                    </MDBTableHead>
-                                    <MDBTableBody rows={tableData.rows}/>
-                                </MDBTable>
-                            </div>
-                            <div className="table-nr-rows"><label>The table has {nrOfRowsInTheOriginalTable} rows</label></div>
+                    <div className="table-position">
+                        <div className="table-colors-legend">
+                            <div className="legend-container-row"><div className='box id-color'/>ID</div>
+                            <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
+                            <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
+                            <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
                         </div>
-                        <div className="center-positioning">
-                            <h3> 1. Eliminate the rows containing at least one missing value</h3>
-                            <button className="general-button" onClick={handleEliminateRowsWithNaValues}>
-                                View the updated table
+                        <div className="table-position-background">
+                            <MDBTable scrollY maxHeight="400px">
+                                <MDBTableHead>
+                                    <tr>
+                                        {tableData.columns.map((columnHeader, index) => (
+                                            <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                        ))}
+                                    </tr>
+                                </MDBTableHead>
+                                <MDBTableBody rows={tableData.rows}/>
+                            </MDBTable>
+                        </div>
+                        <div className="table-nr-rows"><label>The table has {nrOfRowsInTheOriginalTable} rows</label></div>
+                    </div>
+                    <div className="center-positioning">
+                        <h3> 1. Eliminate the rows containing at least one missing value</h3>
+                        <button className="general-button" onClick={handleEliminateRowsWithNaValues}>View the updated table</button>
+                    </div>
+                    { rowsWithNaEliminated &&
+                        <div className="table-position">
+                                        <div className="table-position-background">
+                                            <MDBTable scrollY maxHeight="400px">
+                                                <MDBTableHead>
+                                                    <tr>
+                                                        {missingEliminatedTableData.columns.map((columnHeader, index) => (
+                                                            <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                                        ))}
+                                                    </tr>
+                                                </MDBTableHead>
+                                                <MDBTableBody rows={missingEliminatedTableData.rows}/>
+                                            </MDBTable>
+                                        </div>
+                                        <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
+                        </div>
+                    }
+                    {rowsWithNaEliminated &&
+                        <div className="input-container-row-less-space">
+                            <button className="general-button button-general-choice-of-approach" onClick= {handleChoiceOfStepByStepApproach}>
+                                Follow the step-by-step approach
+                            </button>
+                            <button className="general-button button-general-choice-of-approach" onClick= {handleChoiceOfViewStatisticsApproach}>
+                                Statistics
                             </button>
                         </div>
-                        { rowsWithNaEliminated &&
-                            <div className="table-position">
-                                <div className="table-position-background">
-                                    <MDBTable scrollY maxHeight="400px">
-                                        <MDBTableHead>
-                                            <tr>
-                                                {missingEliminatedTableData.columns.map((columnHeader, index) => (
-                                                    <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                                ))}
-                                            </tr>
-                                        </MDBTableHead>
-                                        <MDBTableBody rows={missingEliminatedTableData.rows}/>
-                                    </MDBTable>
-                                </div>
-                                <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
-                            </div> }
-                        { rowsWithNaEliminated &&
-                            <div className="center-positioning">
-                                <h3> 2. Insert random missing values by choosing the percentage of missing data and the rate of Missing-Not-At-Random</h3>
-                                <div className="label-field-group-with-space">
-                                    <label className="label-statistics">Insert the percentage of missing values</label>
-                                    <input type="number"
-                                           value={paramsForNaInsertion.percentage_missing_data}
-                                           onChange={handleInput}
-                                           name="percentage_missing_data" required
-                                           id="percentage_missing_data"/>
-                                </div>
-                                <div className="label-field-group-with-space">
-                                    <label className="label-statistics">Insert the rate of Missing-Not-At-Random</label>
-                                    <input type="number"
-                                           value={paramsForNaInsertion.MNAR_rate}
-                                           onChange={handleInput}
-                                           name="MNAR_rate" required
-                                           id="MNAR_rate"/>
-                                </div>
-                                {renderErrorMessage("params_not_specified", errorMessages)}
-                                {renderErrorMessage("out_of_bounds", errorMessages)}
-                                <button className="general-button" onClick={handleInsertRandomNaValues}>
-                                    View the updated table
-                                </button>
-                            </div>
-                        }
-                        { naValuesInserted  &&
-                            <div className="table-position">
-                                <div className="table-position-background">
-                                    <MDBTable scrollY maxHeight="400px">
-                                        <MDBTableHead>
-                                            <tr>
-                                                {missingInsertedTableData.columns.map((columnHeader, index) => (
-                                                    <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                                ))}
-                                            </tr>
-                                        </MDBTableHead>
-                                        <MDBTableBody>
-                                            {mapCells(missingInsertedTableData, missingInsertedDataZeroesMarked)}
-                                        </MDBTableBody>
-                                    </MDBTable>
-                                </div>
-                            </div>
-                        }
-                        { naValuesInserted &&
-                            <div className="center-positioning">
-                                <h3>
-                                    <p> 3. Perform imputation using all the available imputation techniques:</p>
-                                    {imputationMethods.map((method, index) =>
-                                        <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
-                                    )}
-                                </h3>
-                                <div className="label-field-group-with-space">
-                                    <label className="label-statistics-ai">
-                                        <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
-                                    </label>
-                                    <div className="simple-container-col">
-                                        <select className="input-for-statistics-ad-select input-ai"
-                                                value={selectedOptionClass[filterForChoiceOfImputationType.name]}
-                                                onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
-                                        >
-                                            {filterForChoiceOfImputationType.values.map((value) => (
-                                                <option key={value} value={value}>
-                                                    {value}
-                                                </option>
-                                            ))}
-                                        </select>
+                    }
+                    {stepByStepApproachSelected &&
+                        <>
+                                { rowsWithNaEliminated &&
+                                    <div className="center-positioning">
+                                        <h3> 2. Insert random missing values by choosing the percentage of missing data and the rate of Missing-Not-At-Random</h3>
+                                        <div className="label-field-group-with-space">
+                                            <label className="label-statistics">Insert the percentage of missing values</label>
+                                            <input type="number"
+                                                   value={paramsForNaInsertion.percentage_missing_data}
+                                                   onChange={handleInput}
+                                                   name="percentage_missing_data" required
+                                                   id="percentage_missing_data"/>
+                                        </div>
+                                        <div className="label-field-group-with-space">
+                                            <label className="label-statistics">Insert the rate of Missing-Not-At-Random</label>
+                                            <input type="number"
+                                                   value={paramsForNaInsertion.MNAR_rate}
+                                                   onChange={handleInput}
+                                                   name="MNAR_rate" required
+                                                   id="MNAR_rate"/>
+                                        </div>
+                                        {renderErrorMessage("params_not_specified", errorMessages)}
+                                        {renderErrorMessage("out_of_bounds", errorMessages)}
+                                        <button className="general-button" onClick={handleInsertRandomNaValues}>
+                                            View the updated table
+                                        </button>
                                     </div>
-                                </div>
-                                {renderErrorMessage("separate_not_allowed", errorMessages)}
-                                {!imputationPerformed &&
-                                    <button className="general-button" onClick={handlePerformImputation} disabled={isLoading}>
-                                        View the result
-                                    </button>
                                 }
-                            </div>
-                        }
-                    { isLoading ? <LoadingSpinner /> : null}
-                    { imputationPerformed &&
-                        <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
+                                { naValuesInserted  &&
+                                    <div className="table-position">
+                                        <div className="table-position-background">
+                                            <MDBTable scrollY maxHeight="400px">
+                                                <MDBTableHead>
+                                                    <tr>
+                                                        {missingInsertedTableData.columns.map((columnHeader, index) => (
+                                                            <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                                        ))}
+                                                    </tr>
+                                                </MDBTableHead>
+                                                <MDBTableBody>
+                                                    {mapCells(missingInsertedTableData, missingInsertedDataZeroesMarked)}
+                                                </MDBTableBody>
+                                            </MDBTable>
+                                        </div>
+                                    </div>
+                                }
+                                { naValuesInserted &&
+                                    <div className="center-positioning">
+                                        <h3>
+                                            <p> 3. Perform imputation using all the available imputation techniques:</p>
+                                            {imputationMethods.map((method, index) =>
+                                                <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
+                                            )}
+                                        </h3>
+                                        <div className="label-field-group-with-space">
+                                            <label className="label-statistics-ai">
+                                                <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
+                                            </label>
+                                            <div className="simple-container-col">
+                                                <select className="input-for-statistics-ad-select input-ai"
+                                                        value={selectedOptionClass[filterForChoiceOfImputationType.name]}
+                                                        onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
+                                                >
+                                                    {filterForChoiceOfImputationType.values.map((value) => (
+                                                        <option key={value} value={value}>
+                                                            {value}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {renderErrorMessage("separate_not_allowed", errorMessages)}
+                                        {!imputationPerformed &&
+                                            <button className="general-button" onClick={handlePerformImputation} disabled={isLoading}>
+                                                View the result
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            { isLoading ? <LoadingSpinner /> : null}
+                            { imputationPerformed &&
+                                <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>
+                            }
+                        </>
+                    }
+                    { viewDirectlyStatisticsSelected &&
+                        <GeneralStatisticsArtificialImputation/>
                     }
                 </div>
                 <div className="button-container-row">

@@ -234,7 +234,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
     return (
         <form onSubmit = {handleSubmit}>
-            <div className="table-filters">
+            <div className="table-filters container-perform-imputation">
                 <div className="label-table-description-container">
                     <label className="label-table-description">Filter the dataset:</label>
                 </div>
@@ -323,7 +323,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                 </div>
                 {renderErrorMessage(selectedDisease === "Other" ? "filters_not_complete" : "filters_not_complete_without_id", errorMessages)}
                 {renderErrorMessage("not_number", errorMessages)}
-                <button className="general-button" onClick={handleButtonClickViewTable}>Update table</button>
+                <button className="general-button button-margin-top-bottom" onClick={handleButtonClickViewTable}>Update table</button>
             </div>
             {(tableVisible) ?
                 <div>
@@ -348,7 +348,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         </div>
                         <div className="table-nr-rows"><label>The table has {numberOfRowsInTable} rows</label></div>
                     </div>
-
                     <div className="label-multiselect-group-choose-dataset">
                         <label className="label-choose-dataset"><strong>Optional:</strong> Choose entries to be eliminate from dataset</label>
                         <Multiselect
@@ -360,7 +359,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         />
                         <button className="general-button eliminate-entries" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
                     </div>
-
                     <div className="input-container-row-less-space">
                         <div className="button-in-row">
                             <Link to="/Statistics">
