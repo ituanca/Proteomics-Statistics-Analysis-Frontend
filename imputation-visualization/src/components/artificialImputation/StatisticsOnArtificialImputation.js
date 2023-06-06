@@ -4,8 +4,6 @@ import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {Multiselect} from "multiselect-react-dropdown";
 import {getClassNameForColumnHeader} from "../Utils";
 import LoadingSpinner from "../LoadingSpinner";
-import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificialImputation";
-
 
 export default function StatisticsOnArtificialImputation({listOfImputedDataframes, markedData, imputationMethods}){
 
@@ -17,7 +15,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
     });
     const [tablesToBeDisplayed, setTablesToBeDisplayed] = useState([]);
     const [statisticsDisplayed, setStatisticsDisplayed] = useState(false);
-
     const [oneTypeOfErrorClicked, setOneTypeOfErrorClicked] = useState(false);
     const [errors, setErrors] = useState([]);
     const [errorsForDisplay, setErrorsForDisplay] = useState([]);
@@ -73,7 +70,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
     }
 
     const handleViewStatisticsClick = () => {
-        setStatisticsDisplayed(true)
+        setIsLoading(true)
         setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
         fetch('http://localhost:8000/getErrorMetrics')
@@ -94,6 +91,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     tempListOfErrors[imputationMethod] = tempListOfMetrics
                 })
                 setErrors(tempListOfErrors)
+                setStatisticsDisplayed(true)
                 console.log(json)
             })
             .catch((error) => console.log(error));
@@ -163,7 +161,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 </div>
                 <div className="input-container-col-less-space">
                     <div className="label-multiselect-group-choose-dataset">
-                        <label className="label-choose-dataset">Columns for the first class</label>
+                        <label className="label-choose-dataset-black">Columns for the first class</label>
                         <Multiselect
                             showArrow
                             options={imputationMethods}
@@ -178,10 +176,11 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 </div>
                 <div className="button-in-row">
                     <button className="general-button button-statistics-ai" onClick={handleViewStatisticsClick}>
-                        View statistics for the current situation
+                        View statistics
                     </button>
                 </div>
             </div>
+            { isLoading ? <LoadingSpinner /> : null}
             {tablesDisplayed ?
                 <>
                     {Object.keys(tablesToBeDisplayed).map((key) => {

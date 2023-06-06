@@ -92,7 +92,14 @@ input[type="file"] {
     padding-bottom: 10px;
     margin:15px;
 }
-.label-choose-dataset{
+.label-choose-dataset-black{
+    color: black;
+    /*text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);*/
+    text-align: start;
+    min-width: 18%;
+    padding-right: 15px;
+}
+.label-choose-dataset-white{
     color: white;
     text-shadow: 0 0 8px black, 0 2px 0 rgba(0,0,0, .25);
     text-align: start;

@@ -210,8 +210,8 @@ export default function GeneralStatisticsArtificialImputation(){
                                 value={paramsForGeneralStatistics[filterForChoiceOfImputationType.name]}
                                 onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
                         >
-                            {filterForChoiceOfImputationType.values.map((value) => (
-                                <option key={value} value={value}>
+                            {filterForChoiceOfImputationType.values.map((value, index) => (
+                                <option key={index} value={value}>
                                     {value}
                                 </option>
                             ))}
@@ -223,8 +223,8 @@ export default function GeneralStatisticsArtificialImputation(){
                                 value={paramsForGeneralStatistics[filterForChoiceOfImputationMethod.name]}
                                 onChange={(e) => handleOptionChange(filterForChoiceOfImputationMethod.name, e.target.value)}
                         >
-                            {filterForChoiceOfImputationMethod.values.map((value) => (
-                                <option key={value} value={value}>
+                            {filterForChoiceOfImputationMethod.values.map((value, index) => (
+                                <option key={index} value={value}>
                                     {value}
                                 </option>
                             ))}
@@ -267,7 +267,7 @@ export default function GeneralStatisticsArtificialImputation(){
                             <div className="statistics-view-errors">
                                 <h4> {nameOfErrorMetric} </h4>
                                 <ul>
-                                    {Object.keys(errorsForDisplay).map((key) =>
+                                    {Object.keys(errorsForDisplay).map((key, index) =>
                                         <li className="list-item-errors">
                                             <div className="left-part"><strong>{key}:</strong></div>
                                             <div className="right-part">{errorsForDisplay[key]}</div>
