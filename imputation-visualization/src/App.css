@@ -44,6 +44,21 @@ input[type="submit"]:disabled{
   cursor: not-allowed;
 }
 
+.general-button-selected {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #5192a5;
+  color: white;
+  font-size: 20px;
+  border-color: #5192a5;
+  padding: 10px;
+  width: 200px;
+  border-radius: 5px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
 .general-button {
   align-items: center;
   justify-content: center;

@@ -248,6 +248,9 @@ export default function ArtificialImputation(){
         ))
     }
 
+    const buttonClassNameStepByStep = (stepByStepApproachSelected) ?  "general-button-selected button-general-choice-of-approach" :  "general-button button-general-choice-of-approach" ;
+    const buttonClassStatistics = (viewDirectlyStatisticsSelected) ?  "general-button-selected button-general-choice-of-approach" :  "general-button button-general-choice-of-approach" ;
+
     const renderForm = (
             <div className="button-container-col">
                 <h1>Artificial imputation</h1>
@@ -297,10 +300,10 @@ export default function ArtificialImputation(){
                     }
                     {rowsWithNaEliminated &&
                         <div className="input-container-row-less-space">
-                            <button className="general-button button-general-choice-of-approach" onClick= {handleChoiceOfStepByStepApproach}>
+                            <button className={buttonClassNameStepByStep} onClick= {handleChoiceOfStepByStepApproach}>
                                 Follow the step-by-step approach
                             </button>
-                            <button className="general-button button-general-choice-of-approach" onClick= {handleChoiceOfViewStatisticsApproach}>
+                            <button className={buttonClassStatistics} onClick= {handleChoiceOfViewStatisticsApproach}>
                                 Statistics
                             </button>
                         </div>

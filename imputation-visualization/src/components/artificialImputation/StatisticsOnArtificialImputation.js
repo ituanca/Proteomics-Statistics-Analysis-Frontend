@@ -39,6 +39,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         setTablesToBeDisplayed(tempTables)
     }, [])
 
+    const [buttonClassNameViewAllTables, setButtonClassNameViewAllTables] = useState("general-button button-statistics-ai");
     const handleViewTablesClick = () => {
         if(tablesDisplayed && buttonText === "Hide the imputed tables"){
             setTablesDisplayed(false);
@@ -50,6 +51,14 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         }
         setStatisticsDisplayed(false)
     }
+
+    useEffect(() => {
+        if(tablesDisplayed){
+            setButtonClassNameViewAllTables("general-button-selected button-statistics-ai")
+        }else{
+            setButtonClassNameViewAllTables("general-button button-statistics-ai")
+        }
+    }, [tablesDisplayed])
 
     const handleViewSelectedTablesClick = () => {
         if(keysOfTablesToBeDisplayed.tables.length > 0){
@@ -71,7 +80,6 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
 
     const handleViewStatisticsClick = () => {
         setIsLoading(true)
-        setTablesDisplayed(false)
         setButtonText("View all the imputed tables")
         fetch('http://localhost:8000/getErrorMetrics')
             .then((response) => response.json())
@@ -92,6 +100,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                 })
                 setErrors(tempListOfErrors)
                 setStatisticsDisplayed(true)
+                setTablesDisplayed(false)
                 console.log(json)
             })
             .catch((error) => console.log(error));
@@ -151,11 +160,13 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         ))
     }
 
+    const buttonClassNameViewStatistics = (statisticsDisplayed) ?  "general-button-selected button-statistics-ai" :  "general-button button-statistics-ai" ;
+
     return (
         <>
             <div className="input-container-row-less-space container-statistics-buttons-ai">
                 <div className="button-in-row">
-                    <button className="general-button button-statistics-ai" onClick={handleViewTablesClick}>
+                    <button className={buttonClassNameViewAllTables} onClick={handleViewTablesClick}>
                         {buttonText}
                     </button>
                 </div>
@@ -175,7 +186,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                     </button>
                 </div>
                 <div className="button-in-row">
-                    <button className="general-button button-statistics-ai" onClick={handleViewStatisticsClick}>
+                    <button className={buttonClassNameViewStatistics} onClick={handleViewStatisticsClick}>
                         View statistics
                     </button>
                 </div>
