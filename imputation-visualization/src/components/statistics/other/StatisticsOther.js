@@ -17,11 +17,10 @@ export default function StatisticsOther(){
     const errors1stPlot = {
         entries: "select at least 2 entries",
     };
-    const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
-    const samples = [...new Set((tableData.columns.slice(2,(tableData.columns).length)).map((column) => column.label))];
     // data, filteredData, Ids, newIds and entryOptions have to be declared here, otherwise they don't update unless I refresh the page
     const data = JSON.parse(localStorage.getItem('selectedDataset'))
     const filteredData = JSON.parse(localStorage.getItem('selectedOptions'))
+    const samples = [...filteredData.class1, ...filteredData.class2]
     const Ids = [...new Set(data.rows.map((item) => item[filteredData.id]))];
     const newIds = [...new Set(["-- Select an option --", ...Ids])];
     const entryOptions = [

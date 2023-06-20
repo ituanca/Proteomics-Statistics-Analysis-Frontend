@@ -40,7 +40,7 @@ export default function StatisticsProgeria(){
         metric: "",
         type_of_plot: ""
     });
-    const samples = [...new Set((data.columns.slice(2,(data.columns).length)).map((column) => column.label))];
+    const samples = [...filteredData.class1, ...filteredData.class2]
     const filterForSamplesChoice = {
         name: "samples",
         label: "Samples to be compared",

@@ -103,6 +103,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     }
 
     const validate = () => {
+        console.log(selectedOptions.id)
         if(selectedOptions.id === "" || selectedOptions.class1.length < 2 || selectedOptions.class2.length < 2){
             setErrorMessages({name: "filters_not_complete", message: errors.filters_not_complete});
         } else {
@@ -370,12 +371,12 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                     <div className="input-container-row-less-space">
                         <div className="button-in-row">
                             <Link to="/Statistics">
-                                <input type="submit" value="Statistics on the filtered dataset"/>
+                                <input type="submit" value="Normal imputation and statistics"/>
                             </Link>
                         </div>
                         <div className="button-in-row">
                             <Link to="/ArtificialImputation">
-                                <input type="submit" value="Artificial imputation"/>
+                                <input type="submit" value="Artificial imputation and statistics"/>
                             </Link>
                         </div>
                     </div>
