@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange} from "../../Utils";
+import {handleOptionChange} from "../../utils/Utils";
 
 export default function ThirdPlot({options, path}){
 

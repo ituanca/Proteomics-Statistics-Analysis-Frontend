@@ -3,7 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import Accordion from '../Accordion';
 import "../Accordion.css"
 import ImputationExecution from "../ImputationExecution";
-import {generalOptions, handleOptionChange} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+import {generalOptions, handleOptionChange} from "../UtilsStatistics";
 import FirstPlot from "../plots/FirstPlot";
 import {useState} from "react";
 import SecondPlot from "../plots/SecondPlot";

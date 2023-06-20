@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
-import {renderErrorMessage} from "../Utils";
-import LoadingSpinner from "../LoadingSpinner";
+import {renderErrorMessage} from "../utils/Utils";
+import LoadingSpinner from "../utils/LoadingSpinner";
 import React from "react";
 import axios from "axios";
 

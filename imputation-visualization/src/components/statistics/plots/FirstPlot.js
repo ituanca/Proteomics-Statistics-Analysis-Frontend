@@ -1,8 +1,8 @@
 import React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../Utils";
-import {truncateText, validate} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../utils/Utils";
+import {truncateText, validate} from "../UtilsStatistics";
 import {Multiselect} from "multiselect-react-dropdown";
 
 export default function FirstPlot({errors, selectedOptions, setSelectedOptions, generalOptions,

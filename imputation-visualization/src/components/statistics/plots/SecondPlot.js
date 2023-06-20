@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Multiselect} from "multiselect-react-dropdown";
-import {renderErrorMessage} from "../../Utils";
+import {renderErrorMessage} from "../../utils/Utils";
 
 export default function SecondPlot({ samplesFilter, errors, path }){
 

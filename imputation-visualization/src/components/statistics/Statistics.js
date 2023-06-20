@@ -6,7 +6,7 @@ import "./Statistics.css"
 import StatisticsProgeria from "./progeria/StatisticsProgeria";
 import StatisticsOther from "./other/StatisticsOther";
 import axios from "axios";
-import {getClassNameForColumnHeader} from "../Utils";
+import {getClassNameForColumnHeader} from "../utils/Utils";
 
 function Statistics(){
 

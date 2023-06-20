@@ -3,9 +3,9 @@ import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import "./ArtificialImputation.css"
 import axios from "axios";
-import {getClassNameForColumnHeader, handleOptionChange, renderErrorMessage} from "../Utils";
+import {getClassNameForColumnHeader, handleOptionChange, renderErrorMessage} from "../utils/Utils";
 import StatisticsOnArtificialImputation from "./StatisticsOnArtificialImputation";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../utils/LoadingSpinner";
 import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificialImputation";
 
 export default function ArtificialImputation(){

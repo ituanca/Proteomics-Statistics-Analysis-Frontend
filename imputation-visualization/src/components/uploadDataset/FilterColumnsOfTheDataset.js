@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import React, {useEffect} from "react";
-import {handleOptionChange, renderErrorMessage} from "../Utils";
+import {handleOptionChange, renderErrorMessage} from "../utils/Utils";
 import {Multiselect} from "multiselect-react-dropdown";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import isEqual from 'lodash/isEqual';

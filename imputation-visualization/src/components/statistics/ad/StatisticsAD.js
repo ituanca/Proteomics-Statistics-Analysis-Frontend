@@ -7,7 +7,7 @@ import {
     generalOptionsAD,
     handleOptionChangeWithCorrelation,
     optionsForThirdPlotAD
-} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+} from "../UtilsStatistics";
 import FirstPlot from "../plots/FirstPlot";
 import SecondPlot from "../plots/SecondPlot";
 import ThirdPlot from "../plots/ThirdPlot";

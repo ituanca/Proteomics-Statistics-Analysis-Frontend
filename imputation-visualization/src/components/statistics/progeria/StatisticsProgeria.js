@@ -6,7 +6,7 @@ import ImputationExecution from "../ImputationExecution";
 import {
     generalOptionsProgeria, handleOptionChange,
     optionsForThirdPlotProgeria
-} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+} from "../UtilsStatistics";
 import FirstPlot from "../plots/FirstPlot";
 import SecondPlot from "../plots/SecondPlot";
 import ThirdPlot from "../plots/ThirdPlot";

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import {handleOptionChange} from "../Utils";
-import LoadingSpinner from "../LoadingSpinner";
+import {handleOptionChange} from "../utils/Utils";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 
 export default function ImputationExecution(){

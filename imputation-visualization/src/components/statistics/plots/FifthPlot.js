@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../Utils";
-import {truncateText, validate} from "../../uploadDataset/FunctionsForEntrySelectionPlot";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../utils/Utils";
+import {truncateText, validate} from "../UtilsStatistics";
 
 export default function FifthPlot({generalOptions, path, errors, selectedOptions, setSelectedOptions,
                                       limitForEnoughEntries, entryOptions, condForTypeOfGroup, handleOptionChange}){

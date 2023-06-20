@@ -2,8 +2,8 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {Multiselect} from "multiselect-react-dropdown";
-import {getClassNameForColumnHeader} from "../Utils";
-import LoadingSpinner from "../LoadingSpinner";
+import {getClassNameForColumnHeader} from "../utils/Utils";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function StatisticsOnArtificialImputation({listOfImputedDataframes, markedData, imputationMethods}){
 
