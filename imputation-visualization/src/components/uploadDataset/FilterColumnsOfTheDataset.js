@@ -123,27 +123,27 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         return false;
     }
 
-    const [filtersSent, setFiltersSent] = useState(false);
-
-    useEffect(() => {
-        if(filtersSent){
-            fetch('http://localhost:8000/getIncompleteDfNewGeneral')
-                .then((response) => response.json())
-                .then((json) => {
-                    setTableData({
-                        ...tableData, columns: Object.keys(json[0]).map(key => {
-                            return {
-                                label: key, field: key, sort: 'asc'
-                            };
-                        }), rows: json
-                    })
-                    setFiltersSent(false);
-                    setTableVisible(true);
-                    localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
-                })
-                .catch((error) => console.log(error));
-        }
-    }, [filtersSent])
+    // const [filtersSent, setFiltersSent] = useState(false);
+    //
+    // useEffect(() => {
+    //     if(filtersSent){
+    //         fetch('http://localhost:8000/getIncompleteDfNewGeneral')
+    //             .then((response) => response.json())
+    //             .then((json) => {
+    //                 setTableData({
+    //                     ...tableData, columns: Object.keys(json[0]).map(key => {
+    //                         return {
+    //                             label: key, field: key, sort: 'asc'
+    //                         };
+    //                     }), rows: json
+    //                 })
+    //                 setFiltersSent(false);
+    //                 setTableVisible(true);
+    //                 localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
+    //             })
+    //             .catch((error) => console.log(error));
+    //     }
+    // }, [filtersSent])
 
     const handleButtonClickViewTable = () => {
         if( ((selectedDisease === "Other" && validate()) || (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
@@ -157,7 +157,15 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                 .post("http://localhost:8000/sendSelectedOptionsForTable", JSON.stringify(optionsToBeSent))
                 .then((response) => {
                     console.info(response);
-                    setFiltersSent(true);
+                    setTableData({
+                        ...tableData, columns: Object.keys(response.data[0]).map(key => {
+                            return {
+                                label: key, field: key, sort: 'asc'
+                            };
+                        }), rows: response.data
+                    })
+                    setTableVisible(true);
+                    localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
                 })
                 .catch((error) => {
                     console.error("There was an error!", error.response.data.message)
