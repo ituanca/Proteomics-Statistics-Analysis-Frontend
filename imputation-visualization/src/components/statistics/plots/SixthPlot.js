@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {handleOptionChange} from "../../utils/Utils";
+import {handleOptionChange, sendRequestForPlot} from "../../utils/Utils";
 
 export default function SixthPlot({ path, options}){
 
@@ -19,17 +19,7 @@ export default function SixthPlot({ path, options}){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios
-            .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
-                responseType: "arraybuffer"
-            })
-            .then((response) => {
-                console.info(response);
-                setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
+        sendRequestForPlot(path, selectedOptions, setImageUrl)
     };
 
     return (

@@ -1,16 +1,14 @@
 import React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../utils/Utils";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage, sendRequestForPlot} from "../../utils/Utils";
 import {truncateText, validate} from "../UtilsStatistics";
-import {Multiselect} from "multiselect-react-dropdown";
 
 export default function FirstPlot({errors, selectedOptions, setSelectedOptions, generalOptions,
                                   limitForEnoughEntries, path, entryOptions, condForTypeOfGroup, handleOptionChange}){
 
     const [errorMessages, setErrorMessages] = useState({});
     const data = JSON.parse(localStorage.getItem('selectedDataset'))
-
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
@@ -28,22 +26,8 @@ export default function FirstPlot({errors, selectedOptions, setSelectedOptions, 
         event.preventDefault();
         console.log(selectedOptions)
         if(validate(enoughProteinsSelected, setErrorMessages, errors)){
-            axios
-                .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
-                    responseType: "arraybuffer"
-                })
-                .then((response) => {
-                    console.info(response);
-                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
+            sendRequestForPlot(path, selectedOptions, setImageUrl)
         }
-    };
-
-    const onChangeMultiSelect = (selectedItems) => {
-        setSelectedOptions({...selectedOptions, samples: selectedItems})
     };
 
     const getTypeOfGroup = (option) => {
@@ -74,13 +58,6 @@ export default function FirstPlot({errors, selectedOptions, setSelectedOptions, 
                             </select>
                         </div>
                     )}
-                    {/*<Multiselect*/}
-                    {/*    showArrow*/}
-                    {/*    options={entryOptions.values}*/}
-                    {/*    isObject={false}*/}
-                    {/*    onSelect={onChangeMultiSelect}*/}
-                    {/*    onRemove={onChangeMultiSelect}*/}
-                    {/*/>*/}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {renderErrorMessage("entries", errorMessages)}

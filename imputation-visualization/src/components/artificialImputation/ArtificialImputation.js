@@ -3,7 +3,7 @@ import {Link, Outlet} from "react-router-dom";
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import "./ArtificialImputation.css"
 import axios from "axios";
-import {getClassNameForColumnHeader, handleOptionChange, renderErrorMessage} from "../utils/Utils";
+import {getClassNameForColumnHeader, handleOptionChange, mapCellsToHighlightMissingData, renderErrorMessage} from "../utils/Utils";
 import StatisticsOnArtificialImputation from "./StatisticsOnArtificialImputation";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificialImputation";
@@ -232,22 +232,6 @@ export default function ArtificialImputation(){
         setViewDirectlyStatisticsSelected(true);
     }
 
-    const mapCells = (data, markedData) => {
-        return data.rows.map((row, indexRow) => (
-            <tr key={indexRow}>
-                {data.columns.map((column, indexCol) => (
-                        <React.Fragment key={indexCol}>
-                            {(markedData.rows[indexRow][column.label] === true) ?
-                                <td className="text-color-zero-imputation">{data.rows[indexRow][column.label]}</td>
-                                :
-                                <td className="text-color-non-zero-imputation">{data.rows[indexRow][column.label]}</td>}
-                        </React.Fragment>
-                    )
-                )}
-            </tr>
-        ))
-    }
-
     const buttonClassNameStepByStep = (stepByStepApproachSelected) ?  "general-button-selected button-general-choice-of-approach" :  "general-button button-general-choice-of-approach" ;
     const buttonClassStatistics = (viewDirectlyStatisticsSelected) ?  "general-button-selected button-general-choice-of-approach" :  "general-button button-general-choice-of-approach" ;
 
@@ -283,19 +267,19 @@ export default function ArtificialImputation(){
                     </div>
                     { rowsWithNaEliminated &&
                         <div className="table-position">
-                                        <div className="table-position-background">
-                                            <MDBTable scrollY maxHeight="400px">
-                                                <MDBTableHead>
-                                                    <tr>
-                                                        {missingEliminatedTableData.columns.map((columnHeader, index) => (
-                                                            <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                                        ))}
-                                                    </tr>
-                                                </MDBTableHead>
-                                                <MDBTableBody rows={missingEliminatedTableData.rows}/>
-                                            </MDBTable>
-                                        </div>
-                                        <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
+                            <div className="table-position-background">
+                                <MDBTable scrollY maxHeight="400px">
+                                    <MDBTableHead>
+                                        <tr>
+                                            {missingEliminatedTableData.columns.map((columnHeader, index) => (
+                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                            ))}
+                                        </tr>
+                                    </MDBTableHead>
+                                    <MDBTableBody rows={missingEliminatedTableData.rows}/>
+                                </MDBTable>
+                            </div>
+                            <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
                         </div>
                     }
                     {rowsWithNaEliminated &&
@@ -348,7 +332,10 @@ export default function ArtificialImputation(){
                                                     </tr>
                                                 </MDBTableHead>
                                                 <MDBTableBody>
-                                                    {mapCells(missingInsertedTableData, missingInsertedDataZeroesMarked)}
+                                                    {mapCellsToHighlightMissingData(
+                                                        missingInsertedTableData.rows,
+                                                        missingInsertedTableData.columns,
+                                                        missingInsertedDataZeroesMarked)}
                                                 </MDBTableBody>
                                             </MDBTable>
                                         </div>

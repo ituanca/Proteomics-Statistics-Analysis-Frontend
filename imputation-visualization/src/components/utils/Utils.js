@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 export const handleOptionChange = (option, value, selectedOptions, setSelectedOptions) => {
     setSelectedOptions({...selectedOptions, [option]: value});
@@ -37,4 +38,50 @@ export const getClassNameForColumnHeader = (columnHeader) => {
         return "column-header-id";
     }
     return "column-header-other-columns";
+}
+
+// export const mapCellsToHighlightMissingData = (data, markedData) => {
+//     return data.rows.map((row, indexRow) => (
+//         <tr key={indexRow}>
+//             {data.columns.map((column, indexCol) => (
+//                     <React.Fragment key={indexCol}>
+//                         {(markedData.rows[indexRow][column.label] === true) ?
+//                             <td className="text-color-zero-imputation">{data.rows[indexRow][column.label]}</td>
+//                             :
+//                             <td className="text-color-non-zero-imputation">{data.rows[indexRow][column.label]}</td>}
+//                     </React.Fragment>
+//                 )
+//             )}
+//         </tr>
+//     ))
+// }
+
+export const mapCellsToHighlightMissingData = (rows, columns, markedData) => {
+    return rows.map((row, indexRow) => (
+        <tr key={indexRow}>
+            {columns.map((column, indexCol) => (
+                    <React.Fragment key={indexCol}>
+                        {(markedData.rows[indexRow][column.label] === true) ?
+                            <td className="text-color-zero-imputation">{rows[indexRow][column.label]}</td>
+                            :
+                            <td className="text-color-non-zero-imputation">{rows[indexRow][column.label]}</td>}
+                    </React.Fragment>
+                )
+            )}
+        </tr>
+    ))
+}
+
+export const sendRequestForPlot = (path, selectedOptions, setImageUrl) => {
+    axios
+        .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
+            responseType: "arraybuffer"
+        })
+        .then((response) => {
+            console.info(response);
+            setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
+        })
+        .catch((error) => {
+            console.error("There was an error!", error.response.data.message)
+        });
 }

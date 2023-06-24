@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {labelAndDropdownGroupWithSpace, renderErrorMessage} from "../../utils/Utils";
+import {labelAndDropdownGroupWithSpace, renderErrorMessage, sendRequestForPlot} from "../../utils/Utils";
 import {truncateText, validate} from "../UtilsStatistics";
 
 export default function FifthPlot({generalOptions, path, errors, selectedOptions, setSelectedOptions,
@@ -68,17 +68,7 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
         event.preventDefault();
         console.log(selectedOptions)
         if(validate(enoughProteinsSelected, setErrorMessages, errors) && validateTypeOfImputation()){
-            axios
-                .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
-                    responseType: "arraybuffer"
-                })
-                .then((response) => {
-                    console.info(response);
-                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
+            sendRequestForPlot(path, selectedOptions, setImageUrl)
         }
     };
 

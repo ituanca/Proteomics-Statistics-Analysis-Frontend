@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import {handleOptionChange} from "../utils/Utils";
+import {handleOptionChange, mapCellsToHighlightMissingData, renderErrorMessage} from "../utils/Utils";
 import LoadingSpinner from "../utils/LoadingSpinner";
-
 
 export default function ImputationExecution(){
 
+    const [errorMessages, setErrorMessages] = useState({});
+    const errors = {
+        separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
+    };
     const [selectedMethod, setSelectedMethod] = useState({
         imputation_method: "",
         type_of_imputation: ""
@@ -126,29 +129,44 @@ export default function ImputationExecution(){
             .catch((error) => console.log(error));
     }
 
-    const performImputationGeneralNormalized = () => {
-        setIsLoading(true)
-        axios
-            .post("http://localhost:8000/performImputationGeneralNormalized", JSON.stringify(selectedMethod))
-            .then((response) => {
-                console.info(response);
-                setImputedGeneral(response.data)
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
+    const validateTypeOfImputation = () => {
+        if(selectedMethod.type_of_imputation === "separate" && (selectedOptionsForTable.class1.length < 3 || selectedOptionsForTable.class2.length < 3)){
+            setErrorMessages({name: "separate_not_allowed", message: errors.separate_not_allowed});
+        } else {
+            setErrorMessages({});
+            return true;
+        }
+        return false;
     }
+
+    const performImputationGeneralNormalized = () => {
+        if(validateTypeOfImputation()) {
+            setIsLoading(true)
+            axios
+                .post("http://localhost:8000/performImputationGeneralNormalized", JSON.stringify(selectedMethod))
+                .then((response) => {
+                    console.info(response);
+                    setImputedGeneral(response.data)
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
+        }
+    }
+
     const performImputationGeneralOriginal = () => {
-        setIsLoading(true)
-        axios
-            .post("http://localhost:8000/performImputationGeneralOriginal", JSON.stringify(selectedMethod))
-            .then((response) => {
-                console.info(response);
-                setImputedGeneral(response.data)
-            })
-            .catch((error) => {
-                console.error("There was an error!", error.response.data.message)
-            });
+        if(validateTypeOfImputation()) {
+            setIsLoading(true)
+            axios
+                .post("http://localhost:8000/performImputationGeneralOriginal", JSON.stringify(selectedMethod))
+                .then((response) => {
+                    console.info(response);
+                    setImputedGeneral(response.data)
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
+        }
     }
 
     const getClassNameForColumnHeader = (columnHeader) => {
@@ -162,22 +180,6 @@ export default function ImputationExecution(){
             return "column-header-id";
         }
         return "column-header-other-columns";
-    }
-
-    const mapCells = (data, markedData) => {
-        return data.rows.map((row, indexRow) => (
-            <tr key={indexRow}>
-                {data.columns.map((column, indexCol) => (
-                    <React.Fragment key={indexCol}>
-                        {(markedData.rows[indexRow][column.label] === true) ?
-                            <td className="text-color-zero-imputation">{data.rows[indexRow][column.label]}</td>
-                            :
-                            <td className="text-color-non-zero-imputation">{data.rows[indexRow][column.label]}</td>}
-                    </React.Fragment>
-                    )
-                )}
-            </tr>
-        ))
     }
 
     return (
@@ -206,7 +208,10 @@ export default function ImputationExecution(){
                                         </tr>
                                     </MDBTableHead>
                                     <MDBTableBody>
-                                        {mapCells(incompleteData, incompleteDataZeroesMarked)}
+                                        {mapCellsToHighlightMissingData(
+                                            incompleteData.rows,
+                                            incompleteData.columns,
+                                            incompleteDataZeroesMarked)}
                                     </MDBTableBody>
                                 </MDBTable>
                             </div>
@@ -243,6 +248,7 @@ export default function ImputationExecution(){
                             ))}
                         </select>
                     </div>
+                    {renderErrorMessage("separate_not_allowed", errorMessages)}
                     <div className="input-container-col">
                         <button onClick={performImputationGeneralOriginal} className="general-button">
                             View the original imputed dataset
@@ -268,7 +274,10 @@ export default function ImputationExecution(){
                                             </tr>
                                         </MDBTableHead>
                                         <MDBTableBody>
-                                            {mapCells(imputedData, incompleteDataZeroesMarked)}
+                                            {mapCellsToHighlightMissingData(
+                                                imputedData.rows,
+                                                imputedData.columns,
+                                                incompleteDataZeroesMarked)}
                                         </MDBTableBody>
                                     </MDBTable>
                                 </div>

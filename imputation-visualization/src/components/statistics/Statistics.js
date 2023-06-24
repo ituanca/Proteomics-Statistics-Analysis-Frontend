@@ -55,9 +55,6 @@ function Statistics(){
                             <button className="general-button">Go back</button>
                         </Link>
                     </div>
-                    <div className="input-container-col">
-                        <input type="submit" value="Next"/>
-                    </div>
                 </div>
             </div>
         </div>

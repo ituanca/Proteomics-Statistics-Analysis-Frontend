@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Multiselect} from "multiselect-react-dropdown";
-import {renderErrorMessage} from "../../utils/Utils";
+import {renderErrorMessage, sendRequestForPlot} from "../../utils/Utils";
 
 export default function SecondPlot({ samplesFilter, errors, path }){
 
@@ -37,17 +37,7 @@ export default function SecondPlot({ samplesFilter, errors, path }){
     const handleSubmit = (event) => {
         event.preventDefault();
         if(validate()){
-            axios
-                .post("http://localhost:8000/" + path, JSON.stringify(selectedOptions), {
-                    responseType: "arraybuffer"
-                })
-                .then((response) => {
-                    console.info(response);
-                    setImageUrl(URL.createObjectURL(new Blob([response.data], {type: 'image/png'})))
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
+            sendRequestForPlot(path, selectedOptions, setImageUrl)
         }
     };
 

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import {Multiselect} from "multiselect-react-dropdown";
-import {getClassNameForColumnHeader} from "../utils/Utils";
+import {getClassNameForColumnHeader, mapCellsToHighlightMissingData} from "../utils/Utils";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function StatisticsOnArtificialImputation({listOfImputedDataframes, markedData, imputationMethods}){
@@ -144,21 +144,21 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
         setKeysOfTablesToBeDisplayed({...keysOfTablesToBeDisplayed, tables: selectedItems})
     }
 
-    const mapCells = (rows, columns) => {
-        return rows.map((row, indexRow) => (
-            <tr key={indexRow}>
-                {columns.map((column, indexCol) => (
-                        <React.Fragment key={indexCol}>
-                            {(markedData.rows[indexRow][column.label] === true) ?
-                                <td className="text-color-zero-imputation">{rows[indexRow][column.label]}</td>
-                                :
-                                <td className="text-color-non-zero-imputation">{rows[indexRow][column.label]}</td>}
-                        </React.Fragment>
-                    )
-                )}
-            </tr>
-        ))
-    }
+    // const mapCells = (rows, columns) => {
+    //     return rows.map((row, indexRow) => (
+    //         <tr key={indexRow}>
+    //             {columns.map((column, indexCol) => (
+    //                     <React.Fragment key={indexCol}>
+    //                         {(markedData.rows[indexRow][column.label] === true) ?
+    //                             <td className="text-color-zero-imputation">{rows[indexRow][column.label]}</td>
+    //                             :
+    //                             <td className="text-color-non-zero-imputation">{rows[indexRow][column.label]}</td>}
+    //                     </React.Fragment>
+    //                 )
+    //             )}
+    //         </tr>
+    //     ))
+    // }
 
     const buttonClassNameViewStatistics = (statisticsDisplayed) ?  "general-button-selected button-statistics-ai" :  "general-button button-statistics-ai" ;
 
@@ -213,7 +213,7 @@ export default function StatisticsOnArtificialImputation({listOfImputedDataframe
                                             </tr>
                                         </MDBTableHead>
                                         <MDBTableBody>
-                                            {mapCells(rows, columns)}
+                                            {mapCellsToHighlightMissingData(rows, columns, markedData)}
                                         </MDBTableBody>
                                     </MDBTable>
                                 </div>
