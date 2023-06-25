@@ -59,7 +59,6 @@ export default function FirstPlot({errors, selectedOptions, setSelectedOptions, 
                         </div>
                     )}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
-                    {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {renderErrorMessage("entries", errorMessages)}
                     <div className="input-container-col">
                         <input type="submit" value="Generate plot"/>

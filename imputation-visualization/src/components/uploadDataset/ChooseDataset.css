@@ -47,7 +47,7 @@ input[type="file"] {
 }
 .file-name{
     font-size: 20px;
-    color: white;
+    color: #31448e;
 }
 .choose-dataset-container-row {
     /*align-items: center;*/  /*if this is commented, the content appears at the top*/

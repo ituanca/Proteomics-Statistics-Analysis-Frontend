@@ -274,14 +274,12 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                 setFileName(file.name)
 
                 setConfirmedSheetNr(false)
-                setDataChanged(false);
                 if (sheets.length > 1) {
                     setMultipleSheets(true)
                     setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
                 }else{
                     setMultipleSheets(false)
                     const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]], {skipHeader: true})
-                    setSmthSelected(true);
                     setImportedData(rows)
                 }
             }
@@ -427,13 +425,13 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
             </div>
             {(tableVisible) ?
                 <div>
-                    <div className="table-colors-legend">
-                        <div className="legend-container-row"><div className='box id-color'/>ID</div>
-                        <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
-                        <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
-                        <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
-                    </div>
                     <div className="table-position">
+                        <div className="table-colors-legend">
+                            <div className="legend-container-row"><div className='box id-color'/>ID</div>
+                            <div className="legend-container-row"><div className='box class1-color'/>Class 1</div>
+                            <div className="legend-container-row"><div className='box class2-color'/>Class 2</div>
+                            <div className="legend-container-row"><div className='box other-columns-color'/>Other columns</div>
+                        </div>
                         <div className="table-position-background">
                             <MDBTable scrollY maxHeight="500px">
                                 <MDBTableHead>
