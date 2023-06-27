@@ -96,6 +96,7 @@ export default function GeneralStatisticsArtificialImputation(){
             }else{
                 tempParams.percentage_missing_data = "";
             }
+            console.log(tempParams)
             axios
                 .post("http://localhost:8000/requestErrorsForOneFixedParameter", JSON.stringify(tempParams) )
                 .then((response) => {
@@ -121,7 +122,7 @@ export default function GeneralStatisticsArtificialImputation(){
 
     function setCompleteName (id) {
         if(id === errorMetricsIds[0]) return "Mean Absolute Error"
-        else if(id === errorMetricsIds[1]) return "Root Mean Square Error"
+        else if(id === errorMetricsIds[1]) return "Root Mean Squared Error"
         else if(id === errorMetricsIds[2]) return "Mean Absolute Percentage Error"
     }
 

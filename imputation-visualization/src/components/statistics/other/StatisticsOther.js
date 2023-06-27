@@ -100,11 +100,11 @@ export default function StatisticsOther(){
                                 handleOptionChange={handleOptionChange}/>
         },
         {
-            title: 'Compare the number of missing values for the selected samples',
+            title: 'Compare the number/percentage of missing values for the selected samples',
             content: <SecondPlot samplesFilter={filterForSamplesChoice} errors={errors2ndPlot} path="requestGeneralSecondChart"/>
         },
         {
-            title: 'Compare the number/percentage of missing values for each sample by class',
+            title: 'Compare the samples by their number/percentage of missing values and by class',
             content: <ThirdPlot options={options3rdPlot} path="requestGeneralThirdChart"/>
         },
         {
