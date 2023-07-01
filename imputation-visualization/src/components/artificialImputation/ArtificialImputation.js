@@ -261,39 +261,37 @@ export default function ArtificialImputation(){
                         </div>
                         <div className="table-nr-rows"><label>The table has {nrOfRowsInTheOriginalTable} rows</label></div>
                     </div>
-                    <div className="center-positioning">
-                        <h3> 1. Eliminate the rows containing at least one missing value</h3>
-                        <button className="general-button" onClick={handleEliminateRowsWithNaValues}>View the updated table</button>
+                    <div className="input-container-row-less-space">
+                        <button className={buttonClassNameStepByStep} onClick= {handleChoiceOfStepByStepApproach}>
+                            Follow the step-by-step approach
+                        </button>
+                        <button className={buttonClassStatistics} onClick= {handleChoiceOfViewStatisticsApproach}>
+                            Statistics
+                        </button>
                     </div>
-                    { rowsWithNaEliminated &&
-                        <div className="table-position">
-                            <div className="table-position-background">
-                                <MDBTable scrollY maxHeight="400px">
-                                    <MDBTableHead>
-                                        <tr>
-                                            {missingEliminatedTableData.columns.map((columnHeader, index) => (
-                                                <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
-                                            ))}
-                                        </tr>
-                                    </MDBTableHead>
-                                    <MDBTableBody rows={missingEliminatedTableData.rows}/>
-                                </MDBTable>
-                            </div>
-                            <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
-                        </div>
-                    }
-                    {rowsWithNaEliminated &&
-                        <div className="input-container-row-less-space">
-                            <button className={buttonClassNameStepByStep} onClick= {handleChoiceOfStepByStepApproach}>
-                                Follow the step-by-step approach
-                            </button>
-                            <button className={buttonClassStatistics} onClick= {handleChoiceOfViewStatisticsApproach}>
-                                Statistics
-                            </button>
-                        </div>
-                    }
                     {stepByStepApproachSelected &&
                         <>
+                            <div className="center-positioning">
+                                <h3> 1. Eliminate the rows containing at least one missing value</h3>
+                                <button className="general-button" onClick={handleEliminateRowsWithNaValues}>View the updated table</button>
+                            </div>
+                            { rowsWithNaEliminated &&
+                                <div className="table-position">
+                                    <div className="table-position-background">
+                                        <MDBTable scrollY maxHeight="400px">
+                                            <MDBTableHead>
+                                                <tr>
+                                                    {missingEliminatedTableData.columns.map((columnHeader, index) => (
+                                                        <th key={index} className={getClassNameForColumnHeader(columnHeader)}>{columnHeader.label}</th>
+                                                    ))}
+                                                </tr>
+                                            </MDBTableHead>
+                                            <MDBTableBody rows={missingEliminatedTableData.rows}/>
+                                        </MDBTable>
+                                    </div>
+                                    <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
+                                </div>
+                            }
                                 { rowsWithNaEliminated &&
                                     <div className="center-positioning">
                                         <h3> 2. Insert random missing values by choosing the percentage of missing data and the rate of Missing-Not-At-Random</h3>

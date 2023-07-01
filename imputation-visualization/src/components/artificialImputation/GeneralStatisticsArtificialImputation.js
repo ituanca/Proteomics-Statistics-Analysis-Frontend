@@ -9,7 +9,7 @@ export default function GeneralStatisticsArtificialImputation(){
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
     const [errorMessages, setErrorMessages] = useState({});
     const errorsStatistics = {
-        param_not_specified: "You have to specify the parameter needed fo the missing values insertion",
+        param_not_specified: "You have to specify the parameter needed for the missing values insertion",
         out_of_bounds: "The values must belong to the interval [0,100]",
         separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
     };
