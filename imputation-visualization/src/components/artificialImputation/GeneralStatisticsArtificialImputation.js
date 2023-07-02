@@ -10,7 +10,8 @@ export default function GeneralStatisticsArtificialImputation(){
     const [errorMessages, setErrorMessages] = useState({});
     const errorsStatistics = {
         param_not_specified: "You have to specify the parameter needed for the missing values insertion",
-        out_of_bounds: "The values must belong to the interval [0,100]",
+        mnar_out_of_bounds: "The rate of MNAR must belong to the interval [0,100]",
+        percentage_out_of_bounds: "The percentage of missing data must belong to the interval [1,99]",
         separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
     };
     const [filterForChoiceOfImputationMethod, setFilterForChoiceOfImputationMethod] = useState({
@@ -72,11 +73,39 @@ export default function GeneralStatisticsArtificialImputation(){
             .catch((error) => console.log(error));
     }, [])
 
+    const handleChoiceOfParam = (param) => {
+        setIsLoading(true)
+        let tempParams = paramsForGeneralStatistics
+        if(param === paramsForGeneralStatistics.percentage_missing_data){
+            tempParams.MNAR_rate = "";
+        }else{
+            tempParams.percentage_missing_data = "";
+        }
+        axios
+            .post("http://localhost:8000/requestErrorsForOneFixedParameter", JSON.stringify(tempParams) )
+            .then((response) => {
+                console.info(response);
+                let tempListOfErrors = [];
+                Object.keys(response.data).map((variableValue) => {
+                    let tempListOfMetrics = [];
+                    Object.keys(response.data[variableValue]).map((errorMetric) => {
+                        tempListOfMetrics[errorMetric] = response.data[variableValue][errorMetric]
+                    })
+                    tempListOfErrors[(parseInt(variableValue)+1)*10] = tempListOfMetrics
+                })
+                setErrors(tempListOfErrors)
+                setIsLoading(false);
+                setResultsOfErrorMetricsFetched(true);
+                setOneTypeOfErrorClicked(false)
+            })
+            .catch((error) => {
+                console.error("There was an error!", error.response.data.message)
+            });
+    }
+
     const validate = (param) => {
         if(param === ""){
             setErrorMessages({name: "param_not_specified", message: errorsStatistics.param_not_specified});
-        }else if (parseInt(param) < 0 || parseInt(param) > 100){
-            setErrorMessages({name: "out_of_bounds", message: errorsStatistics.out_of_bounds});
         }else if (paramsForGeneralStatistics.type_of_imputation === "separate" && (selectedOptionsForTable.class1.length < 3 || selectedOptionsForTable.class2.length < 3)){
             setErrorMessages({name: "separate_not_allowed", message: errorsStatistics.separate_not_allowed});
         }else{
@@ -86,37 +115,33 @@ export default function GeneralStatisticsArtificialImputation(){
         return false;
     }
 
-    const handleChoiceOfParam = (event, param) => {
-        if(validate(param)){
-            setIsLoading(true)
-            console.log(paramsForGeneralStatistics)
-            let tempParams = paramsForGeneralStatistics
-            if(param === paramsForGeneralStatistics.percentage_missing_data){
-                tempParams.MNAR_rate = "";
-            }else{
-                tempParams.percentage_missing_data = "";
-            }
-            console.log(tempParams)
-            axios
-                .post("http://localhost:8000/requestErrorsForOneFixedParameter", JSON.stringify(tempParams) )
-                .then((response) => {
-                    console.info(response);
-                    let tempListOfErrors = [];
-                    Object.keys(response.data).map((variableValue) => {
-                        let tempListOfMetrics = [];
-                        Object.keys(response.data[variableValue]).map((errorMetric) => {
-                            tempListOfMetrics[errorMetric] = response.data[variableValue][errorMetric]
-                        })
-                        tempListOfErrors[(parseInt(variableValue)+1)*10] = tempListOfMetrics
-                    })
-                    setErrors(tempListOfErrors)
-                    setIsLoading(false);
-                    setResultsOfErrorMetricsFetched(true);
-                    setOneTypeOfErrorClicked(false)
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
+    const validateMNAR = (param) => {
+        if (param !== "" && (parseInt(param) < 0 || parseInt(param) > 100)){
+            setErrorMessages({name: "mnar_out_of_bounds", message: errorsStatistics.mnar_out_of_bounds});
+            return false;
+        }
+        setErrorMessages({});
+        return true;
+    }
+
+    const handleChoiceOfMNAR = (event, param) => {
+        if(validate(param) && validateMNAR(param)){
+           handleChoiceOfParam(param)
+        }
+    }
+
+    const validatePercentage = (param) => {
+         if (param !== "" && (parseInt(param) < 1 || parseInt(param) > 99)){
+             setErrorMessages({name: "percentage_out_of_bounds", message: errorsStatistics.percentage_out_of_bounds});
+             return false;
+         }
+         setErrorMessages({});
+         return true;
+    }
+
+    const handleChoiceOfPercentage = (event, param) => {
+        if(validate(param) && validatePercentage(param)){
+            handleChoiceOfParam(param)
         }
     }
 
@@ -232,15 +257,16 @@ export default function GeneralStatisticsArtificialImputation(){
                         </select>
                     </div>
                     {renderErrorMessage("param_not_specified", errorMessages)}
-                    {renderErrorMessage("out_of_bounds", errorMessages)}
+                    {renderErrorMessage("mnar_out_of_bounds", errorMessages)}
+                    {renderErrorMessage("percentage_out_of_bounds", errorMessages)}
                     {renderErrorMessage("separate_not_allowed", errorMessages)}
                     <div className="input-container-row-less-space">
                         <button className="general-button button-general-statistics-ai"
-                                onClick= {(event) => handleChoiceOfParam(event, paramsForGeneralStatistics.percentage_missing_data)}>
+                                onClick= {(event) => handleChoiceOfPercentage(event, paramsForGeneralStatistics.percentage_missing_data)}>
                             Statistics based on the introduced percentage of missing values
                         </button>
                         <button className="general-button button-general-statistics-ai"
-                                onClick= {(event) => handleChoiceOfParam(event, paramsForGeneralStatistics.MNAR_rate)}>
+                                onClick= {(event) => handleChoiceOfMNAR(event, paramsForGeneralStatistics.MNAR_rate)}>
                             Statistics based on the introduced MNAR rate
                         </button>
                     </div>

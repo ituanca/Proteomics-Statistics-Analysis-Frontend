@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState, useRef, useMemo} from "react";
 import {Link, Outlet} from "react-router-dom";
 import "./ChooseDataset.css"
 import {read, utils} from "xlsx";
@@ -27,6 +27,19 @@ function ChooseDataset(){
     const [dataChanged, setDataChanged] = useState(false);
     const [preparedImportedData, setPreparedImportedData] = useState([]);
 
+    // useEffect(() => {
+    //     if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
+    //         setConfirmedSheetNr(JSON.parse(localStorage.getItem('confirmedSheetNr')))
+    //         setMultipleSheets(JSON.parse(localStorage.getItem('multipleSheets')))
+    //         setSelectedDisease(localStorage.getItem('selectedDisease'))
+    //         setSmthSelected(true);
+    //         fetch('http://localhost:8000/getBackImportedData')
+    //             .then((response) => response.json())
+    //             .then((json) => setImportedData(json))
+    //             .catch((error) => console.log(error));
+    //     }
+    // },[])
+
     // include "" in the fields corresponding to the Excel cells where there is nothing
     useEffect(() => {
         let selectedColumnsString = data.columns.map(column => column.label)
@@ -50,14 +63,16 @@ function ChooseDataset(){
         localStorage.setItem("selectedDisease", JSON.stringify(selectedDisease));
         if(preparedImportedData.length > 0) {
             // after I choose the dataset to import, it is automatically sent to the backend, then it is received back as a response
-            axios
-                .post("http://localhost:8000/sendImportedData", JSON.stringify(preparedImportedData))
-                .then((response) => {
-                    console.info(response);
-                })
-                .catch((error) => {
-                    console.error("There was an error!", error.response.data.message)
-                });
+            //if(JSON.parse(localStorage.getItem('chooseDatasetCompleted')) === false){
+                axios
+                    .post("http://localhost:8000/sendImportedData", JSON.stringify(preparedImportedData))
+                    .then((response) => {
+                        console.info(response);
+                    })
+                    .catch((error) => {
+                        console.error("There was an error!", error.response.data.message)
+                    });
+            //}
 
             setData({...data, columns: Object.keys(preparedImportedData[0]).map(key => {
                     return {
@@ -88,6 +103,7 @@ function ChooseDataset(){
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
+        //localStorage.setItem("multipleSheets", JSON.stringify(false));
         fetch('http://localhost:8000/getIncompleteDfNewDatasetProgeria')
             .then((response) => response.json())
             .then((json) => setImportedData(json))
@@ -99,11 +115,17 @@ function ChooseDataset(){
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
+        //localStorage.setItem("multipleSheets", JSON.stringify(false));
         fetch('http://localhost:8000/getIncompleteDfNewDatasetAD')
             .then((response) => response.json())
             .then((json) => setImportedData(json))
             .catch((error) => console.log(error));
     }
+
+    const fileInputRef = useRef(null);
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
 
     function createArrayOfSheets (max) {
         const numbers = [];
@@ -129,6 +151,7 @@ function ChooseDataset(){
                 setDataChanged(false);
                 if (sheets.length > 1) {
                     setMultipleSheets(true)
+                    //localStorage.setItem("multipleSheets", JSON.stringify(true));
                     setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
                 }else{
                     setMultipleSheets(false)
@@ -139,6 +162,7 @@ function ChooseDataset(){
                 }
             }
             reader.readAsArrayBuffer(file);
+            fileInputRef.current.value = null;
         }
     }
 
@@ -154,6 +178,7 @@ function ChooseDataset(){
             setImportedData(rows)
 
             setConfirmedSheetNr(true);
+            //localStorage.setItem("confirmedSheetNr", JSON.stringify(true));
             setSmthSelected(true);
             setSelectedDisease("Other")
         }
@@ -161,15 +186,10 @@ function ChooseDataset(){
 
     const buttonClassNameProgeria = (selectedDisease === "Progeria") ?  "disease-choice-button-selected" :  "disease-choice-button" ;
     const buttonClassNameAD = (selectedDisease === "Alzheimer's disease") ?  "disease-choice-button-selected" :  "disease-choice-button" ;
-
-    const fileInputRef = useRef(null);
-    const handleButtonClick = () => {
-        fileInputRef.current.click();
-    };
+    const buttonClassNameChooseFile = (selectedDisease === "Other") ?  "general-button-selected" :  "general-button" ;
 
     const [condToDisplayFiltersSection, setCondToDisplayFiltersSection] = useState(false)
     useEffect(() => {
-        // localStorage.setItem("condToDisplayFiltersSection", JSON.stringify(condToDisplayFiltersSection));
         setCondToDisplayFiltersSection((!multipleSheets && smthSelected && dataChanged) || (multipleSheets && confirmedSheetNr))
     }, [multipleSheets, smthSelected, dataChanged, confirmedSheetNr])
 
@@ -188,7 +208,7 @@ function ChooseDataset(){
                     <div  className="choose-dataset-container-col">
                         <h2 className="h2-without-space">or import a dataset</h2>
                         <div>
-                            <button className="general-button" onClick={handleButtonClick}>Choose File</button>
+                            <button className={buttonClassNameChooseFile} onClick={handleButtonClick}>Choose File</button>
                             <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
                             {fileName && selectedDisease === "Other" && <p className="file-name">Selected file: {fileName}</p>}

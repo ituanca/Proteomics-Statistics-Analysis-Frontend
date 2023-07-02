@@ -14,7 +14,8 @@ export default function ArtificialImputation(){
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {
         params_not_specified: "You have to specify the parameters needed fo the missing values insertion",
-        out_of_bounds: "The values must belong to the interval [0,100]",
+        mnar_out_of_bounds: "The rate of Missing-Not-At-Random must belong to the interval [0,100]",
+        percentage_out_of_bounds: "The percentage must belong to the interval [1,99]",
         separate_not_allowed: "The separate imputation cannot be performed! You can only choose the full option"
     };
     const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
@@ -124,10 +125,11 @@ export default function ArtificialImputation(){
     const validateParams = () => {
         if(paramsForNaInsertion.percentage_missing_data === "" || paramsForNaInsertion.MNAR_rate === ""){
             setErrorMessages({name: "params_not_specified", message: errors.params_not_specified});
-        }else if (parseInt(paramsForNaInsertion.percentage_missing_data) < 0 || parseInt(paramsForNaInsertion.percentage_missing_data) > 100 ||
-            parseInt(paramsForNaInsertion.MNAR_rate) < 0 || parseInt(paramsForNaInsertion.MNAR_rate) > 100){
-            setErrorMessages({name: "out_of_bounds", message: errors.out_of_bounds});
-        }else{
+        } else if (parseInt(paramsForNaInsertion.percentage_missing_data) < 1 || parseInt(paramsForNaInsertion.percentage_missing_data) > 99){
+            setErrorMessages({name: "percentage_out_of_bounds", message: errors.percentage_out_of_bounds});
+        } else if (parseInt(paramsForNaInsertion.MNAR_rate) < 0 || parseInt(paramsForNaInsertion.MNAR_rate) > 100) {
+            setErrorMessages({name: "mnar_out_of_bounds", message: errors.mnar_out_of_bounds});
+        } else {
             setErrorMessages({});
             return true;
         }
@@ -211,16 +213,21 @@ export default function ArtificialImputation(){
     }
 
     const handleInput = event => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setParamsForNaInsertion({ ...paramsForNaInsertion, [name] : value});
-        console.log(paramsForNaInsertion);
+        if(!isLoading){
+            const name = event.target.name;
+            const value = event.target.value;
+            setParamsForNaInsertion({ ...paramsForNaInsertion, [name] : value});
+            setNaValuesInserted(false);
+            setImputationPerformed(false)
+        }
     }
 
     const handleOptionChange = (option, value) => {
-        setImputationPerformed(false)
-        setSelectedOptionClass({...selectedOptionClass, type_of_imputation: value});
-    };
+        if(!isLoading) {
+            setImputationPerformed(false)
+            setSelectedOptionClass({...selectedOptionClass, type_of_imputation: value});
+        }
+    }
 
     const handleChoiceOfStepByStepApproach = () => {
         setStepByStepApproachSelected(true);
@@ -292,7 +299,7 @@ export default function ArtificialImputation(){
                                     <div className="table-nr-rows"><label>The table has {nrOfRowsInTheMissingEliminatedTable} rows</label></div>
                                 </div>
                             }
-                                { rowsWithNaEliminated &&
+                            { rowsWithNaEliminated &&
                                     <div className="center-positioning">
                                         <h3> 2. Insert random missing values by choosing the percentage of missing data and the rate of Missing-Not-At-Random</h3>
                                         <div className="label-field-group-with-space">
@@ -312,13 +319,14 @@ export default function ArtificialImputation(){
                                                    id="MNAR_rate"/>
                                         </div>
                                         {renderErrorMessage("params_not_specified", errorMessages)}
-                                        {renderErrorMessage("out_of_bounds", errorMessages)}
+                                        {renderErrorMessage("percentage_out_of_bounds", errorMessages)}
+                                        {renderErrorMessage("mnar_out_of_bounds", errorMessages)}
                                         <button className="general-button" onClick={handleInsertRandomNaValues}>
                                             View the updated table
                                         </button>
                                     </div>
-                                }
-                                { naValuesInserted  &&
+                            }
+                            { naValuesInserted  &&
                                     <div className="table-position">
                                         <div className="table-position-background">
                                             <MDBTable scrollY maxHeight="400px">
@@ -338,40 +346,40 @@ export default function ArtificialImputation(){
                                             </MDBTable>
                                         </div>
                                     </div>
-                                }
-                                { naValuesInserted &&
-                                    <div className="center-positioning">
-                                        <h3>
-                                            <p> 3. Perform imputation using all the available imputation techniques:</p>
-                                            {imputationMethods.map((method, index) =>
-                                                <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
-                                            )}
-                                        </h3>
-                                        <div className="label-field-group-with-space">
-                                            <label className="label-statistics-ai">
-                                                <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
-                                            </label>
-                                            <div className="simple-container-col">
-                                                <select className="input-for-statistics-ad-select input-ai"
-                                                        value={selectedOptionClass[filterForChoiceOfImputationType.name]}
-                                                        onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
-                                                >
-                                                    {filterForChoiceOfImputationType.values.map((value) => (
-                                                        <option key={value} value={value}>
-                                                            {value}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                            }
+                            { naValuesInserted &&
+                                <div className="center-positioning">
+                                    <h3>
+                                        <p> 3. Perform imputation using all the available imputation techniques:</p>
+                                        {imputationMethods.map((method, index) =>
+                                            <li key={index} className="list-item">{method}{index === imputationMethods.length - 1 ? '' : ', '}</li>
+                                        )}
+                                    </h3>
+                                    <div className="label-field-group-with-space">
+                                        <label className="label-statistics-ai">
+                                            <div>Select the way to perform the imputation {"\n"}(You cannot choose to perform separate imputation unless there are at least 3 samples in each class)</div>
+                                        </label>
+                                        <div className="simple-container-col">
+                                            <select className="input-for-statistics-ad-select input-ai"
+                                                    value={selectedOptionClass[filterForChoiceOfImputationType.name]}
+                                                    onChange={(e) => handleOptionChange(filterForChoiceOfImputationType.name, e.target.value)}
+                                            >
+                                                {filterForChoiceOfImputationType.values.map((value) => (
+                                                    <option key={value} value={value}>
+                                                        {value}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
-                                        {renderErrorMessage("separate_not_allowed", errorMessages)}
-                                        {!imputationPerformed &&
-                                            <button className="general-button" onClick={handlePerformImputation} disabled={isLoading}>
-                                                View the result
-                                            </button>
-                                        }
                                     </div>
-                                }
+                                    {renderErrorMessage("separate_not_allowed", errorMessages)}
+                                    {!imputationPerformed &&
+                                        <button className="general-button" onClick={handlePerformImputation} disabled={isLoading}>
+                                            View the result
+                                        </button>
+                                    }
+                                </div>
+                            }
                             { isLoading ? <LoadingSpinner /> : null}
                             { imputationPerformed &&
                                 <StatisticsOnArtificialImputation listOfImputedDataframes={listOfImputedTables} markedData={missingInsertedDataZeroesMarked} imputationMethods={imputationMethods}/>

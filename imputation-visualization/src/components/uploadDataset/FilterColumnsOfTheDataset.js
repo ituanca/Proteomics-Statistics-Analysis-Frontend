@@ -15,7 +15,9 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     const errors = {
         filters_not_complete: "You have to select an ID and at least 2 columns for each of the first and second class",
         filters_not_complete_without_id: "You have to select at least 2 columns for each of the first and second class",
-        not_number: "The columns you select for the 2 classes have to contain numerical values"
+        not_number: "The columns you select for the 2 classes have to contain numerical values",
+        empty_id: "The column selected for ID must not contain empty values",
+        duplicated_id: "The column selected for ID must not contain duplicates"
     };
     const [tableData, setTableData] = useState( {
         columns: [],
@@ -38,15 +40,25 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     });
     const [numberOfRowsInTable, setNumberOfRowsInTable] = useState(0);
 
-    const [fileName, setFileName] = useState('');
-    const [multipleSheets, setMultipleSheets] = useState(false);
-    const [selectedSheet, setSelectedSheet] = useState(0);
-    const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
-    const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
-    const [dataChanged, setDataChanged] = useState(false);
-    const [smthSelected, setSmthSelected] = useState(false);
-    const [importedEntriesID, setImportedEntriesID] = useState([]);
-    const [importedData, setImportedData] = useState([]);
+    // const [fileName, setFileName] = useState('');
+    // const [multipleSheets, setMultipleSheets] = useState(false);
+    // const [selectedSheet, setSelectedSheet] = useState(0);
+    // const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
+    // const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
+    // const [dataChanged, setDataChanged] = useState(false);
+    // const [smthSelected, setSmthSelected] = useState(false);
+    // const [importedEntriesID, setImportedEntriesID] = useState([]);
+    // const [importedData, setImportedData] = useState([]);
+
+    // useEffect(() => {
+    //     if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
+    //         setTableVisible(true)
+    //         setTableData(JSON.parse(localStorage.getItem('selectedDataset')))
+    //         setNumberOfRowsInTable(JSON.parse(localStorage.getItem('selectedDataset')).rows.length)
+    //         console.log("cewfw", JSON.parse(localStorage.getItem('selectedDataset')))
+    //         setSelectedOptions(JSON.parse(localStorage.getItem('selectedOptions')))
+    //     }
+    // },[])
 
     // set the available entries - all the IDs
     useEffect(() => {
@@ -113,18 +125,30 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         return true;
     }
 
-    const validate = () => {
-        console.log(selectedOptions.id)
+    const validateIdAndFiltersCompleteness = () => {
         if(selectedOptions.id === "" || selectedOptions.class1.length < 2 || selectedOptions.class2.length < 2){
             setErrorMessages({name: "filters_not_complete", message: errors.filters_not_complete});
+            return false;
         } else {
-            setErrorMessages({});
-            return true;
+            const valuesId = [];
+            for(let i = 0; i < data.rows.length; i++){
+                valuesId.push(data.rows[i][selectedOptions.id])
+                if(isEqual(data.rows[i][selectedOptions.id],'')){
+                    setErrorMessages({name: "empty_id", message: errors.empty_id});
+                    return false;
+                }
+            }
+            const duplicates = valuesId.filter((item, index) => valuesId.indexOf(item) !== index)
+            if(duplicates.length > 0){
+                setErrorMessages({name: "duplicated_id", message: errors.duplicated_id});
+                return false;
+            }
         }
-        return false;
+        setErrorMessages({});
+        return true;
     }
 
-    const validateWithoutId = () => {
+    const validateFiltersCompleteness = () => {
         if(selectedOptions.class1.length < 2 || selectedOptions.class2.length < 2){
             setErrorMessages({name: "filters_not_complete_without_id", message: errors.filters_not_complete_without_id});
         } else {
@@ -157,9 +181,8 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     // }, [filtersSent])
 
     const handleButtonClickViewTable = () => {
-        if( ((selectedDisease === "Other" && validate()) || (selectedDisease !== "Other" && validateWithoutId())) && validateClasses()){
-            // send the filters for the dataset to the backend and receive them back as a response
-            console.log(selectedOptions)
+        if( ((selectedDisease === "Other" && validateIdAndFiltersCompleteness()) ||
+            (selectedDisease !== "Other" && validateFiltersCompleteness())) && validateClasses()){
             let optionsToBeSent = selectedOptions
             if(selectedDisease === "Alzheimer's disease" && (!optionsToBeSent.other_columns.includes("Protein.names"))){
                 optionsToBeSent.other_columns.push("Protein.names")
@@ -231,19 +254,19 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         }
     }
 
-    useEffect(() => {
-        if(importedData.length > 0){
-            let importedColumns = Object.keys(importedData[0]);
-            setSelectedEntries({...selectedEntries, entries: (importedData.map((object) => {
-                    let missingFields = importedColumns.filter((column) => !(column in object))
-                    let updatedObject = {...object};
-                    missingFields.forEach((field) => {
-                        updatedObject[field] = "";
-                    })
-                    return updatedObject;
-                }))})
-        }
-    }, [importedData])
+    // useEffect(() => {
+    //     if(importedData.length > 0){
+    //         let importedColumns = Object.keys(importedData[0]);
+    //         setSelectedEntries({...selectedEntries, entries: (importedData.map((object) => {
+    //                 let missingFields = importedColumns.filter((column) => !(column in object))
+    //                 let updatedObject = {...object};
+    //                 missingFields.forEach((field) => {
+    //                     updatedObject[field] = "";
+    //                 })
+    //                 return updatedObject;
+    //             }))})
+    //     }
+    // }, [importedData])
 
     const onChangeMultiSelectEntries = (selectedItems) => {
         setSelectedEntries({...selectedEntries, entries: selectedItems})
@@ -253,61 +276,61 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         event.preventDefault();
     };
 
-    function createArrayOfSheets (max) {
-        const numbers = [];
-        for(let i = 0; i < max; i++){
-            numbers.push(i);
-        }
-        return numbers;
-    }
+    // function createArrayOfSheets (max) {
+    //     const numbers = [];
+    //     for(let i = 0; i < max; i++){
+    //         numbers.push(i);
+    //     }
+    //     return numbers;
+    // }
+    //
+    // const [wb, setWb] = useState({});
+    // const handleImport = ($event) => {
+    //     const files = $event.target.files;
+    //     if (files.length) {
+    //         const file = files[0];
+    //         const reader = new FileReader();
+    //         reader.onload = (event) => {
+    //             const newWb = read(event.target.result)
+    //             setWb(newWb);
+    //             const sheets = newWb.SheetNames;
+    //             setFileName(file.name)
+    //
+    //             setConfirmedSheetNr(false)
+    //             if (sheets.length > 1) {
+    //                 setMultipleSheets(true)
+    //                 setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
+    //             }else{
+    //                 setMultipleSheets(false)
+    //                 const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]], {skipHeader: true})
+    //                 setImportedData(rows)
+    //             }
+    //         }
+    //         reader.readAsArrayBuffer(file);
+    //     }
+    // }
+    //
+    // const handleSheetChange = (value) => {
+    //     setConfirmedSheetNr(false);
+    //     setSelectedSheet(value);
+    // };
+    //
+    // const handleConfirmation = () => {
+    //     if(wb !== null){
+    //         const sheets = wb.SheetNames;
+    //         const rows = utils.sheet_to_json(wb.Sheets[sheets[selectedSheet]])
+    //         setImportedEntriesID(rows)
+    //
+    //         setConfirmedSheetNr(true);
+    //         setSmthSelected(true);
+    //         setImportedData(rows)
+    //     }
+    // }
 
-    const [wb, setWb] = useState({});
-    const handleImport = ($event) => {
-        const files = $event.target.files;
-        if (files.length) {
-            const file = files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const newWb = read(event.target.result)
-                setWb(newWb);
-                const sheets = newWb.SheetNames;
-                setFileName(file.name)
-
-                setConfirmedSheetNr(false)
-                if (sheets.length > 1) {
-                    setMultipleSheets(true)
-                    setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
-                }else{
-                    setMultipleSheets(false)
-                    const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]], {skipHeader: true})
-                    setImportedData(rows)
-                }
-            }
-            reader.readAsArrayBuffer(file);
-        }
-    }
-
-    const handleSheetChange = (value) => {
-        setConfirmedSheetNr(false);
-        setSelectedSheet(value);
-    };
-
-    const handleConfirmation = () => {
-        if(wb !== null){
-            const sheets = wb.SheetNames;
-            const rows = utils.sheet_to_json(wb.Sheets[sheets[selectedSheet]])
-            setImportedEntriesID(rows)
-
-            setConfirmedSheetNr(true);
-            setSmthSelected(true);
-            setImportedData(rows)
-        }
-    }
-
-    const fileInputRef = useRef(null);
-    const handleButtonClick = () => {
-        fileInputRef.current.click();
-    };
+    // const fileInputRef = useRef(null);
+    // const handleButtonClick = () => {
+    //     fileInputRef.current.click();
+    // };
 
     const getClassNameForColumnHeader = (columnHeader) => {
         if(selectedOptions.class1.includes(columnHeader.label)){
@@ -421,6 +444,8 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                 </div>
                 {renderErrorMessage(selectedDisease === "Other" ? "filters_not_complete" : "filters_not_complete_without_id", errorMessages)}
                 {renderErrorMessage("not_number", errorMessages)}
+                {renderErrorMessage("empty_id", errorMessages)}
+                {renderErrorMessage("duplicated_id", errorMessages)}
                 <button className="general-button button-margin-top-bottom" onClick={handleButtonClickViewTable}>Update table</button>
             </div>
             {(tableVisible) ?
@@ -447,7 +472,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         <div className="table-nr-rows"><label>The table has {numberOfRowsInTable} rows</label></div>
                     </div>
                     <div className="label-multiselect-group-choose-dataset">
-                        <label className="label-choose-dataset-white"><strong>Optional:</strong> Choose entries to be eliminate from dataset</label>
+                        <label className="label-choose-dataset-white"><strong>Optional:</strong> Choose entries to be eliminated from dataset</label>
                         <Multiselect
                             showArrow
                             options={availableEntries}
@@ -457,33 +482,33 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         />
                         <button className="general-button eliminate-entries" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
                     </div>
-                    <div className="label-multiselect-group-choose-dataset">
-                        <div>
-                            <button className="general-button" onClick={handleButtonClick}>Choose File</button>
-                            <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}
-                                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-                            {fileName && <p className="file-name">Selected file: {fileName}</p>}
-                        </div>
-                    </div>
-                    {multipleSheets ?
-                        <div className="table-filters">
-                            <div className="label-field-group-choose-dataset">
-                                <label className="label-statistics">Choose a sheet</label>
-                                <select className="input-for-statistics-ad-select"
-                                        value={selectedSheet}
-                                        required
-                                        onChange={(e) => handleSheetChange(e.target.value)}
-                                >
-                                    {arrayOfExistingSheets.map((nr, index) => (
-                                        <option key={index} value={nr.value}>
-                                            {nr}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <button className="general-button" onClick={handleConfirmation}>Confirm</button>
-                        </div>
-                        : null}
+                    {/*<div className="label-multiselect-group-choose-dataset">*/}
+                    {/*    <div>*/}
+                    {/*        <button className="general-button" onClick={handleButtonClick}>Choose File</button>*/}
+                    {/*        <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}*/}
+                    {/*               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>*/}
+                    {/*        {fileName && <p className="file-name">Selected file: {fileName}</p>}*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                    {/*{multipleSheets ?*/}
+                    {/*    <div className="table-filters">*/}
+                    {/*        <div className="label-field-group-choose-dataset">*/}
+                    {/*            <label className="label-statistics">Choose a sheet</label>*/}
+                    {/*            <select className="input-for-statistics-ad-select"*/}
+                    {/*                    value={selectedSheet}*/}
+                    {/*                    required*/}
+                    {/*                    onChange={(e) => handleSheetChange(e.target.value)}*/}
+                    {/*            >*/}
+                    {/*                {arrayOfExistingSheets.map((nr, index) => (*/}
+                    {/*                    <option key={index} value={nr.value}>*/}
+                    {/*                        {nr}*/}
+                    {/*                    </option>*/}
+                    {/*                ))}*/}
+                    {/*            </select>*/}
+                    {/*        </div>*/}
+                    {/*        <button className="general-button" onClick={handleConfirmation}>Confirm</button>*/}
+                    {/*    </div>*/}
+                    {/*    : null}*/}
                     <div className="input-container-row-less-space">
                         <div className="button-in-row">
                             <Link to="/Statistics">
