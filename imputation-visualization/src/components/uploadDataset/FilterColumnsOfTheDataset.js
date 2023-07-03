@@ -512,7 +512,7 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                     <div className="input-container-row-less-space">
                         <div className="button-in-row">
                             <Link to="/Statistics">
-                                <input type="submit" value="Normal imputation and statistics"/>
+                                <input type="submit" value="Simple imputation and statistics"/>
                             </Link>
                         </div>
                         <div className="button-in-row">
