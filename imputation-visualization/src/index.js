@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import StartPage from "./components/startPage/StartPage";
-import ChooseDataset from "./components/uploadDataset/ChooseDataset";
+import ChooseOrUploadDataset from "./components/chooseOrUploadDataset/ChooseOrUploadDataset";
 import Statistics from "./components/statistics/Statistics";
 import ArtificialImputation from "./components/artificialImputation/ArtificialImputation";
 
@@ -15,7 +15,7 @@ root.render(
         <Routes>
             <Route path="/" element={<App />} />
             <Route path="/StartPage" element={<StartPage />} />
-            <Route path="/ChooseDataset" element={<ChooseDataset />} />
+            <Route path="/ChooseOrUploadDataset" element={<ChooseOrUploadDataset />} />
             <Route path="/Statistics" element={<Statistics />} />
             <Route path="/ArtificialImputation" element={<ArtificialImputation />} />
         </Routes>

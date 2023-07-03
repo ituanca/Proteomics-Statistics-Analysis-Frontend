@@ -4,7 +4,7 @@ import {handleOptionChange, renderErrorMessage} from "../utils/Utils";
 import {Multiselect} from "multiselect-react-dropdown";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 import isEqual from 'lodash/isEqual';
-import "./ChooseDataset.css"
+import "./ChooseOrUploadDataset.css"
 import {Link} from "react-router-dom";
 import axios from "axios";
 import {read, utils} from "xlsx";

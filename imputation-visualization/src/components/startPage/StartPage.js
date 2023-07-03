@@ -8,7 +8,7 @@ function StartPage(){
             <label className="title"><strong>Proteomics Statistics Analysis</strong></label>
             <nav>
                 <div>
-                    <Link to="/ChooseDataset">
+                    <Link to="/ChooseOrUploadDataset">
                         <button className="start-button">Start</button>
                     </Link>
                 </div>

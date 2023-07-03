@@ -51,7 +51,7 @@ function Statistics(){
                 {/*{(selectedDisease === "Other") && <StatisticsOther />}*/}
                 <div className="button-container-row">
                     <div className="input-container-col">
-                        <Link to="/ChooseDataset">
+                        <Link to="/ChooseOrUploadDataset">
                             <button className="general-button">Go back</button>
                         </Link>
                     </div>

@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useRef, useMemo} from "react";
 import {Link, Outlet} from "react-router-dom";
-import "./ChooseDataset.css"
+import "./ChooseOrUploadDataset.css"
 import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
 
-function ChooseDataset(){
+function ChooseOrUploadDataset(){
 
     const [selectedDisease, setSelectedDisease] = useState("");
     const [smthSelected, setSmthSelected] = useState(false);
@@ -272,4 +272,4 @@ function ChooseDataset(){
     );
 }
 
-export default ChooseDataset;
+export default ChooseOrUploadDataset;
