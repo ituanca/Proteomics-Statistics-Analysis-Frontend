@@ -10,6 +10,10 @@ import GeneralStatisticsArtificialImputation from "./GeneralStatisticsArtificial
 
 export default function ArtificialImputation(){
 
+    useEffect(() => {
+        localStorage.setItem("chooseDatasetCompleted", JSON.stringify(true));
+    },[])
+
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))
     const [errorMessages, setErrorMessages] = useState({});
     const errors = {

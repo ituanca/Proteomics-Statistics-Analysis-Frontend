@@ -7,7 +7,6 @@ import isEqual from 'lodash/isEqual';
 import "./ChooseOrUploadDataset.css"
 import {Link} from "react-router-dom";
 import axios from "axios";
-import {read, utils} from "xlsx";
 
 export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
 
@@ -39,26 +38,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         entries: []
     });
     const [numberOfRowsInTable, setNumberOfRowsInTable] = useState(0);
-
-    // const [fileName, setFileName] = useState('');
-    // const [multipleSheets, setMultipleSheets] = useState(false);
-    // const [selectedSheet, setSelectedSheet] = useState(0);
-    // const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
-    // const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
-    // const [dataChanged, setDataChanged] = useState(false);
-    // const [smthSelected, setSmthSelected] = useState(false);
-    // const [importedEntriesID, setImportedEntriesID] = useState([]);
-    // const [importedData, setImportedData] = useState([]);
-
-    // useEffect(() => {
-    //     if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
-    //         setTableVisible(true)
-    //         setTableData(JSON.parse(localStorage.getItem('selectedDataset')))
-    //         setNumberOfRowsInTable(JSON.parse(localStorage.getItem('selectedDataset')).rows.length)
-    //         console.log("cewfw", JSON.parse(localStorage.getItem('selectedDataset')))
-    //         setSelectedOptions(JSON.parse(localStorage.getItem('selectedOptions')))
-    //     }
-    // },[])
 
     // set the available entries - all the IDs
     useEffect(() => {
@@ -158,28 +137,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         return false;
     }
 
-    // const [filtersSent, setFiltersSent] = useState(false);
-    //
-    // useEffect(() => {
-    //     if(filtersSent){
-    //         fetch('http://localhost:8000/getIncompleteDfNewGeneral')
-    //             .then((response) => response.json())
-    //             .then((json) => {
-    //                 setTableData({
-    //                     ...tableData, columns: Object.keys(json[0]).map(key => {
-    //                         return {
-    //                             label: key, field: key, sort: 'asc'
-    //                         };
-    //                     }), rows: json
-    //                 })
-    //                 setFiltersSent(false);
-    //                 setTableVisible(true);
-    //                 localStorage.setItem("tableVisible", JSON.stringify(tableVisible));
-    //             })
-    //             .catch((error) => console.log(error));
-    //     }
-    // }, [filtersSent])
-
     const handleButtonClickViewTable = () => {
         if( ((selectedDisease === "Other" && validateIdAndFiltersCompleteness()) ||
             (selectedDisease !== "Other" && validateFiltersCompleteness())) && validateClasses()){
@@ -254,20 +211,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         }
     }
 
-    // useEffect(() => {
-    //     if(importedData.length > 0){
-    //         let importedColumns = Object.keys(importedData[0]);
-    //         setSelectedEntries({...selectedEntries, entries: (importedData.map((object) => {
-    //                 let missingFields = importedColumns.filter((column) => !(column in object))
-    //                 let updatedObject = {...object};
-    //                 missingFields.forEach((field) => {
-    //                     updatedObject[field] = "";
-    //                 })
-    //                 return updatedObject;
-    //             }))})
-    //     }
-    // }, [importedData])
-
     const onChangeMultiSelectEntries = (selectedItems) => {
         setSelectedEntries({...selectedEntries, entries: selectedItems})
     }
@@ -275,62 +218,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
     const handleSubmit = (event) => {
         event.preventDefault();
     };
-
-    // function createArrayOfSheets (max) {
-    //     const numbers = [];
-    //     for(let i = 0; i < max; i++){
-    //         numbers.push(i);
-    //     }
-    //     return numbers;
-    // }
-    //
-    // const [wb, setWb] = useState({});
-    // const handleImport = ($event) => {
-    //     const files = $event.target.files;
-    //     if (files.length) {
-    //         const file = files[0];
-    //         const reader = new FileReader();
-    //         reader.onload = (event) => {
-    //             const newWb = read(event.target.result)
-    //             setWb(newWb);
-    //             const sheets = newWb.SheetNames;
-    //             setFileName(file.name)
-    //
-    //             setConfirmedSheetNr(false)
-    //             if (sheets.length > 1) {
-    //                 setMultipleSheets(true)
-    //                 setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
-    //             }else{
-    //                 setMultipleSheets(false)
-    //                 const rows = utils.sheet_to_json(newWb.Sheets[sheets[0]], {skipHeader: true})
-    //                 setImportedData(rows)
-    //             }
-    //         }
-    //         reader.readAsArrayBuffer(file);
-    //     }
-    // }
-    //
-    // const handleSheetChange = (value) => {
-    //     setConfirmedSheetNr(false);
-    //     setSelectedSheet(value);
-    // };
-    //
-    // const handleConfirmation = () => {
-    //     if(wb !== null){
-    //         const sheets = wb.SheetNames;
-    //         const rows = utils.sheet_to_json(wb.Sheets[sheets[selectedSheet]])
-    //         setImportedEntriesID(rows)
-    //
-    //         setConfirmedSheetNr(true);
-    //         setSmthSelected(true);
-    //         setImportedData(rows)
-    //     }
-    // }
-
-    // const fileInputRef = useRef(null);
-    // const handleButtonClick = () => {
-    //     fileInputRef.current.click();
-    // };
 
     const getClassNameForColumnHeader = (columnHeader) => {
         if(selectedOptions.class1.includes(columnHeader.label)){
@@ -344,6 +231,9 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
         }
         return "column-header-other-columns";
     }
+
+    const class1Specific = (selectedDisease === "Progeria") ?  "With Progeria" :  "Female" ;
+    const class2Specific = (selectedDisease === "Progeria") ?  "Without Progeria" :  "Male" ;
 
     return (
         <form onSubmit = {handleSubmit}>
@@ -378,29 +268,18 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                                 <label className="label-choose-dataset-black"><strong>Protein.names</strong></label>
                             </div>
                         </div>
-                        {selectedDisease === "Alzheimer's disease" ?
+                        {(selectedDisease === "Alzheimer's disease" || selectedDisease === "Progeria") ?
                             <div>
                                 <div className="label-field-group-choose-dataset">
                                     <label className="label-choose-dataset-black">Class 1: </label>
-                                    <label className="label-choose-dataset-black"><strong>Female</strong></label>
+                                    <label className="label-choose-dataset-black"><strong>{class1Specific}</strong></label>
                                 </div>
                                 <div className="label-field-group-choose-dataset">
                                     <label className="label-choose-dataset-black">Class 2: </label>
-                                    <label className="label-choose-dataset-black"><strong>Male</strong></label>
+                                    <label className="label-choose-dataset-black"><strong>{class2Specific}</strong></label>
                                 </div>
                             </div>
-                            :
-                            <div>
-                                <div className="label-field-group-choose-dataset">
-                                    <label className="label-choose-dataset-black">Class 1: </label>
-                                    <label className="label-choose-dataset-black"><strong>With Progeria</strong></label>
-                                </div>
-                                <div className="label-field-group-choose-dataset">
-                                    <label className="label-choose-dataset-black">Class 2: </label>
-                                    <label className="label-choose-dataset-black"><strong>Without Progeria</strong></label>
-                                </div>
-                            </div>
-                        }
+                            : null}
                     </div>
                 }
                 <div className="label-multiselect-group-choose-dataset">
@@ -482,33 +361,6 @@ export default function FilterColumnsOfTheDataset({data, selectedDisease}) {
                         />
                         <button className="general-button eliminate-entries" onClick={handleEliminateEntriesButtonClick}>Eliminate selected entries</button>
                     </div>
-                    {/*<div className="label-multiselect-group-choose-dataset">*/}
-                    {/*    <div>*/}
-                    {/*        <button className="general-button" onClick={handleButtonClick}>Choose File</button>*/}
-                    {/*        <input type="file" name="file" className="custom-file-input" id="inputGroupFile" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImport}*/}
-                    {/*               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>*/}
-                    {/*        {fileName && <p className="file-name">Selected file: {fileName}</p>}*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                    {/*{multipleSheets ?*/}
-                    {/*    <div className="table-filters">*/}
-                    {/*        <div className="label-field-group-choose-dataset">*/}
-                    {/*            <label className="label-statistics">Choose a sheet</label>*/}
-                    {/*            <select className="input-for-statistics-ad-select"*/}
-                    {/*                    value={selectedSheet}*/}
-                    {/*                    required*/}
-                    {/*                    onChange={(e) => handleSheetChange(e.target.value)}*/}
-                    {/*            >*/}
-                    {/*                {arrayOfExistingSheets.map((nr, index) => (*/}
-                    {/*                    <option key={index} value={nr.value}>*/}
-                    {/*                        {nr}*/}
-                    {/*                    </option>*/}
-                    {/*                ))}*/}
-                    {/*            </select>*/}
-                    {/*        </div>*/}
-                    {/*        <button className="general-button" onClick={handleConfirmation}>Confirm</button>*/}
-                    {/*    </div>*/}
-                    {/*    : null}*/}
                     <div className="input-container-row-less-space">
                         <div className="button-in-row">
                             <Link to="/Statistics">

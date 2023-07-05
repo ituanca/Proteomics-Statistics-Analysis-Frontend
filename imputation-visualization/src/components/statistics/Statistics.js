@@ -10,6 +10,10 @@ import {getClassNameForColumnHeader} from "../utils/Utils";
 
 function Statistics(){
 
+    useEffect(() => {
+        localStorage.setItem("chooseDatasetCompleted", JSON.stringify(true));
+    },[])
+
     const tableData = JSON.parse(localStorage.getItem('selectedDataset'))
     const [selectedDisease] = useState(JSON.parse(localStorage.getItem('selectedDisease')))
     const selectedOptionsForTable = JSON.parse(localStorage.getItem('selectedOptions'))

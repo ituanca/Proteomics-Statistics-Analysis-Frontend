@@ -5,11 +5,12 @@ import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
+import {useStateSS} from "../utils/StateSessionStorage";
 
 function ChooseOrUploadDataset(){
 
-    const [selectedDisease, setSelectedDisease] = useState("");
-    const [smthSelected, setSmthSelected] = useState(false);
+    const [selectedDisease, setSelectedDisease] = useStateSS("selectedDiseaseLS", "");
+    const [smthSelected, setSmthSelected] = useStateSS("smthSelectedLS", false);
     const [data, setData] = useState( {
         columns: [],
         rows: []
@@ -19,26 +20,22 @@ function ChooseOrUploadDataset(){
         rows: []
     })
     const [importedData, setImportedData] = useState([]);
-    const [fileName, setFileName] = useState('');
-    const [multipleSheets, setMultipleSheets] = useState(false);
-    const [selectedSheet, setSelectedSheet] = useState(0);
-    const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
-    const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
-    const [dataChanged, setDataChanged] = useState(false);
+    const [fileName, setFileName] = useStateSS("fileNameLS", '');
+    const [multipleSheets, setMultipleSheets] = useStateSS("multipleSheetsLS", false);
+    const [selectedSheet, setSelectedSheet] = useStateSS("selectedSheetLS", 0);
+    const [arrayOfExistingSheets, setArrayOfExistingSheets] = useStateSS("arrayOfExistingSheetsLS", []);
+    const [confirmedSheetNr, setConfirmedSheetNr] = useStateSS("confirmedSheetNrLS", false);
+    const [dataChanged, setDataChanged] = useStateSS("dataChangedLS", false);
     const [preparedImportedData, setPreparedImportedData] = useState([]);
 
-    // useEffect(() => {
-    //     if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
-    //         setConfirmedSheetNr(JSON.parse(localStorage.getItem('confirmedSheetNr')))
-    //         setMultipleSheets(JSON.parse(localStorage.getItem('multipleSheets')))
-    //         setSelectedDisease(localStorage.getItem('selectedDisease'))
-    //         setSmthSelected(true);
-    //         fetch('http://localhost:8000/getBackImportedData')
-    //             .then((response) => response.json())
-    //             .then((json) => setImportedData(json))
-    //             .catch((error) => console.log(error));
-    //     }
-    // },[])
+    useEffect(() => {
+        if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
+            fetch('http://localhost:8000/getBackImportedData')
+                .then((response) => response.json())
+                .then((json) => setImportedData(json))
+                .catch((error) => console.log(error));
+        }
+    },[])
 
     // include "" in the fields corresponding to the Excel cells where there is nothing
     useEffect(() => {
@@ -63,16 +60,14 @@ function ChooseOrUploadDataset(){
         localStorage.setItem("selectedDisease", JSON.stringify(selectedDisease));
         if(preparedImportedData.length > 0) {
             // after I choose the dataset to import, it is automatically sent to the backend, then it is received back as a response
-            //if(JSON.parse(localStorage.getItem('chooseDatasetCompleted')) === false){
-                axios
-                    .post("http://localhost:8000/sendImportedData", JSON.stringify(preparedImportedData))
-                    .then((response) => {
-                        console.info(response);
-                    })
-                    .catch((error) => {
-                        console.error("There was an error!", error.response.data.message)
-                    });
-            //}
+            axios
+                .post("http://localhost:8000/sendImportedData", JSON.stringify(preparedImportedData))
+                .then((response) => {
+                    console.info(response);
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error.response.data.message)
+                });
 
             setData({...data, columns: Object.keys(preparedImportedData[0]).map(key => {
                     return {
@@ -103,7 +98,6 @@ function ChooseOrUploadDataset(){
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
-        //localStorage.setItem("multipleSheets", JSON.stringify(false));
         fetch('http://localhost:8000/getIncompleteDfNewDatasetProgeria')
             .then((response) => response.json())
             .then((json) => setImportedData(json))
@@ -115,7 +109,6 @@ function ChooseOrUploadDataset(){
         setSmthSelected(true);
         setDataChanged(false);
         setMultipleSheets(false);
-        //localStorage.setItem("multipleSheets", JSON.stringify(false));
         fetch('http://localhost:8000/getIncompleteDfNewDatasetAD')
             .then((response) => response.json())
             .then((json) => setImportedData(json))
@@ -151,7 +144,6 @@ function ChooseOrUploadDataset(){
                 setDataChanged(false);
                 if (sheets.length > 1) {
                     setMultipleSheets(true)
-                    //localStorage.setItem("multipleSheets", JSON.stringify(true));
                     setArrayOfExistingSheets(createArrayOfSheets(sheets.length))
                 }else{
                     setMultipleSheets(false)
@@ -178,7 +170,6 @@ function ChooseOrUploadDataset(){
             setImportedData(rows)
 
             setConfirmedSheetNr(true);
-            //localStorage.setItem("confirmedSheetNr", JSON.stringify(true));
             setSmthSelected(true);
             setSelectedDisease("Other")
         }
