@@ -5,12 +5,11 @@ import {read, utils} from "xlsx";
 import FilterColumnsOfTheDataset from "./FilterColumnsOfTheDataset";
 import axios from "axios";
 import {MDBTable, MDBTableBody, MDBTableHead} from "mdbreact";
-import {useStateSS} from "../utils/StateSessionStorage";
 
 function ChooseOrUploadDataset(){
 
-    const [selectedDisease, setSelectedDisease] = useStateSS("selectedDiseaseLS", "");
-    const [smthSelected, setSmthSelected] = useStateSS("smthSelectedLS", false);
+    const [selectedDisease, setSelectedDisease] = useState("");
+    const [smthSelected, setSmthSelected] = useState(false);
     const [data, setData] = useState( {
         columns: [],
         rows: []
@@ -20,12 +19,12 @@ function ChooseOrUploadDataset(){
         rows: []
     })
     const [importedData, setImportedData] = useState([]);
-    const [fileName, setFileName] = useStateSS("fileNameLS", '');
-    const [multipleSheets, setMultipleSheets] = useStateSS("multipleSheetsLS", false);
-    const [selectedSheet, setSelectedSheet] = useStateSS("selectedSheetLS", 0);
-    const [arrayOfExistingSheets, setArrayOfExistingSheets] = useStateSS("arrayOfExistingSheetsLS", []);
-    const [confirmedSheetNr, setConfirmedSheetNr] = useStateSS("confirmedSheetNrLS", false);
-    const [dataChanged, setDataChanged] = useStateSS("dataChangedLS", false);
+    const [fileName, setFileName] = useState('');
+    const [multipleSheets, setMultipleSheets] = useState(false);
+    const [selectedSheet, setSelectedSheet] = useState(0);
+    const [arrayOfExistingSheets, setArrayOfExistingSheets] = useState([]);
+    const [confirmedSheetNr, setConfirmedSheetNr] = useState(false);
+    const [dataChanged, setDataChanged] = useState(false);
     const [preparedImportedData, setPreparedImportedData] = useState([]);
 
     useEffect(() => {
