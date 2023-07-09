@@ -27,15 +27,6 @@ function ChooseOrUploadDataset(){
     const [dataChanged, setDataChanged] = useState(false);
     const [preparedImportedData, setPreparedImportedData] = useState([]);
 
-    useEffect(() => {
-        if(JSON.parse(localStorage.getItem('chooseDatasetCompleted'))){
-            fetch('http://localhost:8000/getBackImportedData')
-                .then((response) => response.json())
-                .then((json) => setImportedData(json))
-                .catch((error) => console.log(error));
-        }
-    },[])
-
     // include "" in the fields corresponding to the Excel cells where there is nothing
     useEffect(() => {
         let selectedColumnsString = data.columns.map(column => column.label)

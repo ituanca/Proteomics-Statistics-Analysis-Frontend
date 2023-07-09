@@ -102,7 +102,6 @@ export default function FifthPlot({generalOptions, path, errors, selectedOptions
                         </div>
                     )}
                     {labelAndDropdownGroupWithSpace(generalOptions[1], selectedOptions, setSelectedOptions)}
-                    {labelAndDropdownGroupWithSpace(generalOptions[2], selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationMethod, selectedOptions, setSelectedOptions)}
                     {labelAndDropdownGroupWithSpace(filterForChoiceOfImputationType, selectedOptions, setSelectedOptions)}
                     {renderErrorMessage("entries", errorMessages)}
